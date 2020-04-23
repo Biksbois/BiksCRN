@@ -2,18 +2,19 @@ package UnitTestes;
 
 import org.junit.jupiter.api.Test;
 import simpleAdder.interpret.BetaSymbolTable;
+import simpleAdder.interpret.TypeCheckers.BetaStackToString;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class BetaSymbolTableTest {
+class BetaStackToStringTest {
 
-    BetaSymbolTable BST = new BetaSymbolTable();
+    BetaStackToString BSTS = new BetaStackToString();
     TestGetMethods get = new TestGetMethods();
 
     @Test
     void stackToString() {
         String ExpectedResult = "1+2/9*8/2*2**2-(2+2)+2**2+2**(3-1)+(-1)";
-        String ActualResult = BST.StackToString(get.InitializedStack());
+        String ActualResult = BSTS.StackToString(get.InitializedStack());
 
         assertEquals(ExpectedResult, ActualResult);
     }

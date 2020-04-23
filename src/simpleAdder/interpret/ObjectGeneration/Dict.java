@@ -46,14 +46,16 @@ public class Dict{
     public String GenerateDictionary(HashMap<String, SymbolTableType> global, int level)
     {
         String PrettyResult = "";
-        PrettyResult += PM.ApplyTap(level, GenerateDictInit());
-        level++;
-        PrettyResult += GenerateDictFromHashmap(global, level);
 
-        PrettyResult = PrettyResult.substring(0, PrettyResult.lastIndexOf(",")) + "" + PrettyResult.substring(PrettyResult.lastIndexOf(",") + 1);
+        if (global.containsKey(vv.SPECIE)){
+            PrettyResult += PM.ApplyTap(level, GenerateDictInit());
+            level++;
+            PrettyResult += GenerateDictFromHashmap(global, level);
 
-        level--;
+            PrettyResult = PrettyResult.substring(0, PrettyResult.lastIndexOf(",")) + "" + PrettyResult.substring(PrettyResult.lastIndexOf(",") + 1);
 
+            level--;
+        }
 
         return PrettyResult;
     }

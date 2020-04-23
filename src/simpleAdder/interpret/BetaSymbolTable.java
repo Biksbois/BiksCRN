@@ -10,6 +10,7 @@ import simpleAdder.interpret.GetMethods.Get;
 import simpleAdder.interpret.Objects.STObjects.*;
 import simpleAdder.interpret.Objects.Temporary;
 import simpleAdder.interpret.Objects.protocolOperation;
+import simpleAdder.interpret.TypeCheckers.BetaStackToString;
 import simpleAdder.interpret.TypeCheckers.Check;
 import simpleAdder.interpret.TypeCheckers.Checker;
 
@@ -17,6 +18,7 @@ public class BetaSymbolTable extends Checker {
     Check check = new Check();
     HashMap<String, SymbolTableType> st = new HashMap<String,SymbolTableType>();
     Get get = new Get();
+    BetaStackToString BSTS = new BetaStackToString();
     public HashMap<String, SymbolTableType> sample = null;
     public protocolOperation tempProtocol = null;
     public Stack<protocolOperation> protocols = new Stack<>();
@@ -534,85 +536,8 @@ public class BetaSymbolTable extends Checker {
         if (stack.size() == 1){
             return CheckValue(stack.pop());
         }
-        return StackToString(stack);
-    }
-
-    /***
-     * From an input stack, it is translated to the equivilant expressions as a string
-     * @param stack
-     * @return
-     */
-    public String StackToString(Stack<String> stack){
-        String results = "";
-        String rhs = "";
-        String lhs = "";
-        String sym = "";
-        Stack<String> numbers = new Stack<>();
-        while (!stack.isEmpty()){
-            if (stack.peek().equals(")")){
-                lhs = stack.pop();
-                rhs = StackToString(stack);
-                results += rhs + lhs;
-            }else if(stack.peek().equals("(")){
-                return numbers.isEmpty() ?  stack.pop() + results : stack.pop() + numbers.pop() + results;
-            }else if(IsMultDivide(stack.peek())){
-                sym = stack.pop();
-                rhs = GetNext(stack);
-                lhs = GetNext(stack);
-                results += lhs + sym + rhs;
-            }else if(IsPlusMinus(stack.peek())){
-                sym = stack.pop();
-                lhs = GetNext(stack);
-                if (!numbers.isEmpty()){
-                    rhs = numbers.pop();
-                    results += lhs + sym + rhs;
-                }else if(results.equals("") || sym.equals("-") && stack.peek().equals("(")){
-                    results = sym + lhs;
-                }else{
-                    results = lhs + sym + results;
-                }
-            }else{
-                numbers.push(CheckValue(stack.pop()));
-            }
-        }
-        while (!numbers.isEmpty()){
-            stack.push(numbers.pop());
-        }
-
-        System.out.println(results);
-        return results;
-    }
-
-    /***
-     * A help method to StackToString
-     * @param stack
-     * @return
-     */
-    private String GetNext(Stack<String> stack){
-        String next = "";
-        String sym = "";
-        while (!stack.isEmpty()){
-            if (IsMultDivide(stack.peek())){
-                sym = stack.pop();
-                next = sym + GetNext(stack) + next;
-            }else if(stack.peek().equals(")")){
-                next = StackToString(stack) + next;
-            }else if(next.length() > 0 && next.charAt(0) == '('){
-                return next;
-            }
-            else{
-                return CheckValue(stack.pop()) + next;
-            }
-        }
-        return next;
-    }
-
-    private boolean IsMultDivide(String s){
-        return s.equals(vv.mult) || s.equals(vv.div) || s.equals(vv.power) ? true: false;
-    }
-
-    private boolean IsPlusMinus(String s){
-        return s.equals(vv.plus) || s.equals(vv.minus) ? true: false;
+        return BSTS.StackToString(stack);
+        //return StackToString(stack);
     }
 
     private String CheckValue(String str)
