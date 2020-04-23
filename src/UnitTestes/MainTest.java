@@ -53,7 +53,7 @@ class MainTest {
 
     private String[] InputFile()
     {
-        String[] path = new String[]{"UnitTestFileInput.sa"};
+        String[] path = new String[]{"src/UnitTestes/UnitTestFileInput.sa"};
 
         return path;
     }
@@ -62,6 +62,8 @@ class MainTest {
     {
 
         Assert.assertEquals(readFile(exspected),readFile(result));
+        File f= new File(exspected);
+        f.delete();
     }
 
     private String readFile(String path)
