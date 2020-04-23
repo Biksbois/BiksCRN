@@ -1,0 +1,427 @@
+Package com.company;
+
+Helpers
+    h_digit = ['0' .. '9'];
+    h_nonzerod = ['1'..'9'];
+    h_char = [['a' ..'z']+['A' ..'Z']];
+    h_num = h_nonzerod h_digit* | '0';
+    h_sign = h_digit | h_char;
+    h_sp = ' ';
+    h_nl = 10 ;
+    h_cr = 13;
+    h_eol = h_cr | h_nl | h_cr h_nl;
+    h_newline = h_sp | h_nl | 9;
+
+    h_all = [0..0xFFFF];
+    h_not_star = [h_all-'*'];
+    h_not_star_slash = [h_not_star-'/'];
+
+    // Logical operators
+    h_dot = '.';
+    h_mult = '*';
+    h_div = '/';
+    h_greater = '>';
+    h_smaller = '<';
+    h_equal = '=';
+    h_not = '!' | 'n''o''t'h_sp*;
+    h_and = '&';
+    h_or = '|';
+
+    h_longcomments = '/*' h_not_star* '*'+ (h_not_star_slash h_not_star* '*'+)* '/';
+
+    // letters
+    h_f = 'f' | 'F';
+    h_r = 'r' | 'R';
+    h_i = 'i' | 'I';
+    h_w = 'w' | 'W';
+
+Tokens
+
+    // Arethmic symbols
+    t_plus = h_sp* '+' h_sp*;
+    t_minus = h_sp* '-' h_sp*;
+    t_mult = h_sp* h_mult h_sp*;
+    t_div = h_sp* h_div h_sp*;
+    t_equal = h_sp* h_equal h_sp*;
+    t_power = h_sp* h_mult h_mult h_sp*;
+    t_lambda = h_sp* '=''>' h_sp*;
+
+    t_space = h_sp*;
+
+    t_int = h_num;
+    t_string = h_char h_sign*;
+    t_float = h_num h_dot h_digit*; //handle senere
+
+    // Logical operators
+    t_equal_or_greater = h_sp* h_greater h_equal h_sp*;
+    t_equal_or_smaller = h_sp* h_smaller h_equal h_sp*;
+    t_not = h_sp* h_not;
+    t_not_equal = h_sp* h_not h_equal h_sp*;
+    t_and = h_and h_and h_sp* | 'a''n''d'h_sp* | 'A''N''D'h_sp*;
+    t_or = h_or h_or h_sp* | 'o''r'h_sp* | 'O''R'h_sp*;
+    t_logical_equal = h_equal h_equal h_sp*;
+    t_greater = h_greater h_sp*;
+    t_smaller = h_smaller h_sp*;
+
+
+    // Separator
+    t_comma = h_sp* ',' h_sp*;
+    t_colon = h_sp* ':' h_sp*;
+    t_semicolon = h_sp* ';' h_sp* '\n'*;
+    t_l_paren = h_sp* '(' h_sp*;
+    t_r_paren = h_sp* ')' h_sp*;
+    t_l_turborg = h_newline* '{' h_newline*;
+    t_r_turborg = h_newline* '}' h_newline*;
+    t_arrow = h_sp* '-''>' h_sp*;
+    t_double_arrow = h_sp* '<''-''>' h_sp*;
+    t_newl = h_newline*;
+    t_dot = h_dot h_sp*;
+
+    // Special characters
+    t_comments = h_longcomments;
+    t_blank = h_sp*;
+    t_eol = h_cr | h_nl | h_cr h_nl;
+
+
+    //t_removingmoleculesdcl = 'R''e''m''o''v''e''M''o''l''e''c''u''l''e''s'h_sp*;
+    //t_addingmoleculesdcl = 'A''d''d''i''n''g''M''o''l''e''c''u''l''e''s'h_sp*;
+
+    // reserved word declaration
+    t_addmol = 'A''d''d''M''o''l' h_sp*;
+    t_remmol = 'R''e''m''M''o''l'h_sp*;
+    t_initializedcl = 'I''n''i''t''i''a''l''i''z''e' h_sp*;
+    t_sampledcl = 'S''a''m''p''l''e'h_sp*;
+    t_speciesdcl = 'S''p''e''c''i''e'h_sp*;
+    t_ratedcl = 'R''a''t''e'h_sp*;
+    t_funcdcl = 'F''u''n''c'h_sp*;
+    t_float_type = h_f 'l''o''a''t'h_sp*;
+    t_int_type = h_i 'n''t'h_sp*;
+    t_rate_type = h_r 'a''t''e'h_sp*;
+    t_whiledcl = h_w 'h''i''l''e'h_sp*;
+    t_crndcl = 'C''R''N' h_sp*;
+    t_protocoldcl = 'P''r''o''t''o''c''o''l' h_sp*;
+    t_equilibratedcl = 'E''q''u''i''l''i''b''r''a''t''e' h_sp*;
+    t_mixdcl = 'M''i''x'h_sp*;
+    t_disposedcl = 'D''i''s''p''o''s''e'h_sp*;
+    t_splitdcl = 'S''p''l''i''t'h_sp*;
+    t_fordcl = h_sp* 'f''o''r' h_sp*;
+    t_voiddcl = 'v''o''i''d' h_sp*;
+    t_bydcl = h_sp*'b''y'h_sp*;
+
+
+Ignored Tokens
+    t_blank, t_comments, t_eol;
+
+Productions
+
+    // START
+    program =
+        {main} init protocol;
+
+    init =
+        {initializedcl} t_initializedcl t_l_turborg initializebody* t_r_turborg;
+
+    initializebody =
+        {rateinit}          rate |
+        {funcinit}          func |
+        {speciesinit}       species |
+        {numberinit}        number |
+        {altervalue}        altervalue |
+        {sampleinit}        sample;
+
+    altervalue =
+        {string}            t_string t_equal expression t_semicolon ;
+
+    number =
+       {float}              t_float_type t_string t_equal expression floats |
+       {int}                t_int_type t_string t_equal expression integers ;
+
+    floats =
+        {multiple}          t_comma t_string t_equal expression floats |
+        {none}              t_semicolon;
+
+    integers =
+        {multiple}          t_comma t_string t_equal expression integers |
+        {none}              t_semicolon;
+
+
+    // DESCRIPTION  - Is used to define one line of species:
+    // EXAMPLE      - Species A = 100;
+    species =
+        {single}            t_speciesdcl specie;
+
+
+    // DESCRIPTION  - In one line of species, there can be one to many species decalered seperated by comma.
+    // EXAMPLE      - Species A = 100;      OR      Species A = 100, B = 200;
+    specie =
+        {multiple}          t_string t_equal expression t_comma specie |
+        {single}            t_string t_equal expression t_semicolon;
+
+
+    // DESCRIPTION  - Declare a function, for example to change in rate throughout runtime
+    // EXAMPLE      - Func RateDev(float f) => f * 2 ** 4 + (200 / 23);
+    func =
+        {lambda_func}       t_funcdcl t_string t_l_paren input t_r_paren t_lambda expression t_semicolon;
+
+
+    // DESCRIPTION  - This is the parameters a function has.
+    // EXAMPLE      - float f   OR      float f, int i, int p
+    input =
+        {multi}             type t_string t_comma input |
+        {void}              t_voiddcl |
+        {single}            type t_string;
+
+
+    // DESCRIPTION  - The different valid types a function can take as parameters
+    // EXAMPLE      - float and int
+    type =
+        {float}             t_float_type |
+        {rate}              t_rate_type  |
+        {int}               t_int_type;
+
+
+    // DESCRIPTION  - When a rate is declared, this is the start
+    // EXAMPLE      - Rate R = 1.08, A = 20.99;
+    rate =
+        {dcl}               t_ratedcl rates;
+
+
+    // DESCRIPTION  - When a rate is declared, there can either be one or several rates in the same line seperated by comma, or just one.
+    // EXAMPLE      - R = 1.09, A = 12.97;      OR      R = 1.09;
+    rates =
+        {multiple}          t_string t_equal t_float t_comma rates |
+        {single}            t_string t_equal t_float t_semicolon;
+
+
+    // DESCRIPTION  - A math expression, can either be just a number or include different types of calculations.
+    // EXAMPLE      - 2 * A + 19 / 2 ** 2 - (-100)
+    expression =
+        {term}              term |
+        {operator}          term operator expression;
+
+
+    // DESCRIPTION  - When one non-terminal consists of two expressions, this is called
+    // EXAMPLE      -
+    double =
+         {expressoin}       expression;
+         //{reaction_rate}    reaction_rate;
+
+
+    // DESCRIPTION  - The different operators which are applied when all otheres are applied
+    // EXAMPLE      - '+' or '-'
+    operator =
+        {plus}              t_plus |
+        {minus}             t_minus ;
+
+
+    // DESCRIPTION  - Second to last operators applied
+    // EXAMPLE      - '*' or '/'
+    term =
+        {factor}            power |
+        {mult}              power t_mult term |
+        {divide}            power t_div term ;
+
+
+    // DESCRIPTION  - Take a number in the power of somthing, applied before multipy and divide
+    // EXAMPLE      - 2 ** 3
+    power =
+        {opterm}            paren t_power power_in |
+        {paren}             paren;
+
+
+    // DESCRIPTION  - The first thing calculated, when numbers are in a parentheses
+    // EXAMPLE      - '(' and ')'
+    paren =
+        {parenteses}        t_l_paren expression t_r_paren |
+        {factor}            polarity;
+
+    // DESCRIPTION  - Decides if a number if positive or negative
+    // EXAMPLE      - POSITIVE = 10 NEGATIVE = (-10)
+    polarity =
+        {positive}          factor |
+        {negative_paren}    t_l_paren t_minus factor t_r_paren;
+
+    // DESCRIPTION  - The different parts a expression can consist of
+    // EXAMPLE      - int (1), float (1.1) string (a)
+    factor =
+        {integer}           t_int |
+        {variable}          t_string |
+        {float}             t_float;
+
+    // DESCRIPTION  - WHen you take the power of a number, this is the different options
+    // EXAMPLE      - X ** 2,    X ** 1.99,    X ** A,     X ** (2 + 19 / 20)
+    power_in =
+        {factor}            factor |
+        {expression}        t_l_paren expression t_r_paren;
+
+    // DESCRIPTION  - Initialize a loop. This is done in titration, to stop it when some criteria is met
+    // EXAMPLE      - while (2 < X + 12 / 33)   OR    while (2 < S && 3 != D || 344 / 45 >= R)
+    loop =
+        {while}             t_whiledcl t_l_paren logical_exprs t_r_paren;
+
+    // DESCRIPTION  - The condition of the loop, can be one or more seperated by either OR or AND
+    // EXAMPLE      - 2 > X   OR    2 * X > C && 3
+    logical_exprs =
+        {single}            logical_expr |
+        {multiple}          logical_expr bool_operator logical_exprs;
+
+    // DESCRIPTION  - One ligical expressoin, seperated logical operators
+    // EXAMPLE      - 2 > X
+    logical_expr =
+        {single}            expression logical_operator double;
+
+    // DESCRIPTION  - The seperation between each expressoin in loop
+    // EXAMPLE      - && or ||
+    bool_operator =
+        {or}                t_or |
+        {and}               t_and;
+
+
+    // DESCRIPTION  - Logical operators used in loop
+    // EXAMPLE      - '>', '<', '==', '>=', '<=', '!='
+    logical_operator =
+        {greater_equal}     t_equal_or_greater |
+        {smaller_equal}     t_equal_or_smaller |
+        {greater}           t_greater |
+        {smaller}           t_smaller |
+        {equal}             t_logical_equal |
+        {not}               t_not |
+        {not_equal}         t_not_equal;
+
+
+    // DESCRIPTION  - Declare a titration
+    // EXAMPLE      - AddMolecules = X : 2;      OR     RemoveMolecules = X : A : while (2 > X);    OR    AddMolecues = X : 2 : while (2 <= X + 27), Y : 3.98;
+    titration =
+        {dcl}               titrationdcl t_equal titrations;
+
+
+    // DESCRIPTION  - Used by titraton, to illustrate one titration can consist of one more seperated by comma.
+    // EXAMPLE      - T : 2, I : 23;
+    titrations =
+        {single}            t_string t_colon factor titration_end |
+        {multiple}          t_string t_colon factor titration_continue titrations;
+
+
+    // DESCRIPTION  - One optional addition to titratoins are a loop, where the titration is only applied when some conditions are met.
+    // EXAMPLE      - : while (X > 2);    OR     ;
+    titration_end =
+        {loop}              t_colon loop t_semicolon |
+        {semicolon}         t_semicolon;
+
+
+    // DESCRIPTION  - Same as above, but is used when a titration is followed by a new tittration, hence the comme, instead of the last as above with semcolon.
+    // EXAMPLE      - while (X > 2),    OR    ,
+    titration_continue =
+        {loop}              t_colon loop t_comma |
+        {comma}             t_comma;
+
+
+    // DESCRIPTION  - Is used to declare the two variations of tittration, either add or remove species
+    // EXAMPLE      - RemoveMolecules     OR    AddMolecules
+    titrationdcl =
+        {remove}            t_remmol |        //t_removingmoleculesdcl |
+        {add}               t_addmol ;        //t_addingmoleculesdcl;
+
+
+    // DESCRIPTION  - Used to initialize a reaction inside a sample, inside a CRN. This is the first part
+    // EXAMPLE      - 2x + 3y -> 3z, BaseRate;     OR     2x + 3y <-> 3z, 5.5, RateFunc(3);
+    reaction =
+        {double}            reactant arrows;
+
+    reactant =
+        {multiple}            factor t_mult t_string t_plus reactant |
+        {plus}                t_string t_plus reactant |
+        {string}              t_string |
+        {single}              factor t_mult t_string;
+
+
+    // DESCRIPTION  - This is the part where the arrow is specialized, leading to either one or two rates
+    // EXAMPLE      - -> 3z, BaseRate;     OR     <-> 3z, 5.5, RateFunc(3);
+    arrows =
+        {one_way}           t_arrow reactant t_comma reaction_rate_i t_semicolon |
+        {two_way}           t_double_arrow reactant t_comma reaction_rate_i t_colon reaction_rate_ii t_semicolon ;
+
+
+    // DESCRIPTION  - When rate is set, it can eiter be a function or a factor (int float or string)
+    // EXAMPLE      -
+    reaction_rate_i =
+        {func}              func_call |
+        {unit}              factor;
+
+
+    // DESCRIPTION  - WHen two reaction_rate_i are called in the same line, this is a help non-terminal
+    // EXAMPLE      -
+    reaction_rate_ii =
+        {reaction_rate}     reaction_rate_i;
+
+
+    // DESCRIPTION  - Used to call a function with inputs
+    // EXAMPLE      - FuncF(2)
+    func_call =
+        {f_call}            t_string t_l_paren func_paren ;
+
+
+    // DESCRIPTION  - A function can have zero or more parameters
+    // EXAMPLE      - FuncF(2)    OR FuncF()     OR      FuncF(A, 2, 28)
+    func_paren =
+        {with_param}        func_parameters t_r_paren |
+        {no_param}          t_r_paren ;
+
+
+    // DESCRIPTION  - When a function is called and it has parameters, it can take one or more seperated by comma
+    // EXAMPLE      -
+    func_parameters =
+        {single}            factor |
+        {multiple}          factor t_comma func_parameters;
+
+    crn =
+        {single}            t_crndcl crnfunc;
+
+    crnfunc =
+        {block}             t_l_turborg reaction* t_r_turborg;
+
+    sample =
+        {sampleinit}        t_sampledcl t_string samplefunc;
+
+    samplefunc =
+        {body}              t_l_turborg samplebody* t_r_turborg;
+
+    samplebody =
+        {rate}              rate    |
+        {numberinit}        number  |
+        {altervalue}        altervalue |
+        {species}           species |
+        {func}              func    |
+        {crn}               crn     |
+        {tits}              titration;
+
+    protocol =
+        {dcl}               t_protocoldcl t_l_turborg protocolbody* t_r_turborg;
+
+    protocolbody =
+        {equili}            equili |
+        {sample}            t_sampledcl t_string sampleref |
+        {dispose}           t_string t_dot t_disposedcl dispose_para t_semicolon;
+
+
+    dispose_para =
+        {nonzero}           t_l_paren factor t_r_paren |
+        {none}              t_l_paren t_r_paren;
+
+    sampleref =
+        {mix}               t_equal t_mixdcl t_l_paren t_string t_comma protocolparam t_r_paren t_semicolon |
+        {split}              protoexstend t_equal t_string t_dot t_splitdcl t_l_paren func_parameters t_r_paren t_semicolon;
+
+    protocolparam =
+        {multi}             t_string t_comma protocolparam|
+        {single}            t_string;
+    protoexstend =
+        {multi}             t_comma t_string protoexstend |
+        {single}            t_comma t_string;
+
+    equili =
+        {single}            t_equilibratedcl t_string t_fordcl factor extendequili;
+
+    extendequili =
+        {semi}              t_semicolon |
+        {step}              t_bydcl factor t_semicolon;
