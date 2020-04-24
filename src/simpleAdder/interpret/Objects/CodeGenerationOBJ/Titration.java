@@ -1,8 +1,12 @@
 package simpleAdder.interpret.Objects.CodeGenerationOBJ;
 
 import simpleAdder.interpret.Objects.SymolTableOBJ.titration;
+import simpleAdder.interpret.TypeCheckers.BetaStackToString;
+import simpleAdder.interpret.TypeCheckers.Check;
+import simpleAdder.interpret.TypeCheckers.StackChecker;
 
 import java.util.List;
+import java.util.Stack;
 
 public class Titration extends CodeGenerationMethods{
     int Level = 0;
@@ -84,7 +88,8 @@ public class Titration extends CodeGenerationMethods{
         PrettyResult += ":\n";
         return PrettyResult;
     }
-
+    BetaStackToString BSTS = new BetaStackToString();
+    StackChecker SC = new StackChecker();
     /**
      Generates a logical exsprression*/
     private String GenerateLogicalExpression(titration titra)
@@ -98,7 +103,12 @@ public class Titration extends CodeGenerationMethods{
                 {
                     PrettyResult += "";
                 }
-                PrettyResult +=CheckValue(titra.LogicalExpr.get(i).lhsExrp) + titra.LogicalExpr.get(i).logicalOperator +CheckValue(titra.LogicalExpr.get(i).rhsExrp);
+
+                String lhs = StackToPython(titra.LogicalExpr.get(i).lhs);
+                String rhs = StackToPython(titra.LogicalExpr.get(i).rhs);
+
+                PrettyResult += lhs + titra.LogicalExpr.get(i).logicalOperator + rhs;
+
                 if(titra.booleanOperator != null && titra.booleanOperator.size() > i)
                 {
                     PrettyResult += TransBool(titra.booleanOperator.get(i));
@@ -108,10 +118,18 @@ public class Titration extends CodeGenerationMethods{
         return PrettyResult;
     }
 
+    public String StackToPython(Stack<String> stack){
+        Stack<String> result = new Stack<>();
+        while (!stack.isEmpty()){
+            result.push(CheckValue(stack.pop()));
+        }
+        return BSTS.StackToString(SC.ReverseStack(result));
+    }
+
     /**Checks if a String value is variable name*/
     private String CheckValue(String str)
     {
-        return Character.isDigit(str.charAt(0)) ? str : "self.sample.get(\""+str+"\")[-1]";
+        return Character.isDigit(str.charAt(0)) || BSTS.IsOperator(str) ? str : "self.sample.get(\""+str+"\")[-1]";
     }
 
     /**

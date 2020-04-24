@@ -272,7 +272,8 @@ public class Temporary {
      * @param method
      * @param Lhs
      */
-    public void CreateObjecte(String Rhs, String Lhs, String logicalOp,String method)
+
+    public void CreateObjecte(Stack<String> Rhs, Stack<String> Lhs, String logicalOp,String method)
     {
         if(TitList != null && Tit != null && LogExpr == null) {
             LogExpr = new logicalExspression(logicalOp, Rhs, Lhs);

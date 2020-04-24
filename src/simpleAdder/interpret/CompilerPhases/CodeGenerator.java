@@ -3,7 +3,7 @@ package simpleAdder.interpret.CompilerPhases;
 import com.company.analysis.DepthFirstAdapter;
 import com.company.node.*;
 import simpleAdder.interpret.GetMethods.Get;
-import simpleAdder.interpret.GetMethods.PrettyMethods;
+import simpleAdder.interpret.GetMethods.PreGeneratedPython;
 import simpleAdder.interpret.Objects.CodeGenerationOBJ.Generate;
 import simpleAdder.interpret.Objects.SymolTableOBJ.protocolOperation;
 import simpleAdder.interpret.Objects.SymolTableOBJ.SymbolTableType;
@@ -16,7 +16,6 @@ public class CodeGenerator extends DepthFirstAdapter {
 
     Stack<protocolOperation> protocols;
     HashMap<String, SymbolTableType> symbolTable;
-    PrettyMethods PR = new PrettyMethods();
     Generate generate = new Generate();
     Get get = new Get();
     String prettyPrint = "";
@@ -33,7 +32,7 @@ public class CodeGenerator extends DepthFirstAdapter {
     public CodeGenerator(BetaTypeChecker TC) throws IOException {
         protocols = TC.st.protocols;
         symbolTable = TC.st.st;
-        prettyPrint += PR.GetInitialCode();
+        prettyPrint += generate.PremadePython();
     }
 
     /***

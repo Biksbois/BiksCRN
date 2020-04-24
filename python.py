@@ -50,7 +50,7 @@ def mix(sampleList):
 def equilibrate(sample, stepsize, times):
     sample.h = stepsize
     sample.steps = times
-    ani = FuncAnimation(plt.gcf(), sample.Animate, interval=1000)
+    ani = FuncAnimation(plt.gcf(), sample.Animate, interval=50)
     plt.show()
 
 class SampleQ():
@@ -121,7 +121,7 @@ class SampleQ():
         else:
             Result, self.RemMol1 = self.TitAccumilationA(self, 1, self.RemMol1)
             self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
-        if self.sample.get("U")[-1]>9:
+        if self.sample.get("U")[-1]+1>9:
             if self.sample.get("U")[-1]-1 <= 0:
                 self.sample.get("U")[-1] = 0
             else:
@@ -132,7 +132,7 @@ class SampleQ():
         else:
             Result, self.RemMol3 = self.TitAccumilationA(self, 1, self.RemMol3)
             self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
-        if self.sample.get("U")[-1]<6:
+        if self.sample.get("U")[-1]/2<6:
             if self.sample.get("U")[-1]-1 <= 0:
                 self.sample.get("U")[-1] = 0
             else:
@@ -143,14 +143,16 @@ class SampleQ():
     def Animate(i) :
         plt.cla()
 
-        SampleQ.stepList.append(next(SampleQ.index)*SampleQ.h)
+        if(i <= SampleQ.steps):
+            SampleQ.stepList.append(next(SampleQ.index)*SampleQ.h)
 
         for key, value in SampleQ.sample.items():
             plt.plot(SampleQ.stepList, value, label=key)
             plt.legend()
 
-        SampleQ.Euler(SampleQ, i)
-        SampleQ.ApplyTitration(SampleQ, i+1)
+        if(i <= SampleQ.steps):
+            SampleQ.Euler(SampleQ, i)
+            SampleQ.ApplyTitration(SampleQ, i+1)
 
 
 class SampleL():
@@ -221,7 +223,7 @@ class SampleL():
         else:
             Result, self.RemMol1 = self.TitAccumilationA(self, 1, self.RemMol1)
             self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
-        if self.sample.get("U")[-1]>9:
+        if self.sample.get("U")[-1]+1/self.sample.get("U")[-1]>9:
             if self.sample.get("U")[-1]-1 <= 0:
                 self.sample.get("U")[-1] = 0
             else:
@@ -243,14 +245,16 @@ class SampleL():
     def Animate(i) :
         plt.cla()
 
-        SampleL.stepList.append(next(SampleL.index)*SampleL.h)
+        if(i <= SampleL.steps):
+            SampleL.stepList.append(next(SampleL.index)*SampleL.h)
 
         for key, value in SampleL.sample.items():
             plt.plot(SampleL.stepList, value, label=key)
             plt.legend()
 
-        SampleL.Euler(SampleL, i)
-        SampleL.ApplyTitration(SampleL, i+1)
+        if(i <= SampleL.steps):
+            SampleL.Euler(SampleL, i)
+            SampleL.ApplyTitration(SampleL, i+1)
 
 
 sample = {
@@ -288,4 +292,4 @@ def Euler0(self, i) :
 
 SampleQ.Euler = Euler0
 split(SampleQ.sample,[SampleQ.sample, SampleL.sample], [0.5, 0.5])
-disposePercent(SampleQ.sample,1)
+disposePercent(SampleQ.sample,0)

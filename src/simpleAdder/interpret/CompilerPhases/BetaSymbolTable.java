@@ -523,23 +523,6 @@ public class BetaSymbolTable extends Checker {
         }
     }
 
-    /***
-     * THis method calls StackToString, an handles the case of the stack being the size of one
-     * where it retrns the popped string.
-     * @param stack
-     * @return
-     */
-    public String HelpStackToString(Stack<String> stack){
-        if (stack == null){
-            TH.terminate_program("Stack was null (HelpStackToString)");
-        }
-        if (stack.size() == 1){
-            return CheckValue(stack.pop());
-        }
-        return BSTS.StackToString(stack);
-        //return StackToString(stack);
-    }
-
     private String CheckValue(String str)
     {
         String value = "";

@@ -319,8 +319,8 @@ Productions
     // DESCRIPTION  - Is used to declare the two variations of tittration, either add or remove species
     // EXAMPLE      - RemoveMolecules     OR    AddMolecules
     titrationdcl =
-        {remove}            t_remmol |        //t_removingmoleculesdcl |
-        {add}               t_addmol ;        //t_addingmoleculesdcl;
+        {remove}            t_remmol |
+        {add}               t_addmol ;
 
 
     // DESCRIPTION  - Used to initialize a reaction inside a sample, inside a CRN. This is the first part

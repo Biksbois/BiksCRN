@@ -1,5 +1,6 @@
 package simpleAdder.interpret.Objects.CodeGenerationOBJ;
 
+import simpleAdder.interpret.GetMethods.PreGeneratedPython;
 import simpleAdder.interpret.Objects.SymolTableOBJ.protocolOperation;
 import simpleAdder.interpret.Objects.SymolTableOBJ.SymbolTableType;
 
@@ -10,6 +11,7 @@ public class Generate {
 
     Sample sample = new Sample();
     Protocol protocol = new Protocol();
+    PreGeneratedPython PyGen = new PreGeneratedPython();
 
     /*
      * This class function as a collection of the generation method.
@@ -22,6 +24,10 @@ public class Generate {
 
     public String Protocol(HashMap<String, SymbolTableType> global, Stack<protocolOperation> stack){
         return protocol.Generate(global, stack);
+    }
+
+    public String PremadePython(){
+        return PyGen.GetInitialCode();
     }
 
 }

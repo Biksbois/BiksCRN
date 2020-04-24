@@ -9,6 +9,7 @@ import simpleAdder.interpret.Objects.SymolTableOBJ.parameter;
 import simpleAdder.interpret.Objects.SymolTableOBJ.protocolOperation;
 import simpleAdder.interpret.TypeCheckers.TypeHelperMethods;
 
+import java.nio.channels.FileLock;
 import java.util.*;
 
 public class BetaTypeChecker extends DepthFirstAdapter {
@@ -607,21 +608,18 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         }else if(node instanceof AFloatFactor)
         {
             value = get.Key(node);
-        }
-        else
-        {
+        }else{
             String key = get.Key(node);
             String type = st.GetType(key);
             value = st.GetValue(key);
-
             if(!get.IsValidType(type))
             {
                 TH.terminate_program("Invalid type assignment ("+method+")");
             }
         }
-        if(get.IsNegative(value))
+        if(get.IsNegative(value) || Float.parseFloat(value) == 0)
         {
-            TH.terminate_program("A rate cannot be negative ("+method+")");
+            TH.terminate_program("A rate cannot be negative or zero ("+method+")");
         }
         st.temp.CreateObjecte(species,method,value);
     }
@@ -672,13 +670,14 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         }
         st.loopSide = new Stack<>();
         node.getExpression().apply(this);
-        String LHS = st.HelpStackToString(st.loopSide);
+        Stack<String> lhs = (Stack<String>) st.loopSide.clone();
+        st.loopSide = new Stack<>();
 
         node.getDouble().apply(this);
-        String RHS = st.HelpStackToString(st.loopSide);
+        Stack<String> rhs = (Stack<String>) st.loopSide.clone();
         st.loopSide = null;
 
-        st.temp.CreateObjecte(RHS,LHS,get.LogicalOperator(node),"caseASingleLogicalExpr");
+        st.temp.CreateObjecte(rhs,lhs,get.LogicalOperator(node),"caseASingleLogicalExpr");
         st.temp.ObjectToList();
     }
 
@@ -760,10 +759,14 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         if (input instanceof ANonzeroDisposePara){
             input = ((ANonzeroDisposePara) input).getFactor();
             if (input instanceof AVariableFactor){
-                String type = st.GetType(((AVariableFactor) input).getTString().toString().trim());
-                if(st.VerifyKeyAndTypeInST(type, st.vv.FLOAT) || st.VerifyKeyAndTypeInST(type, st.vv.INT))
+                String key = ((AVariableFactor) input).getTString().toString().trim();
+                //String type = st.GetType(((AVariableFactor) input).getTString().toString().trim());
+                if(st.VerifyKeyAndTypeInST(key, st.vv.FLOAT) || st.VerifyKeyAndTypeInST(key, st.vv.INT))
                 {
                     String value = st.GetValue(((AVariableFactor) input).getTString().toString().trim());
+                    if (ValueExceedsLimits(value)){
+                        TH.terminate_program("When disposing, the value should be between 0 and 1. \""  +key + "\" with value " + value + " exceeds this limit.");
+                    }
                     st.tempProtocol = new protocolOperation(st.vv.DISPOSE, get.Sample(node), value);
                 }
                 else
@@ -774,16 +777,29 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             else
             {
                 String value = input.toString().trim();
+
+                if (ValueExceedsLimits(value)){
+                    TH.terminate_program("When disposing, the value should be between 0 and 1. the value of " + value + " exceeds this limit.");
+                }
+
                 st.tempProtocol = new protocolOperation(st.vv.DISPOSE, get.Sample(node), value);
             }
 
         }
         else
         {
-            st.tempProtocol = new protocolOperation(st.vv.DISPOSE, get.Sample(node), "1"); //TODO why does it say one?
+            st.tempProtocol = new protocolOperation(st.vv.DISPOSE, get.Sample(node), "1");
         }
         st.protocols.push(st.tempProtocol);
         st.tempProtocol = null;
+    }
+
+    private boolean ValueExceedsLimits(String value){
+        if (Float.parseFloat(value) > 1 || Float.parseFloat(value) < 0){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     /***

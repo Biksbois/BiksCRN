@@ -15,7 +15,16 @@ public class BetaStackToString extends Checker {
      * @Param stack
      * @return
      */
+
     public String StackToString(Stack<String> stack){
+        if (stack.size() == 1){
+            return stack.pop();
+        }else{
+            return Run(stack);
+        }
+    }
+
+    public String Run(Stack<String> stack){
         String results = "";
         String rhs = "";
         String lhs = "";
@@ -24,7 +33,7 @@ public class BetaStackToString extends Checker {
         while (!stack.isEmpty()){
             if (stack.peek().equals(")")){
                 lhs = stack.pop();
-                rhs = StackToString(stack);
+                rhs = Run(stack);
                 results += rhs + lhs;
             }else if(stack.peek().equals("(")){
                 return numbers.isEmpty() ?  stack.pop() + results : stack.pop() + numbers.pop() + results;
@@ -78,7 +87,7 @@ public class BetaStackToString extends Checker {
                 next = sym + GetNext(stack, species) + next;
             }else if(stack.peek().equals(")")){
                 next += stack.pop();
-                next = StackToString(stack) + next;
+                next = Run(stack) + next;
             }else if(next.length() > 0 && next.charAt(0) == '('){
                 return next;
             }
@@ -103,7 +112,7 @@ public class BetaStackToString extends Checker {
      * @Param s
      * @return
      */
-    public boolean IsPlusMinus(String s){
+    private boolean IsPlusMinus(String s){
         return s.equals(vv.plus) || s.equals(vv.minus) ? true: false;
     }
 
@@ -112,7 +121,11 @@ public class BetaStackToString extends Checker {
      * @Param s
      * @return
      */
-    public boolean IsMultDivide(String s){
+    private boolean IsMultDivide(String s){
         return s.equals(vv.mult) || s.equals(vv.div) || s.equals(vv.power) ? true: false;
+    }
+
+    public boolean IsOperator(String str){
+        return IsMultDivide(str) || IsPlusMinus(str) || str.equals("(") || str.equals(")");
     }
 }

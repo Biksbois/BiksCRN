@@ -22,7 +22,7 @@ public class Sample extends CodeGenerationMethods {
         if (EmptySample(local)){
             return "";
         }
-        ResetGlobalValues(); //Resests global value in the code, since the same instance is used more than once.
+        ResetGlobalValues(); //Reset global value in the code, since the same instance is used more than once.
         PrettySample += GenerateSampleCode(global,local,sample); //generates the python code for sample.
         return PrettySample;
     }
@@ -108,14 +108,18 @@ public class Sample extends CodeGenerationMethods {
                 "    def Animate(i) :\n" +
                 "        plt.cla()\n" +
                 "\n" +
-                "        " + GetSampleName(s) + ".stepList.append(next(Sample"+s+".index)*"+GetSampleName(s)+".h)\n" +
+                "        if(i <= "+GetSampleName(s)+".steps):\n"+
+                "            " + GetSampleName(s) + ".stepList.append(next(Sample"+s+".index)*"+GetSampleName(s)+".h)\n" +
                 "\n" +
                 "        for key, value in Sample"+s+".sample.items():\n" +
                 "            plt.plot(Sample"+s+".stepList, value, label=key)\n" +
                 "            plt.legend()\n" +
                 "\n" +
-                "        Sample"+s+".Euler(Sample"+s+", i)\n" +
-                (CallTitrationMethod ? "        Sample"+s+".ApplyTitration(Sample"+s+", i+1)" : "") + "\n\n";
+                "        if(i <= " + GetSampleName(s) + ".steps):\n"+
+                "            Sample" + s + ".Euler(Sample"+s+", i)\n" +
+                (CallTitrationMethod ?
+                "            Sample"+s+".ApplyTitration(Sample"+s+", i+1)" : "") +
+                "\n\n";
 
     }
 

@@ -1,6 +1,6 @@
 package simpleAdder.interpret.GetMethods;
 
-public class PrettyMethods {
+public class PreGeneratedPython {
     /***
      * Returns the premade code
      * @return
@@ -110,7 +110,7 @@ public class PrettyMethods {
         return "\ndef equilibrate(sample, stepsize, times):\n" +
                 "    sample.h = stepsize\n" +
                 "    sample.steps = times\n"+
-                "    ani = FuncAnimation(plt.gcf(), sample.Animate, interval=1000)\n" +
+                "    ani = FuncAnimation(plt.gcf(), sample.Animate, interval=50)\n" +
                 "    plt.show()\n";
     }
 }

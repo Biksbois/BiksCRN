@@ -28,7 +28,12 @@ public class Get {
     }
 
     public String Key(PFactor node){
-        return ((AFloatFactor)node).getTFloat().toString().trim();
+        if (node instanceof AFloatFactor){
+            return ((AFloatFactor) node).getTFloat().toString().trim();
+        }else if(node instanceof  AVariableFactor){
+            return ((AVariableFactor) node).getTString().toString().trim();
+        }
+        return ((AIntegerFactor) node).getTInt().toString().trim();
     }
 
     /***
@@ -58,7 +63,7 @@ public class Get {
      */
     //<editor-fold desc="Checks">
     public Boolean IsValidType(String type){
-        return type.equals(vv.INT) && type.equals(vv.FLOAT) && type.equals(vv.RATE);
+        return type.equals(vv.INT) || type.equals(vv.FLOAT) || type.equals(vv.RATE);
     }
     public Boolean IsNegative(String value){
         return value.contains("-");
