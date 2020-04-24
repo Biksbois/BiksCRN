@@ -19,9 +19,9 @@ public class Sample extends CodeGenerationMethods {
     public String GenerateSample(HashMap<String, SymbolTableType> global, Stack<protocolOperation> stack, String sample)
     {
         HashMap<String,SymbolTableType> local = global.get(sample).scope;
-        if (EmptySample(local)){
-            return "";
-        }
+        //if (EmptySample(local)){
+        //    return "";
+        //}
         ResetGlobalValues(); //Reset global value in the code, since the same instance is used more than once.
         PrettySample += GenerateSampleCode(global,local,sample); //generates the python code for sample.
         return PrettySample;
@@ -33,12 +33,12 @@ public class Sample extends CodeGenerationMethods {
         PrettyResult += ApplyTap(Level,GenerateContruct(sample))+"\n";
         Level++;
         PrettyResult += dict.GenerateDictionary(global,local, Level);
-        PrettyResult += ApplyTap(Level,GenerateDictEnd());
-        PrettyResult += GenerateApplyTitration();
-        PrettyResult += GenerateLocalVariables() + "\n";
+        PrettyResult += ApplyTap(Level,GenerateDictEnd()) + "\n";
+        PrettyResult += GenerateApplyTitration() + "\n";
+        PrettyResult += GenerateLocalVariables() + "\n\n";
         PrettyResult += GenerateGlobalTitVariables(local);
         PrettyResult += euler.Generate(local,Level,"");
-        PrettyResult += titration.Generate(CheckNullTitra(local,vv.ADDMOL), CheckNullTitra(local,vv.REMMOL), Level);
+        PrettyResult += titration.Generate(CheckNullTitra(local,vv.ADDMOL), CheckNullTitra(local,vv.REMMOL), Level) + "\n";
         PrettyResult += GenerateAnimation(sample, TitrationExists(CheckNullTitra(local,vv.ADDMOL), CheckNullTitra(local,vv.REMMOL))) + "\n";
         Level--;
         return PrettyResult;
@@ -49,11 +49,11 @@ public class Sample extends CodeGenerationMethods {
         String PrettyResult = "";
         if(local.containsKey(vv.ADDMOL))
         {
-            PrettyResult += GenerateTitName(vv.ADDMOL, local.get(vv.ADDMOL).titrations);
+            PrettyResult += GenerateTitName(vv.ADDMOL, local.get(vv.ADDMOL).titrations) + "\n";
         }
         if(local.containsKey(vv.REMMOL))
         {
-            PrettyResult += GenerateTitName(vv.REMMOL, local.get(vv.REMMOL).titrations);
+            PrettyResult += GenerateTitName(vv.REMMOL, local.get(vv.REMMOL).titrations) + "\n";
         }
         return PrettyResult;
 

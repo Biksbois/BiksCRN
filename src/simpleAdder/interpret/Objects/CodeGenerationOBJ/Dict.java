@@ -23,8 +23,14 @@ public class Dict extends CodeGenerationMethods {
      */
     public String GenerateDictionary(HashMap<String, SymbolTableType> global, HashMap<String, SymbolTableType> local, int level)
     {
+
         String PrettyResult = "";
         PrettyResult += ApplyTap(level, GenerateDictInit());
+
+        if (!local.containsKey(vv.CRN)){
+            return PrettyResult;
+        }
+
         level++;
         PrettyResult += GenerateDictFromHashmap(local, global, level);
 

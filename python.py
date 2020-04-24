@@ -61,6 +61,7 @@ class SampleQ():
         "U":[1],
         "E":[60]
     }
+
     def TitAccumilationA(self, act, titra):
         titra += self.h
         if(act <= titra):
@@ -69,20 +70,24 @@ class SampleQ():
             return result, titra
         else:
             return 0, titra
+
     stepList = []
     index = count()
     steps = 100
     h = 0.0025
+
     AddMol0=0
     AddMol1=0
     AddMol2=0
     AddMol3=0
     AddMol4=0
+
     RemMol0=0
     RemMol1=0
     RemMol2=0
     RemMol3=0
     RemMol4=0
+
     def Euler(self, i) :
         if(i < self.steps):
             r1=1*self.sample.get("A")[-1]
@@ -139,6 +144,7 @@ class SampleQ():
                 Result, self.RemMol4 = self.TitAccumilationA(self, 1, self.RemMol4)
                 self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
 
+
     @staticmethod
     def Animate(i) :
         plt.cla()
@@ -163,6 +169,7 @@ class SampleL():
         "U":[1],
         "E":[60]
     }
+
     def TitAccumilationA(self, act, titra):
         titra += self.h
         if(act <= titra):
@@ -171,20 +178,24 @@ class SampleL():
             return result, titra
         else:
             return 0, titra
+
     stepList = []
     index = count()
     steps = 100
     h = 0.0025
+
     AddMol0=0
     AddMol1=0
     AddMol2=0
     AddMol3=0
     AddMol4=0
+
     RemMol0=0
     RemMol1=0
     RemMol2=0
     RemMol3=0
     RemMol4=0
+
     def Euler(self, i) :
         if(i < self.steps):
             r1=1*self.sample.get("A")[-1]
@@ -241,6 +252,7 @@ class SampleL():
                 Result, self.RemMol4 = self.TitAccumilationA(self, 1, self.RemMol4)
                 self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
 
+
     @staticmethod
     def Animate(i) :
         plt.cla()
@@ -257,12 +269,50 @@ class SampleL():
             SampleL.ApplyTitration(SampleL, i+1)
 
 
+class Sampleempty():
+    sample = {
+    }
+
+    def TitAccumilationA(self, act, titra):
+        titra += self.h
+        if(act <= titra):
+            result = math.floor(titra/act)
+            titra = titra - act * result
+            return result, titra
+        else:
+            return 0, titra
+
+    stepList = []
+    index = count()
+    steps = 100
+    h = 0.0025
+
+    def Euler(self, i) :
+        pass
+
+    @staticmethod
+    def Animate(i) :
+        plt.cla()
+
+        if(i <= Sampleempty.steps):
+            Sampleempty.stepList.append(next(Sampleempty.index)*Sampleempty.h)
+
+        for key, value in Sampleempty.sample.items():
+            plt.plot(Sampleempty.stepList, value, label=key)
+            plt.legend()
+
+        if(i <= Sampleempty.steps):
+            Sampleempty.Euler(Sampleempty, i)
+
+
+
 sample = {
     "II":[1],
     "A":[100],
     "B":[12]
 }
-equilibrate(SampleQ, 0.0025, 20)
+equilibrate(Sampleempty, 0.0025, 100)
+equilibrate(SampleQ, 0.0025, 40)
 equilibrate(SampleL, 5.0E-4, 20)
 SampleQ.sample = mix([SampleQ.sample])
 def Euler0(self, i) :
@@ -292,4 +342,4 @@ def Euler0(self, i) :
 
 SampleQ.Euler = Euler0
 split(SampleQ.sample,[SampleQ.sample, SampleL.sample], [0.5, 0.5])
-disposePercent(SampleQ.sample,0)
+disposePercent(SampleQ.sample,1)

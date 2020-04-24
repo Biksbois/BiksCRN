@@ -25,7 +25,13 @@ public class Euler extends CodeGenerationMethods {
     public String Generate(HashMap<String, SymbolTableType> scope, int level, String str)
     {
         if (scope.get(vv.CRN) == null){
-            return "\n";
+            String PrettyResult = ApplyTap(level, GenerateEulerDcl(str));
+
+            level++;
+            PrettyResult += ApplyTap(level, "pass\n");
+            level--;
+
+            return PrettyResult;
         }
         else
         {

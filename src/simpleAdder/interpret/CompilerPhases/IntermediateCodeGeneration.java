@@ -70,10 +70,11 @@ public class IntermediateCodeGeneration {
         code = code.replaceAll("}","}\n");
         code = code.replaceAll("\t","");
         code = code.replaceAll(";",";\r\n");
-        while (code.contains("    "))
-        {
-            code = code.replace("    ","");
-        }
+        code = code.replaceAll("    ","");
+        code = code.replaceAll("while\\(", "while (");
+        code = code.replaceAll("Mix\\(", "Mix (");
+        code = code.replaceAll("Dispose\\(", "Dispose (");
+        code = code.replaceAll("Split\\(", "Split (");
         WriteInputfile(code);
     }
 }
