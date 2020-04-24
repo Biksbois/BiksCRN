@@ -39,12 +39,51 @@ public class Sample extends HelpMethods{
         Level++;
         PrettyResult += dict.GenerateDictionary(global,local, Level);
         PrettyResult += PM.ApplyTap(Level,GenerateDictEnd());
+        PrettyResult += GenerateApplyTitration();
         PrettyResult += GenerateLocalVariables() + "\n";
+        PrettyResult += GenerateGlobalTitVariables(local);
         PrettyResult += HelpGenerateEuler(local,Level,"") + "\n";
         PrettyResult += GenerateTits(CheckNullTit(local,vv.ADDMOL), CheckNullTit(local,vv.REMMOL)) + "\n";
         PrettyResult += GenerateAnimation(sample, TitrationExists(CheckNullTit(local,vv.ADDMOL), CheckNullTit(local,vv.REMMOL))) + "\n";
         Level--;
         return PrettyResult;
+    }
+
+    private String GenerateGlobalTitVariables(HashMap<String, SymbolTableType> local)
+    {
+        String PrettyResult = "";
+        if(local.containsKey(vv.ADDMOL))
+        {
+            PrettyResult += GenerateTitName(vv.ADDMOL, local.get(vv.ADDMOL).titrations);
+        }
+        if(local.containsKey(vv.REMMOL))
+        {
+            PrettyResult += GenerateTitName(vv.REMMOL, local.get(vv.REMMOL).titrations);
+        }
+        return PrettyResult;
+
+    }
+
+    private String GenerateTitName(String type, List<titration> titrations)
+    {
+        String PrettyResult = "";
+        for (int i = 0; i < titrations.size();i++)
+        {
+            PrettyResult += PM.ApplyTap(Level,type+i+"=0\n");
+        }
+        return PrettyResult;
+    }
+
+    private String GenerateApplyTitration()
+    {
+        return  "    def TitAccumilationA(self, act, titra):\n" +
+                "        titra += self.h\n" +
+                "        if(act <= titra):\n" +
+                "            result = math.floor(titra/act)\n" +
+                "            titra = titra - act * result\n" +
+                "            return result, titra\n" +
+                "        else:\n" +
+                "            return 0, titra";
     }
 
     /**
@@ -74,7 +113,7 @@ public class Sample extends HelpMethods{
                 "    def Animate(i) :\n" +
                 "        plt.cla()\n" +
                 "\n" +
-                "        " + GetSampleName(s) + ".stepList.append(next(Sample"+s+".index))\n" +
+                "        " + GetSampleName(s) + ".stepList.append(next(Sample"+s+".index)*"+GetSampleName(s)+".h)\n" +
                 "\n" +
                 "        for key, value in Sample"+s+".sample.items():\n" +
                 "            plt.plot(Sample"+s+".stepList, value, label=key)\n" +
@@ -104,9 +143,7 @@ public class Sample extends HelpMethods{
     private String GenerateLocalVariables(){
         return  "\n    stepList = []\n" +
                 "    index = count()\n" +
-                "    ft = 100\n" +
-                "    t = np.arange(0,ft + 0.5,1)\n" +
-                "    n = len(t)\n" +
+                "    steps = 100\n" +
                 "    h = 0.0025";
     }
 
@@ -134,15 +171,21 @@ public class Sample extends HelpMethods{
      Generates the code for the addition titrations*/
     private String GenerateAddTit(List<titration> AddTits)
     {
+        int i = 0;
         String PrettyResult = "";
         if (AddTits != null){
             Level++;
 
             for (titration tit : AddTits) {
-                PrettyResult += ConstructConditionalStatement(tit);
-                Level++;
-                PrettyResult += PM.ApplyTap(Level,"self.sample[\""+tit.Species+"\"][-1] = self.sample.get(\""+tit.Species+"\")[-1]+1\n");
-                Level--;
+                if (tit.LogicalExpr != null && tit.LogicalExpr.size() > 0){
+                    PrettyResult += ConstructConditionalStatement(tit);
+                    Level++;
+                }
+                PrettyResult += PM.ApplyTap(Level,"Result, self."+vv.ADDMOL+ i +" = self.TitAccumilationA(self, "+tit.Timestep+", self."+vv.ADDMOL+ i++ +")\n");
+                PrettyResult += PM.ApplyTap(Level,"self.sample[\""+tit.Species+"\"][-1] = self.sample.get(\""+tit.Species+"\")[-1]+Result*1\n");
+                Level -= tit.LogicalExpr != null ? 1 : 0;
+                /*  a, self.AddMol0 = self.TitAccumilationA(self, 0.01, self.AddMol0)
+                    self.sample["U"][-1] = self.sample.get("U")[-1]+a*10*/
             }
             Level--;
         }
@@ -154,19 +197,25 @@ public class Sample extends HelpMethods{
     private  String GenerateRemTit(List<titration> RemTits)
     {
         String PrettyResult = "";
+        int i = 0;
         if (RemTits != null){
             Level++;
             for (titration tit : RemTits) {
-                PrettyResult += ConstructConditionalStatement(tit);
-                Level++;
+                if (tit.LogicalExpr != null){
+                    PrettyResult += ConstructConditionalStatement(tit);
+                    Level++;
+                }
                 PrettyResult += PM.ApplyTap(Level,"if self.sample.get(\""+tit.Species+"\")[-1]-1 <= 0:\n");
                 Level++;
                 PrettyResult += PM.ApplyTap(Level,"self.sample.get(\""+tit.Species+"\")[-1] = 0\n");
                 Level--;
                 PrettyResult += PM.ApplyTap(Level,"else:\n");
                 Level++;
-                PrettyResult += PM.ApplyTap(Level,"self.sample[\""+tit.Species+"\"][-1] = self.sample.get(\""+tit.Species+"\")[-1]-1\n");
-                Level--;
+                //PrettyResult += PM.ApplyTap(Level,"self.sample[\""+tit.Species+"\"][-1] = self.sample.get(\""+tit.Species+"\")[-1]-self.TitAccumilationA(self, "+tit.Timestep+", self."+vv.REMMOL+ i++ +")*1\n");
+                PrettyResult += PM.ApplyTap(Level,"Result, self."+vv.REMMOL+ i +" = self.TitAccumilationA(self, "+tit.Timestep+", self."+vv.REMMOL+ i++ +")\n");
+                PrettyResult += PM.ApplyTap(Level,"self.sample[\""+tit.Species+"\"][-1] = self.sample.get(\""+tit.Species+"\")[-1]-Result*1\n");
+
+                Level -= tit.LogicalExpr != null ? 1 : 0;
                 Level--;
             }
             Level--;
@@ -179,7 +228,7 @@ public class Sample extends HelpMethods{
     private String ConstructConditionalStatement(titration tit)
     {
         String PrettyResult = "";
-        PrettyResult += PM.ApplyTap(Level,"if i % "+tit.Timestep+" == 0 ");
+        PrettyResult += PM.ApplyTap(Level,"if ");
         PrettyResult += GenerateLogicalExpression(tit);
         PrettyResult += ":\n";
         return PrettyResult;
@@ -196,7 +245,7 @@ public class Sample extends HelpMethods{
             {
                 if(i == 0)
                 {
-                    PrettyResult += " and ";
+                    PrettyResult += "";
                 }
                 PrettyResult +=CheckValue(tit.LogicalExpr.get(i).lhsExrp) + tit.LogicalExpr.get(i).logicalOperator +CheckValue(tit.LogicalExpr.get(i).rhsExrp);
                 if(tit.booleanOperator != null && tit.booleanOperator.size() > i)

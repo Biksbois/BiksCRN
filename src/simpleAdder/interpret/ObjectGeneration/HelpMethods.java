@@ -120,6 +120,8 @@ public class HelpMethods {
 
         int rNum = 0;
         Level++;
+        PrettyResult += PM.ApplyTap(Level,"if(i < self.steps):\n");
+        Level++;
         for (reaction r : reacs){
 
             SetRate(r);
@@ -135,6 +137,7 @@ public class HelpMethods {
         for (Map.Entry<String, String> s : species.entrySet()){
             PrettyResult += PM.ApplyTap(Level, "self.sample[\"" + s.getKey() + "\"].append((" + GenerateReactionRef(s.getKey(),reacs)+ ")*self.h+self.sample.get(\"" + s.getKey() + "\")[-1])\n") ;
         }
+        Level--;
         Level--;
 
         return PrettyResult;

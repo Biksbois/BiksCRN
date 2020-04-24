@@ -109,6 +109,7 @@ public class PrettyMethods {
     {
         return "\ndef equilibrate(sample, stepsize, times):\n" +
                 "    sample.h = stepsize\n" +
+                "    sample.steps = times\n"+
                 "    ani = FuncAnimation(plt.gcf(), sample.Animate, interval=1000)\n" +
                 "    plt.show()\n";
     }

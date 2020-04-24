@@ -49,52 +49,108 @@ def mix(sampleList):
 
 def equilibrate(sample, stepsize, times):
     sample.h = stepsize
+    sample.steps = times
     ani = FuncAnimation(plt.gcf(), sample.Animate, interval=1000)
     plt.show()
 
 class SampleQ():
     sample = {
         "A":[100],
-        "B":[90],
         "C":[80],
         "D":[70],
+        "U":[1],
         "E":[60]
     }
-
+    def TitAccumilationA(self, act, titra):
+        titra += self.h
+        if(act <= titra):
+            result = math.floor(titra/act)
+            titra = titra - act * result
+            return result, titra
+        else:
+            return 0, titra
     stepList = []
     index = count()
-    ft = 100
-    t = np.arange(0,ft + 0.5,1)
-    n = len(t)
+    steps = 100
     h = 0.0025
+    AddMol0=0
+    AddMol1=0
+    AddMol2=0
+    AddMol3=0
+    AddMol4=0
+    RemMol0=0
+    RemMol1=0
+    RemMol2=0
+    RemMol3=0
+    RemMol4=0
     def Euler(self, i) :
-        r1=2*i**(1)+1/2*self.sample.get("A")[-1]
-        r2=1*self.sample.get("B")[-1]
-        r3=1*self.sample.get("A")[-1]*self.sample.get("C")[-1]
-        r4=1*self.sample.get("D")[-1]
-        r5=1*self.sample.get("B")[-1]*self.sample.get("E")[-1]
-        r6=1*self.sample.get("B")[-1]*self.sample.get("E")[-1]
-        r7=1*self.sample.get("E")[-1]
+        if(i < self.steps):
+            r1=1*self.sample.get("A")[-1]
+            r2=1*self.sample.get("A")[-1]*self.sample.get("C")[-1]
+            r3=2*self.sample.get("D")[-1]
+            r4=2*self.sample.get("D")[-1]
+            r5=1*self.sample.get("U")[-1]*self.sample.get("E")[-1]
+            r6=1*self.sample.get("U")[-1]*self.sample.get("E")[-1]
+            r7=3*self.sample.get("A")[-1]*self.sample.get("C")[-1]
+            r8=3*self.sample.get("E")[-1]
 
-        self.sample["A"].append((-r1+r2-r3+r6)*self.h+self.sample.get("A")[-1])
-        self.sample["B"].append((r1-r2+r4-r5-r6)*self.h+self.sample.get("B")[-1])
-        self.sample["C"].append((-r3+r6+r7)*self.h+self.sample.get("C")[-1])
-        self.sample["D"].append((r3-r4+r5)*self.h+self.sample.get("D")[-1])
-        self.sample["E"].append((r4-r5-r6-r7)*self.h+self.sample.get("E")[-1])
+            self.sample["A"].append((-r1-r2+r3+r6-r7)*self.h+self.sample.get("A")[-1])
+            self.sample["C"].append((-r2+r3+r6-r7+r8)*self.h+self.sample.get("C")[-1])
+            self.sample["D"].append((r2-r3-r4+r5)*self.h+self.sample.get("D")[-1])
+            self.sample["U"].append((r1+r4-r5-r6+r7)*self.h+self.sample.get("U")[-1])
+            self.sample["E"].append((r4-r5-r6+r7-r8)*self.h+self.sample.get("E")[-1])
 
+    def ApplyTitration(self,i):
+        Result, self.AddMol0 = self.TitAccumilationA(self, 1, self.AddMol0)
+        self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
+        Result, self.AddMol1 = self.TitAccumilationA(self, 1, self.AddMol1)
+        self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
+        Result, self.AddMol2 = self.TitAccumilationA(self, 1, self.AddMol2)
+        self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
+        Result, self.AddMol3 = self.TitAccumilationA(self, 1, self.AddMol3)
+        self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
+        Result, self.AddMol4 = self.TitAccumilationA(self, 1, self.AddMol4)
+        self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
+        if self.sample.get("U")[-1]-1 <= 0:
+            self.sample.get("U")[-1] = 0
+        else:
+            Result, self.RemMol0 = self.TitAccumilationA(self, 1, self.RemMol0)
+            self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
+        if self.sample.get("U")[-1]-1 <= 0:
+            self.sample.get("U")[-1] = 0
+        else:
+            Result, self.RemMol1 = self.TitAccumilationA(self, 1, self.RemMol1)
+            self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
+        if self.sample.get("U")[-1]>9:
+            if self.sample.get("U")[-1]-1 <= 0:
+                self.sample.get("U")[-1] = 0
+            else:
+                Result, self.RemMol2 = self.TitAccumilationA(self, 1, self.RemMol2)
+                self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
+        if self.sample.get("U")[-1]-1 <= 0:
+            self.sample.get("U")[-1] = 0
+        else:
+            Result, self.RemMol3 = self.TitAccumilationA(self, 1, self.RemMol3)
+            self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
+        if self.sample.get("U")[-1]<6:
+            if self.sample.get("U")[-1]-1 <= 0:
+                self.sample.get("U")[-1] = 0
+            else:
+                Result, self.RemMol4 = self.TitAccumilationA(self, 1, self.RemMol4)
+                self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
 
     @staticmethod
     def Animate(i) :
         plt.cla()
 
-        SampleQ.stepList.append(next(SampleQ.index))
+        SampleQ.stepList.append(next(SampleQ.index)*SampleQ.h)
 
         for key, value in SampleQ.sample.items():
             plt.plot(SampleQ.stepList, value, label=key)
             plt.legend()
 
         SampleQ.Euler(SampleQ, i)
-
+        SampleQ.ApplyTitration(SampleQ, i+1)
 
 
 class SampleL():
@@ -105,55 +161,89 @@ class SampleL():
         "U":[1],
         "E":[60]
     }
-
+    def TitAccumilationA(self, act, titra):
+        titra += self.h
+        if(act <= titra):
+            result = math.floor(titra/act)
+            titra = titra - act * result
+            return result, titra
+        else:
+            return 0, titra
     stepList = []
     index = count()
-    ft = 100
-    t = np.arange(0,ft + 0.5,1)
-    n = len(t)
+    steps = 100
     h = 0.0025
+    AddMol0=0
+    AddMol1=0
+    AddMol2=0
+    AddMol3=0
+    AddMol4=0
+    RemMol0=0
+    RemMol1=0
+    RemMol2=0
+    RemMol3=0
+    RemMol4=0
     def Euler(self, i) :
-        r1=1*self.sample.get("A")[-1]
-        r2=1*self.sample.get("A")[-1]*self.sample.get("C")[-1]
-        r3=2*self.sample.get("D")[-1]
-        r4=2*self.sample.get("D")[-1]
-        r5=1*self.sample.get("U")[-1]*self.sample.get("E")[-1]
-        r6=1*self.sample.get("U")[-1]*self.sample.get("E")[-1]
-        r7=3*self.sample.get("A")[-1]*self.sample.get("C")[-1]
-        r8=3*self.sample.get("E")[-1]
+        if(i < self.steps):
+            r1=1*self.sample.get("A")[-1]
+            r2=1*self.sample.get("A")[-1]*self.sample.get("C")[-1]
+            r3=2*self.sample.get("D")[-1]
+            r4=2*self.sample.get("D")[-1]
+            r5=1*self.sample.get("U")[-1]*self.sample.get("E")[-1]
+            r6=1*self.sample.get("U")[-1]*self.sample.get("E")[-1]
+            r7=3*self.sample.get("A")[-1]*self.sample.get("C")[-1]
+            r8=3*self.sample.get("E")[-1]
 
-        self.sample["A"].append((-r1-r2+r3+r6-r7)*self.h+self.sample.get("A")[-1])
-        self.sample["C"].append((-r2+r3+r6-r7+r8)*self.h+self.sample.get("C")[-1])
-        self.sample["D"].append((r2-r3-r4+r5)*self.h+self.sample.get("D")[-1])
-        self.sample["U"].append((r1+r4-r5-r6+r7)*self.h+self.sample.get("U")[-1])
-        self.sample["E"].append((r4-r5-r6+r7-r8)*self.h+self.sample.get("E")[-1])
+            self.sample["A"].append((-r1-r2+r3+r6-r7)*self.h+self.sample.get("A")[-1])
+            self.sample["C"].append((-r2+r3+r6-r7+r8)*self.h+self.sample.get("C")[-1])
+            self.sample["D"].append((r2-r3-r4+r5)*self.h+self.sample.get("D")[-1])
+            self.sample["U"].append((r1+r4-r5-r6+r7)*self.h+self.sample.get("U")[-1])
+            self.sample["E"].append((r4-r5-r6+r7-r8)*self.h+self.sample.get("E")[-1])
 
     def ApplyTitration(self,i):
-        if i % 20 == 0 :
-            self.sample["U"][-1] = self.sample.get("U")[-1]+1
-        if i % 45 == 0  and self.sample.get("U")[-1]<5 and 6<7 or 1==1:
-            self.sample["U"][-1] = self.sample.get("U")[-1]+1
-        if i % 1 == 0 :
+        Result, self.AddMol0 = self.TitAccumilationA(self, 0.1, self.AddMol0)
+        self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
+        Result, self.AddMol1 = self.TitAccumilationA(self, 1, self.AddMol1)
+        self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
+        Result, self.AddMol2 = self.TitAccumilationA(self, 1, self.AddMol2)
+        self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
+        Result, self.AddMol3 = self.TitAccumilationA(self, 1, self.AddMol3)
+        self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
+        Result, self.AddMol4 = self.TitAccumilationA(self, 1, self.AddMol4)
+        self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
+        if self.sample.get("U")[-1]-1 <= 0:
+            self.sample.get("U")[-1] = 0
+        else:
+            Result, self.RemMol0 = self.TitAccumilationA(self, 1, self.RemMol0)
+            self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
+        if self.sample.get("U")[-1]-1 <= 0:
+            self.sample.get("U")[-1] = 0
+        else:
+            Result, self.RemMol1 = self.TitAccumilationA(self, 1, self.RemMol1)
+            self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
+        if self.sample.get("U")[-1]>9:
             if self.sample.get("U")[-1]-1 <= 0:
                 self.sample.get("U")[-1] = 0
             else:
-                self.sample["U"][-1] = self.sample.get("U")[-1]-1
-        if i % 2 == 0 :
+                Result, self.RemMol2 = self.TitAccumilationA(self, 1, self.RemMol2)
+                self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
+        if self.sample.get("U")[-1]-1 <= 0:
+            self.sample.get("U")[-1] = 0
+        else:
+            Result, self.RemMol3 = self.TitAccumilationA(self, 1, self.RemMol3)
+            self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
+        if self.sample.get("U")[-1]<6:
             if self.sample.get("U")[-1]-1 <= 0:
                 self.sample.get("U")[-1] = 0
             else:
-                self.sample["U"][-1] = self.sample.get("U")[-1]-1
-        if i % 3 == 0  and self.sample.get("U+1-1/2")[-1]<1 and 1<7-1 or 1==1:
-            if self.sample.get("U")[-1]-1 <= 0:
-                self.sample.get("U")[-1] = 0
-            else:
-                self.sample["U"][-1] = self.sample.get("U")[-1]-1
+                Result, self.RemMol4 = self.TitAccumilationA(self, 1, self.RemMol4)
+                self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
 
     @staticmethod
     def Animate(i) :
         plt.cla()
 
-        SampleL.stepList.append(next(SampleL.index))
+        SampleL.stepList.append(next(SampleL.index)*SampleL.h)
 
         for key, value in SampleL.sample.items():
             plt.plot(SampleL.stepList, value, label=key)
@@ -168,31 +258,33 @@ sample = {
     "A":[100],
     "B":[12]
 }
-equilibrate(SampleQ, 0.0025, 1)
-sample["A"] = [SampleQ.sample.get("A")[-1]]
-equilibrate(SampleL, 0.0025, 1)
+equilibrate(SampleQ, 0.0025, 20)
+equilibrate(SampleL, 5.0E-4, 20)
 SampleQ.sample = mix([SampleQ.sample])
 def Euler0(self, i) :
-    r1=2*i**(1)+1/2*self.sample.get("A")[-1]
-    r2=1*self.sample.get("B")[-1]
-    r3=1*self.sample.get("A")[-1]*self.sample.get("C")[-1]
-    r4=1*self.sample.get("D")[-1]
-    r5=1*self.sample.get("B")[-1]*self.sample.get("E")[-1]
-    r6=1*self.sample.get("B")[-1]*self.sample.get("E")[-1]
-    r7=1*self.sample.get("E")[-1]
-    r8=2*i**(1)+1/2*self.sample.get("A")[-1]
-    r9=1*self.sample.get("B")[-1]
-    r10=1*self.sample.get("A")[-1]*self.sample.get("C")[-1]
-    r11=1*self.sample.get("D")[-1]
-    r12=1*self.sample.get("B")[-1]*self.sample.get("E")[-1]
-    r13=1*self.sample.get("B")[-1]*self.sample.get("E")[-1]
-    r14=1*self.sample.get("E")[-1]
+    if(i < self.steps):
+        r1=1*self.sample.get("A")[-1]
+        r2=1*self.sample.get("A")[-1]*self.sample.get("C")[-1]
+        r3=2*self.sample.get("D")[-1]
+        r4=2*self.sample.get("D")[-1]
+        r5=1*self.sample.get("U")[-1]*self.sample.get("E")[-1]
+        r6=1*self.sample.get("U")[-1]*self.sample.get("E")[-1]
+        r7=3*self.sample.get("A")[-1]*self.sample.get("C")[-1]
+        r8=3*self.sample.get("E")[-1]
+        r9=1*self.sample.get("A")[-1]
+        r10=1*self.sample.get("A")[-1]*self.sample.get("C")[-1]
+        r11=2*self.sample.get("D")[-1]
+        r12=2*self.sample.get("D")[-1]
+        r13=1*self.sample.get("U")[-1]*self.sample.get("E")[-1]
+        r14=1*self.sample.get("U")[-1]*self.sample.get("E")[-1]
+        r15=3*self.sample.get("A")[-1]*self.sample.get("C")[-1]
+        r16=3*self.sample.get("E")[-1]
 
-    self.sample["A"].append((-r8+r9-r10+r13-r8+r9-r10+r13)*self.h+self.sample.get("A")[-1])
-    self.sample["B"].append((r8-r9+r11-r12-r13+r8-r9+r11-r12-r13)*self.h+self.sample.get("B")[-1])
-    self.sample["C"].append((-r10+r13+r14-r10+r13+r14)*self.h+self.sample.get("C")[-1])
-    self.sample["D"].append((r10-r11+r12+r10-r11+r12)*self.h+self.sample.get("D")[-1])
-    self.sample["E"].append((r11-r12-r13-r14+r11-r12-r13-r14)*self.h+self.sample.get("E")[-1])
+        self.sample["A"].append((-r9-r10+r11+r14-r15-r9-r10+r11+r14-r15)*self.h+self.sample.get("A")[-1])
+        self.sample["C"].append((-r10+r11+r14-r15+r16-r10+r11+r14-r15+r16)*self.h+self.sample.get("C")[-1])
+        self.sample["D"].append((r10-r11-r12+r13+r10-r11-r12+r13)*self.h+self.sample.get("D")[-1])
+        self.sample["U"].append((r9+r12-r13-r14+r15+r9+r12-r13-r14+r15)*self.h+self.sample.get("U")[-1])
+        self.sample["E"].append((r12-r13-r14+r15-r16+r12-r13-r14+r15-r16)*self.h+self.sample.get("E")[-1])
 SampleQ.Euler = Euler0
 split(SampleQ.sample,[SampleQ.sample, SampleL.sample], [0.5, 0.5])
 disposePercent(SampleQ.sample,1)
