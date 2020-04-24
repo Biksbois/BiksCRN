@@ -1,7 +1,6 @@
 package UnitTestes;
 
 import org.junit.jupiter.api.Test;
-import simpleAdder.interpret.BetaSymbolTable;
 import simpleAdder.interpret.TypeCheckers.BetaStackToString;
 
 import static org.junit.jupiter.api.Assertions.*;

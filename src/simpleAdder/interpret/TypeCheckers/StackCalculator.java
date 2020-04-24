@@ -1,7 +1,7 @@
 package simpleAdder.interpret.TypeCheckers;
 
 import javafx.util.Pair;
-import simpleAdder.interpret.ViableVariable;
+
 import java.util.Stack;
 
 public class StackCalculator extends Checker {

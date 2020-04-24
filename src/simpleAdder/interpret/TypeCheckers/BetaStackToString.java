@@ -1,7 +1,5 @@
 package simpleAdder.interpret.TypeCheckers;
 
-import simpleAdder.interpret.ViableVariable;
-
 import java.util.HashMap;
 import java.util.Stack;
 

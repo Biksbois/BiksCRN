@@ -1,10 +1,6 @@
 package simpleAdder.interpret.GetMethods;
 
 import com.company.node.*;
-import simpleAdder.interpret.Objects.Temporary;
-import simpleAdder.interpret.ViableVariable;
-
-import java.util.HashMap;
 
 public class Get {
     ErrorMessage error = new ErrorMessage();

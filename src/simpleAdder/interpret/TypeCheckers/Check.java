@@ -1,6 +1,6 @@
 package simpleAdder.interpret.TypeCheckers;
 
-import simpleAdder.interpret.ViableVariable;
+import simpleAdder.interpret.GetMethods.ViableVariable;
 
 public class Check {
     public StackChecker StackType = new StackChecker();

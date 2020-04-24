@@ -1,6 +1,6 @@
 package simpleAdder.interpret.TypeCheckers;
 
-import simpleAdder.interpret.ViableVariable;
+import simpleAdder.interpret.GetMethods.ViableVariable;
 
 import java.util.Stack;
 

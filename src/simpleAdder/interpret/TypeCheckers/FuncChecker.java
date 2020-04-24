@@ -1,8 +1,8 @@
 package simpleAdder.interpret.TypeCheckers;
 
 import javafx.util.Pair;
-import simpleAdder.interpret.Objects.STObjects.function;
-import simpleAdder.interpret.Objects.STObjects.parameter;
+import simpleAdder.interpret.Objects.SymolTableOBJ.function;
+import simpleAdder.interpret.Objects.SymolTableOBJ.parameter;
 
 import java.util.List;
 import java.util.Stack;

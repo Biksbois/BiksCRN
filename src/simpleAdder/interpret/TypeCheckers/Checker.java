@@ -1,7 +1,7 @@
 package simpleAdder.interpret.TypeCheckers;
 
 
-import simpleAdder.interpret.ViableVariable;
+import simpleAdder.interpret.GetMethods.ViableVariable;
 
 public class Checker {
     public TypeHelperMethods TH = new TypeHelperMethods();

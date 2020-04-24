@@ -5,16 +5,12 @@ import com.company.node.Start;
 import com.company.parser.Parser;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import simpleAdder.interpret.BetaTypeChecker;
-import simpleAdder.interpret.CodeGenerator;
-import simpleAdder.interpret.IntermediateCodeGeneration;
+import simpleAdder.interpret.CompilerPhases.BetaTypeChecker;
+import simpleAdder.interpret.CompilerPhases.CodeGenerator;
 import simpleAdder.interpret.PythonFileGenerator;
 
 import java.io.*;
-import java.nio.file.Paths;
 import java.util.Scanner;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class MainTest {
 

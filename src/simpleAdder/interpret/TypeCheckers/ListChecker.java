@@ -1,6 +1,5 @@
 package simpleAdder.interpret.TypeCheckers;
-import simpleAdder.interpret.Objects.STObjects.parameter;
-import simpleAdder.interpret.Objects.STObjects.reaction;
+import simpleAdder.interpret.Objects.SymolTableOBJ.reaction;
 
 import java.util.ArrayList;
 import java.util.List;

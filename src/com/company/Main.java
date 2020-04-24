@@ -1,12 +1,12 @@
 package com.company;
 
 /* Create an AST, then invoke our interpreter. */
-import simpleAdder.interpret.BetaTypeChecker;
+import simpleAdder.interpret.CompilerPhases.BetaTypeChecker;
 import com.company.parser.* ;
 import com.company.lexer.*;
 import com.company.node.*;
-import simpleAdder.interpret.CodeGenerator;
-import simpleAdder.interpret.IntermediateCodeGeneration;
+import simpleAdder.interpret.CompilerPhases.CodeGenerator;
+import simpleAdder.interpret.CompilerPhases.IntermediateCodeGeneration;
 import simpleAdder.interpret.PythonFileGenerator;
 
 import java.io.* ;

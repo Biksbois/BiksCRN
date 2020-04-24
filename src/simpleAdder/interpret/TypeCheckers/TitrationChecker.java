@@ -1,6 +1,6 @@
 package simpleAdder.interpret.TypeCheckers;
 
-import simpleAdder.interpret.Objects.STObjects.titration;
+import simpleAdder.interpret.Objects.SymolTableOBJ.titration;
 
 import java.util.ArrayList;
 import java.util.List;

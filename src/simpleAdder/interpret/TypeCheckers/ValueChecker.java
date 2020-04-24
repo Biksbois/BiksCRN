@@ -1,6 +1,6 @@
 package simpleAdder.interpret.TypeCheckers;
 
-import simpleAdder.interpret.Objects.STObjects.PrimitiveType;
+import simpleAdder.interpret.Objects.SymolTableOBJ.PrimitiveType;
 
 public class ValueChecker extends Checker{
 

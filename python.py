@@ -201,7 +201,7 @@ class SampleL():
             self.sample["E"].append((r4-r5-r6+r7-r8)*self.h+self.sample.get("E")[-1])
 
     def ApplyTitration(self,i):
-        Result, self.AddMol0 = self.TitAccumilationA(self, 0.1, self.AddMol0)
+        Result, self.AddMol0 = self.TitAccumilationA(self, 1, self.AddMol0)
         self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
         Result, self.AddMol1 = self.TitAccumilationA(self, 1, self.AddMol1)
         self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
@@ -285,6 +285,7 @@ def Euler0(self, i) :
         self.sample["D"].append((r10-r11-r12+r13+r10-r11-r12+r13)*self.h+self.sample.get("D")[-1])
         self.sample["U"].append((r9+r12-r13-r14+r15+r9+r12-r13-r14+r15)*self.h+self.sample.get("U")[-1])
         self.sample["E"].append((r12-r13-r14+r15-r16+r12-r13-r14+r15-r16)*self.h+self.sample.get("E")[-1])
+
 SampleQ.Euler = Euler0
 split(SampleQ.sample,[SampleQ.sample, SampleL.sample], [0.5, 0.5])
 disposePercent(SampleQ.sample,1)
