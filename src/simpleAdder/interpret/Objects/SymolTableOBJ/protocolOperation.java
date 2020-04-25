@@ -1,14 +1,14 @@
 package simpleAdder.interpret.Objects.SymolTableOBJ;
 
+import simpleAdder.interpret.CompilerPhases.TerminateProgram;
 import simpleAdder.interpret.Objects.ProtocolOBJ.Dispose;
 import simpleAdder.interpret.Objects.ProtocolOBJ.Equilibrate;
 import simpleAdder.interpret.Objects.ProtocolOBJ.Mix;
 import simpleAdder.interpret.Objects.ProtocolOBJ.Split;
-import simpleAdder.interpret.TypeCheckers.TypeHelperMethods;
 import simpleAdder.interpret.GetMethods.ViableVariable;
 
 public class protocolOperation {
-    public TypeHelperMethods TH = new TypeHelperMethods();
+    public TerminateProgram TH = new TerminateProgram();
     public ViableVariable vv = new ViableVariable();
     public Equilibrate equili = null;
     public Mix mix = null;

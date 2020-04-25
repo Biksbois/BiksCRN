@@ -20,6 +20,14 @@ public class ErrorMessage {
         }
     }
 
+    public String Get(Token token, String message){
+        return ErrorFormat(token.getLine()) + message;
+    }
+
+    public String Get(int line, String message){
+        return ErrorFormat(line) + message;
+    }
+
     /**
      * @param method is the name of the method the method is being called from.
      * The functionality of this method is simply to convert the method name to a form that is easier to read inside and error message.
@@ -55,10 +63,12 @@ public class ErrorMessage {
     /**
      * This method simply uses the input to create a string
      * @param line is an int and should represent the line of the error.
-     * @param pos is an int and represents the position of the error.
-     * @param text is just a string that will be added into the final error message.
      */
-    private String ErrorFormat(int line, int pos, String text){
+    private String ErrorFormat(int line){
+        return "Line: " + line + " Description: ";
+    }
+
+    private String ErrorFormat(int line, int pos, String text) {
         return "Line: " + line + " Position: " + pos + " Value: " + text + " Message: ";
     }
 }

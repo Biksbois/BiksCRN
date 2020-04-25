@@ -47,14 +47,14 @@ public class PrimitiveType {
     }
 
     public Boolean ResultIsValid(){
-        if (!CanBeNegative && IsNegative()){
+        if (!IsValid()){
             return false;
         }
         return true;
     }
 
-    private Boolean IsNegative(){
-        if (result != null && !result.contains("-")){
+    private Boolean IsValid(){
+        if (result.contains("-") && !CanBeNegative){
             return false;
         }
         return true;

@@ -3,22 +3,19 @@ package simpleAdder.interpret.CompilerPhases;
 import com.company.analysis.DepthFirstAdapter;
 import com.company.node.*;
 import javafx.util.Pair;
-import simpleAdder.interpret.CompilerPhases.BetaSymbolTable;
 import simpleAdder.interpret.GetMethods.Get;
 import simpleAdder.interpret.Objects.SymolTableOBJ.parameter;
 import simpleAdder.interpret.Objects.SymolTableOBJ.protocolOperation;
 import simpleAdder.interpret.Objects.SymolTableOBJ.reaction;
 import simpleAdder.interpret.TypeCheckers.BetaStackCalculator;
-import simpleAdder.interpret.TypeCheckers.TypeHelperMethods;
 
-import java.nio.channels.FileLock;
 import java.util.*;
 
 public class BetaTypeChecker extends DepthFirstAdapter {
     public BetaSymbolTable st;
-    private TypeHelperMethods TH = new TypeHelperMethods();
     private BetaStackCalculator BSC = new BetaStackCalculator();
     private Get get = new Get();
+    TerminateProgram terminate = new TerminateProgram();
 
     public BetaTypeChecker() {
         st = new BetaSymbolTable();
@@ -31,12 +28,12 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     public void caseAFloatNumber(AFloatNumber node)
     {
         if (get.VerifyProperties(node)){
-            TH.terminate_program("Either the expression, recursion or string was null (caseAFloatNumber)");
+            terminate.terminate_program("Either the expression, recursion or string was null (caseAFloatNumber)");
         }
         String id = get.Id(node);
         st.CreateInstance(st.vv.FLOAT, id, "caseAFloatNumber");
         node.getExpression().apply(this);
-        st.NodeToCurrentScope();
+        st.NodeToCurrentScope(node.getTString());
         node.getFloats().apply(this);
     }
 
@@ -47,12 +44,12 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     public void caseAMultipleFloats(AMultipleFloats node)
     {
         if (get.VerifyProperties(node)){
-            TH.terminate_program("Either the expression, recursion or string was null (caseAMultipleFloats)");
+            terminate.terminate_program("Either the expression, recursion or string was null (caseAMultipleFloats)");
         }
         String id = get.Id(node);
         st.CreateInstance(st.vv.FLOAT, id, "caseAMultipleFloats");
         node.getExpression().apply(this);
-        st.NodeToCurrentScope();
+        st.NodeToCurrentScope(node.getTString());
         node.getFloats().apply(this);
     }
 
@@ -63,12 +60,12 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     public void caseAIntNumber(AIntNumber node)
     {
         if (get.VerifyProperties(node)){
-            TH.terminate_program("Either the expression, recursion or string was null (caseAFloatNumber)");
+            terminate.terminate_program("Either the expression, recursion or string was null (caseAFloatNumber)");
         }
         String id = get.Id(node);
         st.CreateInstance(st.vv.INT, id, "caseAFloatNumber");
         node.getExpression().apply(this);
-        st.NodeToCurrentScope();
+        st.NodeToCurrentScope(node.getTString());
         node.getIntegers().apply(this);
     }
 
@@ -79,12 +76,12 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     public void caseAMultipleIntegers(AMultipleIntegers node)
     {
         if (get.VerifyProperties(node)){
-            TH.terminate_program("Either the expression, recursion or string was null (caseAFloatNumber)");
+            terminate.terminate_program("Either the expression, recursion or string was null (caseAFloatNumber)");
         }
         String id = get.Id(node);
         st.CreateInstance(st.vv.INT, id, "caseAMultipleIntegers");
         node.getExpression().apply(this);
-        st.NodeToCurrentScope();
+        st.NodeToCurrentScope(node.getTString());
         node.getIntegers().apply(this);
     }
 
@@ -95,12 +92,12 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     public void caseAMultipleSpecie(AMultipleSpecie node)
     {
         if (get.VerifyProperties(node)){
-            TH.terminate_program("Something was null (caseAMultipleSpecie)");
+            terminate.terminate_program("Something was null (caseAMultipleSpecie)");
         }
         String id = get.Id(node);
         st.CreateInstance(st.vv.SPECIE, id, "caseAMultipleSpecie");
         node.getExpression().apply(this);
-        st.NodeToCurrentScope();
+        st.NodeToCurrentScope(node.getTString());
         node.getSpecie().apply(this);
     }
 
@@ -111,12 +108,12 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     public void caseASingleSpecie(ASingleSpecie node)
     {
         if (get.VerifyProperties(node)){
-            TH.terminate_program("Something was null (caseAMultipleSpecie)");
+            terminate.terminate_program("Something was null (caseAMultipleSpecie)");
         }
         String id = get.Id(node);
         st.CreateInstance(st.vv.SPECIE, id, "caseAMultipleSpecie");
         node.getExpression().apply(this);
-        st.NodeToCurrentScope();
+        st.NodeToCurrentScope(node.getTString());
     }
 
     /***
@@ -126,7 +123,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     public void caseANegativeParenPolarity(ANegativeParenPolarity node)
     {
         if (get.VerifyProperties(node)){
-            TH.terminate_program("Something was null (caseANegativeParenPolarity)");
+            terminate.terminate_program("Something was null (caseANegativeParenPolarity)");
         }
         node.getTLParen().apply(this);
         node.getFactor().apply(this);
@@ -206,7 +203,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("Something was null (caseAMultipleRates)");
+            terminate.terminate_program("Something was null (caseAMultipleRates)");
         }
         st.NodeToCurrentScope(node);
         node.getRates().apply(this);
@@ -220,7 +217,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("Something was null (caseASingleRates)");
+            terminate.terminate_program("Something was null (caseASingleRates)");
         }
         st.NodeToCurrentScope(node);
     }
@@ -234,14 +231,14 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("Something was null (caseALambdaFuncFunc)");
+            terminate.terminate_program("Something was null (caseALambdaFuncFunc)");
         }
         String id = get.Id(node);
         String type = get.Type(node);
         st.CreateInstance(type, id,"caseALambdaFuncFunc");
         node.getInput().apply(this);
         node.getExpression().apply(this);
-        st.NodeToCurrentScope();
+        st.NodeToCurrentScope(node.getTString());
     }
 
     /***
@@ -252,7 +249,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("Something was null (caseAMultiInput)");
+            terminate.terminate_program("Something was null (caseAMultiInput)");
         }
         String type = get.Type(node);
         String id = get.Id(node);
@@ -268,7 +265,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("Something was null (caseAMultiInput)");
+            terminate.terminate_program("Something was null (caseAMultiInput)");
         }
         String type = get.Type(node);
         String id = get.Id(node);
@@ -284,11 +281,11 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("Something was null");
+            terminate.terminate_program("Something was null");
         }
         if(!st.isVoid())
         {
-            TH.terminate_program("Void should be the only parameter in a function (caseAVoidInput)");
+            terminate.terminate_program("Void should be the only parameter in a function (caseAVoidInput)");
         }
     }
 
@@ -300,7 +297,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("Something was null (caseASampleinitSample)");
+            terminate.terminate_program("Something was null (caseASampleinitSample)");
         }
         st.CreateInstance("caseASampleinitSample");
         node.getSamplefunc().apply(this);
@@ -317,7 +314,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("Something was null (caseABlockCrnfunc)");
+            terminate.terminate_program("Something was null (caseABlockCrnfunc)");
         }
         st.CreateInstance(st.vv.CRN,"caseABlockCrnfunc");
 
@@ -327,7 +324,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             e.apply(this);
             st.temp.ObjectToList();
         }
-        st.NodeToCurrentScope();
+        st.NodeToCurrentScope(node.getTLTurborg());
     }
 
     /***
@@ -339,7 +336,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node) && st.temp != null)
         {
-            TH.terminate_program("Something was null (caseADoubleReaction)");
+            terminate.terminate_program("Something was null (caseADoubleReaction)");
         }
 
         st.temp.CreateObjecte("caseADoubleReaction");
@@ -358,7 +355,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         String specie = node.getTString().toString().trim();
         String value = FactorToValues(node.getFactor());
-        st.reactionToReaction(new Pair<>(specie,value), true);
+        st.reactionToReaction(new Pair<>(specie,value), true, node.getTString());
         node.getReactant().apply(this);
     }
 
@@ -373,7 +370,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         String specie = node.getTString().toString().trim();
         String value = "1";
-        st.reactionToReaction(new Pair<>(specie,value), true);
+        st.reactionToReaction(new Pair<>(specie,value), true, node.getTString());
         node.getReactant().apply(this);
     }
 
@@ -388,7 +385,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         String specie = node.getTString().toString().trim();
         String value = "1";
-        st.reactionToReaction(new Pair<>(specie,value), false);
+        st.reactionToReaction(new Pair<>(specie,value), false, node.getTString());
     }
 
     /***
@@ -402,7 +399,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         String specie = node.getTString().toString().trim();
         String value = FactorToValues(node.getFactor());
-        st.reactionToReaction(new Pair<>(specie,value), false);
+        st.reactionToReaction(new Pair<>(specie,value), false, node.getTString());
     }
 
     /***
@@ -421,7 +418,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
                 return st.GetValue(key);
             }else
                 {
-                    TH.terminate_program("Should be either a integer or float, which it insidentily is not (FactorToValues)");
+                    terminate.terminate_program("Should be either a integer or float, which it insidentily is not (FactorToValues)");
                 }
         }
         else if(node instanceof AFloatFactor)
@@ -432,7 +429,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             return ((AIntegerFactor) node).getTInt().toString().trim();
         }else
         {
-            TH.terminate_program("This should never happen wtf did you do you fucking swine (FactorToValues)");
+            terminate.terminate_program("This should never happen wtf did you do you fucking swine (FactorToValues)");
         }
         return null;
     }
@@ -445,7 +442,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("Something was null (caseAOneWayArrows)");
+            terminate.terminate_program("Something was null (caseAOneWayArrows)");
         }
         node.getReactant().apply(this);
         st.SetBoolean(true, "caseAOneWayArrows");
@@ -471,7 +468,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     public void caseATwoWayArrows(ATwoWayArrows node)
     {
         if (get.VerifyProperties(node)){
-            TH.terminate_program("Something was null (caseATwoWayArrows)");
+            terminate.terminate_program("Something was null (caseATwoWayArrows)");
         }
 
         node.getReactant().apply(this);
@@ -499,7 +496,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     public void caseAReactionRateReactionRateIi(AReactionRateReactionRateIi node)
     {
         if (get.VerifyProperties(node)){
-            TH.terminate_program("something was null (caseAReactionRateReactionRateIi)");
+            terminate.terminate_program("something was null (caseAReactionRateReactionRateIi)");
         }
         Node rNode = node.getReactionRateI();
 
@@ -519,11 +516,12 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     public void caseAFCallFuncCall(AFCallFuncCall node)
     {
         if (get.VerifyProperties(node)){
-            TH.terminate_program("Something was null (caseAFCallFuncCall)");
+            terminate.terminate_program("Something was null (caseAFCallFuncCall)");
         }
         String funcName = get.FunctionName(node);
         if (!st.VerifyKeyAndTypeInBoth(funcName, st.vv.FUNC)){
-            TH.terminate_program("Function \"" + funcName + "\" is not defined (caseAFCallFuncCall)");
+            terminate.VarDontExist(node.getTString(), funcName, "Function", "caseAFCallFuncCall");
+            //terminate.terminate_program("Function \"" + funcName + "\" is not defined (caseAFCallFuncCall)");
         }
         st.temp.CreateObjecte("", "caseAFCallFuncCall");
         node.getFuncParen().apply(this);
@@ -539,7 +537,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("Something was null (caseADclTitration)");
+            terminate.terminate_program("Something was null (caseADclTitration)");
         }
         st.CreateInstance(st.vv.TITRATIONLIST,"caseADclTitration");
         node.getTitrations().apply(this);
@@ -554,7 +552,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("Something was null (caseASingleTitrations)");
+            terminate.terminate_program("Something was null (caseASingleTitrations)");
         }
         NodeToFactor(node,"caseASingleTitrations");
         node.getTitrationEnd().apply(this);
@@ -569,11 +567,11 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     public void NodeToFactor(ASingleTitrations node, String method)
     {
         if (!st.VerifyKeyAndTypeInBoth(get.Specie(node), st.vv.SPECIE)){
-            TH.terminate_program("It should be of the species type");
+            terminate.terminate_program("It should be of the species type");
         }
 
         if (!st.VerifySpecie(get.Specie(node))){
-            TH.terminate_program("Specie " + get.Specie(node) + " cannot be used in titration since it is not included in any reactions.");
+            terminate.terminate_program("Specie " + get.Specie(node) + " cannot be used in titration since it is not included in any reactions.");
         }
 
         CreateTitNodeObject(node.getFactor(), get.Specie(node), method);
@@ -590,7 +588,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         String specie = node.getTString().toString().trim();
         if (!st.VerifyKeyAndTypeInBoth(specie, st.vv.SPECIE)){
-            TH.terminate_program("It should be of the species type");
+            terminate.terminate_program("It should be of the species type");
         }
         CreateTitNodeObject(node.getFactor(), specie, method);
     }
@@ -617,12 +615,12 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             value = st.GetValue(key);
             if(!get.IsValidType(type))
             {
-                TH.terminate_program("Invalid type assignment ("+method+")");
+                terminate.terminate_program("Invalid type assignment ("+method+")");
             }
         }
         if(get.IsNegative(value) || Float.parseFloat(value) == 0)
         {
-            TH.terminate_program("A rate cannot be negative or zero ("+method+")");
+            terminate.terminate_program("A rate cannot be negative or zero ("+method+")");
         }
         st.temp.CreateObjecte(species,method,value);
     }
@@ -636,7 +634,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("Something was null (caseAMultipleTitrations)");
+            terminate.terminate_program("Something was null (caseAMultipleTitrations)");
         }
         NodeToFactor(node,"caseAMultipleTitrations");
         node.getTitrationContinue().apply(this);
@@ -653,7 +651,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("Something was null (caseAWhileLoop)");
+            terminate.terminate_program(node.getTLParen(), "Something was null (caseAWhileLoop)");
         }
         st.temp.CreateObjecte("caseAWhileLoop");
         node.getLogicalExprs().apply(this);
@@ -669,7 +667,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("Something was null (caseASingleLogicalExpr)");
+            terminate.terminate_program("Something was null (caseASingleLogicalExpr)");
         }
         st.loopSide = new Stack<>();
         node.getExpression().apply(this);
@@ -693,7 +691,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("Something was null (caseAMultipleLogicalExprs)");
+            terminate.terminate_program("Something was null (caseAMultipleLogicalExprs)");
         }
         node.getLogicalExpr().apply(this);
         st.AddStringToField(get.BooleanOperator(node),"caseAMultipleLogicalExprs");
@@ -709,11 +707,11 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(node.getTString() == null || node.getSampleref() == null)
         {
-            TH.terminate_program("Something was null (caseASampleProtocolbody)");
+            terminate.terminate_program("Something was null (caseASampleProtocolbody)");
         }
         if(!st.VerifyKeyAndTypeInST(get.Id(node),st.vv.SAMPLE))
         {
-            TH.terminate_program("It is only possible to mix objects of type sample (caseASampleProtocolbody)");
+            terminate.terminate_program("It is only possible to mix objects of type sample (caseASampleProtocolbody)");
         }
         node.getSampleref().apply(this);
         if (node.getSampleref() instanceof AMixSampleref)
@@ -728,14 +726,14 @@ public class BetaTypeChecker extends DepthFirstAdapter {
 
             Pair<Boolean, String> pair = st.tempProtocol.split.IsDistributionvalueValid();
             if (!pair.getKey()){
-                TH.terminate_program(pair.getValue() + " (caseASplitSampleref)");
+                terminate.terminate_program(pair.getValue() + " (caseASplitSampleref)");
             }
 
             st.protocols.push(st.tempProtocol);
             st.tempProtocol = null;
         }
         else{
-            TH.terminate_program("No case was hit (caseASampleProtocolbody)");
+            terminate.terminate_program("No case was hit (caseASampleProtocolbody)");
         }
     }
 
@@ -750,13 +748,13 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     public void caseADisposeProtocolbody(ADisposeProtocolbody node)
     {
         if (get.VerifyProperties(node)){
-            TH.terminate_program("Something was null (caseADisposeProtocolbody)");
+            terminate.terminate_program("Something was null (caseADisposeProtocolbody)");
         }
 
         Node input = node.getDisposePara();
         if(!st.VerifyKeyAndTypeInST(get.Sample(node),st.vv.SAMPLE))
         {
-            TH.terminate_program("It is only possible to dispose a sample (caseADisposeProtocolbody)");
+            terminate.terminate_program("It is only possible to dispose a sample (caseADisposeProtocolbody)");
         }
 
         if (input instanceof ANonzeroDisposePara){
@@ -768,13 +766,13 @@ public class BetaTypeChecker extends DepthFirstAdapter {
                 {
                     String value = st.GetValue(((AVariableFactor) input).getTString().toString().trim());
                     if (ValueExceedsLimits(value)){
-                        TH.terminate_program("When disposing, the value should be between 0 and 1. \""  +key + "\" with value " + value + " exceeds this limit.");
+                        terminate.terminate_program("When disposing, the value should be between 0 and 1. \""  +key + "\" with value " + value + " exceeds this limit.");
                     }
                     st.tempProtocol = new protocolOperation(st.vv.DISPOSE, get.Sample(node), value);
                 }
                 else
                 {
-                    TH.terminate_program("It is only possible to dispose using float and int types or void (caseADisposeProtocolbody)");
+                    terminate.terminate_program("It is only possible to dispose using float and int types or void (caseADisposeProtocolbody)");
                 }
             }
             else
@@ -782,7 +780,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
                 String value = input.toString().trim();
 
                 if (ValueExceedsLimits(value)){
-                    TH.terminate_program("When disposing, the value should be between 0 and 1. the value of " + value + " exceeds this limit.");
+                    terminate.terminate_program("When disposing, the value should be between 0 and 1. the value of " + value + " exceeds this limit.");
                 }
 
                 st.tempProtocol = new protocolOperation(st.vv.DISPOSE, get.Sample(node), value);
@@ -814,11 +812,11 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("Unexspected null in mix function (caseAMixSampleref)");
+            terminate.terminate_program("Unexspected null in mix function (caseAMixSampleref)");
         }
         if(st.tempProtocol != null)
         {
-            TH.terminate_program("Should be null (caseAMixSampleref)");
+            terminate.terminate_program("Should be null (caseAMixSampleref)");
         }
         st.tempProtocol = new protocolOperation(st.vv.MIX);
         st.tempProtocol.addToMix(node.getTString().toString().trim(),"caseAMixSampleref"); //TODO AddStringAttribute
@@ -835,12 +833,12 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node) && st.tempProtocol != null)
         {
-            TH.terminate_program("Something was null (caseASplitSampleref)");
+            terminate.terminate_program("Something was null (caseASplitSampleref)");
         }
         st.tempProtocol = new protocolOperation(st.vv.SPLIT);
         if(!st.VerifyKeyAndTypeInST(get.Sample(node),st.vv.SAMPLE))
         {
-            TH.terminate_program("It is only possible to split the object type sample (caseASplitSampleref)");
+            terminate.terminate_program("It is only possible to split the object type sample (caseASplitSampleref)");
         }
         st.AddStringToField(get.Sample(node), "caseASplitSampleref");
         node.getProtoexstend().apply(this);
@@ -858,11 +856,11 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("null (caseASingleProtocolparam)");
+            terminate.terminate_program("null (caseASingleProtocolparam)");
         }
         if(!st.VerifyKeyAndTypeInST(get.Sample(node),st.vv.SAMPLE))
         {
-            TH.terminate_program("It is only possible to mix objects of type sample (caseAMultiProtocolparam)");
+            terminate.terminate_program("It is only possible to mix objects of type sample (caseAMultiProtocolparam)");
         }
         st.tempProtocol.addToMix(get.Sample(node),"caseASingleProtocolparam"); //TODO AddStringAttribute
     }
@@ -875,11 +873,11 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     public void caseAMultiProtocolparam(AMultiProtocolparam node)
     {
         if (get.VerifyProperties(node)){
-            TH.terminate_program("Something was null, while it really not be (caseAMultiProtocolparam)");
+            terminate.terminate_program("Something was null, while it really not be (caseAMultiProtocolparam)");
         }
         if(!st.VerifyKeyAndTypeInST(get.Sample(node),st.vv.SAMPLE))
         {
-            TH.terminate_program("It is only possible to mix objects of type sample (caseAMultiProtocolparam)");
+            terminate.terminate_program("It is only possible to mix objects of type sample (caseAMultiProtocolparam)");
         }
         st.tempProtocol.addToMix(get.Sample(node),"caseAMultiProtocolparam");
         node.getProtocolparam().apply(this);
@@ -894,12 +892,12 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("Something was null (caseASingleProtoexstend)");
+            terminate.terminate_program("Something was null (caseASingleProtoexstend)");
         }
         String sample = get.Sample(node);
         if(!st.VerifyKeyAndTypeInST(sample,st.vv.SAMPLE))
         {
-            TH.terminate_program("It is only possible to split samples in split (caseASingleProtoexstend)");
+            terminate.terminate_program("It is only possible to split samples in split (caseASingleProtoexstend)");
         }
         st.tempProtocol.addToSplit(st.vv.SAMPLE,sample,"caseASingleProtoexstend"); //TODO convert to AddStringAttribute
     }
@@ -913,12 +911,12 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(get.VerifyProperties(node))
         {
-            TH.terminate_program("Something was null (caseAMultiProtoexstend)");
+            terminate.terminate_program("Something was null (caseAMultiProtoexstend)");
         }
         String Sample = get.Sample(node);
         if(!st.VerifyKeyAndTypeInST(Sample,st.vv.SAMPLE))
         {
-            TH.terminate_program("It is not possible use other than sample in the split function (caseAMultiProtoexstend)");
+            terminate.terminate_program("It is not possible use other than sample in the split function (caseAMultiProtoexstend)");
         }
         st.tempProtocol.addToSplit(st.vv.SAMPLE,Sample,"caseAMultiProtoexstend");
         node.getProtoexstend().apply(this);
@@ -943,7 +941,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
                     stepSize = st.GetValue(((AVariableFactor) fNode).getTString().toString().trim());
                 }else
                     {
-                        TH.terminate_program("Step size should be an integer or float");
+                        terminate.terminate_program("Step size should be an integer or float");
                     }
 
 
@@ -957,7 +955,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             }
             else
             {
-                TH.terminate_program("You shoundt be here wtf did you do?!!!! (outASingleEquili)");
+                terminate.terminate_program("You shoundt be here wtf did you do?!!!! (outASingleEquili)");
             }
         }
 
@@ -973,45 +971,47 @@ public class BetaTypeChecker extends DepthFirstAdapter {
                     st.protocols.push(new protocolOperation(st.vv.EQUILIBRATE,sample,value,stepSize));
                 }
                 else{
-                    TH.terminate_program(get.ErrorMessage(node.getFactor(), " The protcol Equlilibrate takes a positive integer as input", "outASingleEquili"));
+                    terminate.ShouldBeWhole(node.getTString(), st.TypeForMessage(value),value,st.ValueForMessage(value),"outASingleEquili");
+                    //terminate.terminate_program();(get.ErrorMessage(node.getFactor(), " The protcol Equlilibrate takes a positive integer as input", "outASingleEquili"));
                 }
             }else if(node.getFactor() instanceof AIntegerFactor){
                 CheckFunctionValues(Integer.valueOf(value),sample);
                 st.protocols.push(new protocolOperation(st.vv.EQUILIBRATE,sample,value,stepSize));
             }else{
-                TH.terminate_program(get.ErrorMessage(node.getFactor(), " The protcol Equlilibrate takes an integer as input", "outASingleEquili"));
+                terminate.ShouldBeWhole(node.getTString(), value,"outASingleEquili");
+                //terminate.terminate_program();(get.ErrorMessage(node.getFactor(), " The protcol Equlilibrate takes an integer as input", "outASingleEquili"));
             }
         }
         else
         {
-            TH.terminate_program(sample +" not sample (outASingleEquili)");
+            terminate.terminate_program(sample +" not sample (outASingleEquili)");
         }
     }
 
     public void CheckFunctionValues (int endValue, String sample) {
         if (st.st.get(sample).scope.containsKey(st.vv.CRN)) {
             for (reaction reac : st.st.get(sample).scope.get(st.vv.CRN).crn) {
-                if (CalcOneStack(reac.lhs, 0) || CalcOneStack(reac.rhs, 0)) {
-                    TH.terminate_program("When equlibarating sample " + sample + " for " + 0 + " a function becomes negative(CheckFunctionValues)");
-                }
-                if (CalcOneStack(reac.lhs, 1) || CalcOneStack(reac.rhs, 1)) {
-                    TH.terminate_program("When equlibarating sample " + sample + " for " + 1 + " a function becomes negative(CheckFunctionValues)");
-                }
-                if (CalcOneStack(reac.lhs, endValue) || CalcOneStack(reac.rhs, endValue)) {
-                    TH.terminate_program("When equlibarating sample " + sample + " for " + endValue + " a function becomes negative(CheckFunctionValues)");
-                }
-
+                CheckStacksOneValues(reac.lhs, reac.rhs, 0, sample);
+                CheckStacksOneValues(reac.lhs, reac.rhs, 1, sample);
+                CheckStacksOneValues(reac.lhs, reac.rhs, endValue, sample);
             }
+        }
+    }
+
+    public void CheckStacksOneValues(Stack<String> rhs, Stack<String> lhs, int limit, String sample){
+        if (!CalcOneStack(lhs, 0) && !CalcOneStack(rhs, limit)) {
+            terminate.terminate_program("When equlibarating sample " + sample + " for " + 0 + " a function becomes negative(CheckFunctionValues)");
         }
     }
 
     public boolean CalcOneStack(Stack<String> stack, int end)
     {
-        Stack<String> temp = new Stack<>();
+        Stack<String> temp;
         if(stack != null)
         {
             temp = ReplaceStack((Stack<String>) stack.clone(), end);
-            if (BSC.Calculate(stack) < 0)
+            float f = BSC.Calculate(temp);
+            if (f < 0)
             {
                 return false;
             }

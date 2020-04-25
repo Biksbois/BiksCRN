@@ -1,8 +1,8 @@
 package simpleAdder.interpret.Objects.SymolTableOBJ;
 
 import javafx.util.Pair;
+import simpleAdder.interpret.CompilerPhases.TerminateProgram;
 import simpleAdder.interpret.TypeCheckers.Check;
-import simpleAdder.interpret.TypeCheckers.TypeHelperMethods;
 import simpleAdder.interpret.GetMethods.ViableVariable;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Stack;
 
 public class Temporary {
-    TypeHelperMethods TH = new TypeHelperMethods();
+    TerminateProgram TH = new TerminateProgram();
     ViableVariable vv = new ViableVariable();
     Check check = new Check();
 

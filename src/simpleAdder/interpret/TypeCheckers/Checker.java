@@ -1,10 +1,11 @@
 package simpleAdder.interpret.TypeCheckers;
 
 
+import simpleAdder.interpret.CompilerPhases.TerminateProgram;
 import simpleAdder.interpret.GetMethods.ViableVariable;
 
 public class Checker {
-    public TypeHelperMethods TH = new TypeHelperMethods();
+    public TerminateProgram TH = new TerminateProgram();
     public ViableVariable vv = new ViableVariable();
 
     /***

@@ -24,6 +24,8 @@ public class BetaSymbolTable extends Checker {
     public Stack<protocolOperation> protocols = new Stack<>();
     public Temporary temp = null;
 
+    TerminateProgram terminate = new TerminateProgram();
+
     Stack<String> loopSide;
 
     /***
@@ -50,42 +52,30 @@ public class BetaSymbolTable extends Checker {
      * @param type
      * @param value
      */
-    public void PutInCurrentScope(String id, String type, String value)
+    public void PutInCurrentScope(String id, String type, String value, Token token)
     {
         id = id.trim();
         if(sample != null)
         {
             if(!sample.containsKey(id))
             {
-                //if (type.equals(vv.SPECIE)){
-                //    SpeciesToCurrentScope(sample, id, value);
-                //}
-                //else{
-                    sample.put(id,new SymbolTableType(id,type,value));
-                //}
-            }
-            else {
-                TH.terminate_program(id+ " of type " +type + " already assigned in current local scope");
+                sample.put(id,new SymbolTableType(id,type,value));
+                return;
             }
         }
         else
         {
             if(!st.containsKey(id))
             {
-                //if (type.equals(vv.SPECIE)){
-                //    SpeciesToCurrentScope(st, id, value);
-                //}
-                //else{
-                    st.put(id,new SymbolTableType(id,type,value));
-                //}
-            }
-            else {
-                TH.terminate_program(id+ " of type " + type + " already assigned in current global scope");
+                st.put(id,new SymbolTableType(id,type,value));
+                return;
             }
         }
+        terminate.VarExistsAlready(token, type, id, "PutInCurrentScope");
+        //TH.terminate_program(token, "\""+id+ "\" of type " + type + " already exists.");
     }
 
-    private void SpeciesToCurrentScope(HashMap<String, SymbolTableType> scope, String id, SymbolTableType value){
+    private void SpeciesToCurrentScope(HashMap<String, SymbolTableType> scope, String id, SymbolTableType value, Token token){
         if(!scope.containsKey(vv.SPECIE)) {
             scope.put(vv.SPECIE, new SymbolTableType(vv.SPECIE));
         }
@@ -94,7 +84,8 @@ public class BetaSymbolTable extends Checker {
             scope.get(vv.SPECIE).species.put(id, value.value);
         }
         else {
-            TH.terminate_program("Species \"" + id + "\" already exist (SpeciesToCurrentScope)");
+            terminate.VarExistsAlready(token, vv.SPECIE, id, "PutInCurrentScope");
+            //TH.terminate_program("Species \"" + id + "\" already exist (SpeciesToCurrentScope)");
         }
     }
 
@@ -110,12 +101,14 @@ public class BetaSymbolTable extends Checker {
         }
     }
 
-    public void reactionToReaction(Pair<String, String> R, Boolean isFirst){
+    public void reactionToReaction(Pair<String, String> R, Boolean isFirst, Token token){
         if (IsTempActive()){
             if (!VerifyKeyAndTypeInBoth(R.getKey(), vv.SPECIE)){
-                TH.terminate_program("\"" + R.getKey() + "\" should be of type specie. It either does not exists or is the wrong type.");
+                terminate.WrongType(token, vv.SPECIE, TypeForMessage(R.getKey()), R.getKey(), "reactionToReaction");
+                //TH.terminate_program("\"" + R.getKey() + "\" should be of type specie. It either does not exists or is the wrong type.");
             }else if(!isWholePositiveFloat(R.getValue())){
-                TH.terminate_program("The float value \"" + R.getValue() + "\" is not a whole number, which is should be");
+                terminate.ShouldBeWhole(token, vv.SPECIE,R.getKey(), R.getValue(),"reactionToReaction");
+                //TH.terminate_program("The float value \"" + R.getValue() + "\" is not a whole number, which is should be");
             }
             else{
                 temp.reactionToReaction(R, isFirst);
@@ -240,6 +233,42 @@ public class BetaSymbolTable extends Checker {
         return "";
     }
 
+    public String TypeForMessage(String key){
+        if(sample != null)
+        {
+            if (sample.containsKey(key)){
+                return sample.get(key).type;
+            }else if(sample.containsKey(vv.SPECIE) && sample.get(vv.SPECIE).species.containsKey(key)){
+                return vv.SPECIE;
+            }
+        }
+
+        if(st.containsKey(key)){
+            return st.get(key).type;
+        }else if(st.containsKey(vv.SPECIE) && st.get(vv.SPECIE).species.containsKey(key)){
+            return vv.SPECIE;
+        }
+        return "";
+    }
+
+    public String ValueForMessage(String key){
+        if(sample != null)
+        {
+            if (sample.containsKey(key) && sample.get(key).value != null){
+                return sample.get(key).value;
+            }else if(sample.containsKey(vv.SPECIE) && sample.get(vv.SPECIE).species.containsKey(key)){
+                return sample.get(vv.SPECIE).species.get(key);
+            }
+        }
+
+        if(st.containsKey(key) && st.get(key).value != null){
+            return st.get(key).value;
+        }else if(st.containsKey(vv.SPECIE) && st.get(vv.SPECIE).species.containsKey(key)){
+            return st.get(vv.SPECIE).species.get(key);
+        }
+        return "";
+    }
+
     /***
      * Is used when a function is called, and the input parameters it is called with is mathched with
      * the actual parameters.
@@ -321,10 +350,10 @@ public class BetaSymbolTable extends Checker {
     /***
      * Adds the active object from temp to the current scope
      */
-    public void NodeToCurrentScope(){
+    public void NodeToCurrentScope(Token token){
         Pair<String, SymbolTableType> pair = temp.GetInstanece();
         if (pair.getValue().type.equals(vv.SPECIE)){
-            SpeciesToCurrentScope(CurrentScope(), pair.getKey(), pair.getValue());
+            SpeciesToCurrentScope(CurrentScope(), pair.getKey(), pair.getValue(), token);
         }
         else{
             PairToCurrentScope(pair);
@@ -358,7 +387,7 @@ public class BetaSymbolTable extends Checker {
         String id = get.Id(node);
         String type = get.Type(node);
         String value = get.Value(node);
-        PutInCurrentScope(id,type,value);
+        PutInCurrentScope(id,type,value, node.getTFloat());
     }
 
     /***
@@ -369,7 +398,7 @@ public class BetaSymbolTable extends Checker {
         String id = node.getTString().toString().trim();
         String type = check.vv.RATE;
         String value = node.getTFloat().toString();
-        PutInCurrentScope(id,type,value);
+        PutInCurrentScope(id,type,value, node.getTFloat());
     }
 
     /***
@@ -616,5 +645,7 @@ public class BetaSymbolTable extends Checker {
         }
         return false;
     }
+
+
 
 }
