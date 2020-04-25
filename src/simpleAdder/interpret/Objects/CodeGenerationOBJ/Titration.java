@@ -10,6 +10,8 @@ import java.util.Stack;
 
 public class Titration extends CodeGenerationMethods{
     int Level = 0;
+    BetaStackToString BSTS = new BetaStackToString();
+    StackChecker SC = new StackChecker();
 
     /**
      Generates the python code for the titration mecanic*/
@@ -21,6 +23,21 @@ public class Titration extends CodeGenerationMethods{
             return "";
         }
         String PrettyResult = ApplyTap(Level,"def ApplyTitration(self,i):\n");
+        PrettyResult += GenerateAddMol(AddMol);
+        PrettyResult += GenerateRemMol(RemMol);
+        return PrettyResult + "\n";
+    }
+
+    /**
+     Generates the python code for the titration mecanic*/
+    public String Generate(List<titration> AddMol, List<titration> RemMol, int level, String name)
+    {
+        Level = level;
+
+        if (AddMol == null && RemMol == null){
+            return "";
+        }
+        String PrettyResult = ApplyTap(Level,"def ApplyTitration"+name+"(self,i):\n");
         PrettyResult += GenerateAddMol(AddMol);
         PrettyResult += GenerateRemMol(RemMol);
         return PrettyResult + "\n";
@@ -88,8 +105,7 @@ public class Titration extends CodeGenerationMethods{
         PrettyResult += ":\n";
         return PrettyResult;
     }
-    BetaStackToString BSTS = new BetaStackToString();
-    StackChecker SC = new StackChecker();
+
     /**
      Generates a logical exsprression*/
     private String GenerateLogicalExpression(titration titra)
@@ -104,8 +120,8 @@ public class Titration extends CodeGenerationMethods{
                     PrettyResult += "";
                 }
 
-                String lhs = StackToPython(titra.LogicalExpr.get(i).lhs);
-                String rhs = StackToPython(titra.LogicalExpr.get(i).rhs);
+                String lhs = StackToPython((Stack<String>) titra.LogicalExpr.get(i).lhs.clone());
+                String rhs = StackToPython((Stack<String>) titra.LogicalExpr.get(i).rhs.clone());
 
                 PrettyResult += lhs + titra.LogicalExpr.get(i).logicalOperator + rhs;
 

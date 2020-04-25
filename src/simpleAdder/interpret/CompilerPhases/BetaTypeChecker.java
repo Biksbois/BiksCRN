@@ -7,6 +7,8 @@ import simpleAdder.interpret.CompilerPhases.BetaSymbolTable;
 import simpleAdder.interpret.GetMethods.Get;
 import simpleAdder.interpret.Objects.SymolTableOBJ.parameter;
 import simpleAdder.interpret.Objects.SymolTableOBJ.protocolOperation;
+import simpleAdder.interpret.Objects.SymolTableOBJ.reaction;
+import simpleAdder.interpret.TypeCheckers.BetaStackCalculator;
 import simpleAdder.interpret.TypeCheckers.TypeHelperMethods;
 
 import java.nio.channels.FileLock;
@@ -15,6 +17,7 @@ import java.util.*;
 public class BetaTypeChecker extends DepthFirstAdapter {
     public BetaSymbolTable st;
     private TypeHelperMethods TH = new TypeHelperMethods();
+    private BetaStackCalculator BSC = new BetaStackCalculator();
     private Get get = new Get();
 
     public BetaTypeChecker() {
@@ -966,12 +969,14 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             if (node.getFactor() instanceof AVariableFactor){
                 if (st.VerifyKeyAndTypeInBoth(value, st.vv.INT) && !get.IsNegative(st.GetValue(value))){
                     value = st.GetValue(value);
+                    CheckFunctionValues(Integer.valueOf(value),sample);
                     st.protocols.push(new protocolOperation(st.vv.EQUILIBRATE,sample,value,stepSize));
                 }
                 else{
                     TH.terminate_program(get.ErrorMessage(node.getFactor(), " The protcol Equlilibrate takes a positive integer as input", "outASingleEquili"));
                 }
             }else if(node.getFactor() instanceof AIntegerFactor){
+                CheckFunctionValues(Integer.valueOf(value),sample);
                 st.protocols.push(new protocolOperation(st.vv.EQUILIBRATE,sample,value,stepSize));
             }else{
                 TH.terminate_program(get.ErrorMessage(node.getFactor(), " The protcol Equlilibrate takes an integer as input", "outASingleEquili"));
@@ -981,5 +986,55 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         {
             TH.terminate_program(sample +" not sample (outASingleEquili)");
         }
+    }
+
+    public void CheckFunctionValues (int endValue, String sample) {
+        if (st.st.get(sample).scope.containsKey(st.vv.CRN)) {
+            for (reaction reac : st.st.get(sample).scope.get(st.vv.CRN).crn) {
+                if (CalcOneStack(reac.lhs, 0) || CalcOneStack(reac.rhs, 0)) {
+                    TH.terminate_program("When equlibarating sample " + sample + " for " + 0 + " a function becomes negative(CheckFunctionValues)");
+                }
+                if (CalcOneStack(reac.lhs, 1) || CalcOneStack(reac.rhs, 1)) {
+                    TH.terminate_program("When equlibarating sample " + sample + " for " + 1 + " a function becomes negative(CheckFunctionValues)");
+                }
+                if (CalcOneStack(reac.lhs, endValue) || CalcOneStack(reac.rhs, endValue)) {
+                    TH.terminate_program("When equlibarating sample " + sample + " for " + endValue + " a function becomes negative(CheckFunctionValues)");
+                }
+
+            }
+        }
+    }
+
+    public boolean CalcOneStack(Stack<String> stack, int end)
+    {
+        Stack<String> temp = new Stack<>();
+        if(stack != null)
+        {
+            temp = ReplaceStack((Stack<String>) stack.clone(), end);
+            if (BSC.Calculate(stack) < 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public Stack<String> ReplaceStack(Stack<String> stack, int value)
+    {
+        Stack<String> result = new Stack<>();
+        while (!stack.empty())
+        {
+            if(stack.peek().equals(st.vv.CYCLE))
+            {
+                stack.pop();
+                result.push(Integer.toString(value));
+            }
+            else
+            {
+                result.push(stack.pop());
+            }
+        }
+        return result;
     }
 }

@@ -4,6 +4,7 @@ import javafx.util.Pair;
 import simpleAdder.interpret.Objects.SymolTableOBJ.reaction;
 import simpleAdder.interpret.Objects.SymolTableOBJ.protocolOperation;
 import simpleAdder.interpret.Objects.SymolTableOBJ.SymbolTableType;
+import simpleAdder.interpret.Objects.SymolTableOBJ.titration;
 import simpleAdder.interpret.TypeCheckers.Check;
 
 import java.util.*;
@@ -14,6 +15,7 @@ public class Protocol extends CodeGenerationMethods {
     Dict dict = new Dict();
     Check check = new Check();
     Euler euler = new Euler();
+    Titration titration = new Titration();
     int level = 0;
     int mixCount = 0;
 
@@ -66,16 +68,56 @@ public class Protocol extends CodeGenerationMethods {
     public String ApplyMix(protocolOperation protocol){
         String prettyResult = "";
         List<reaction> reacs = new ArrayList<>();
+        List<titration> addmol = new ArrayList<>();
+        List<titration> remmol = new ArrayList<>();
         prettyResult += GetSampleName(protocol.mix.ResultingSample) + ".sample = mix(["+prettyMixers(protocol.mix.Mixers)+"])\n";
         for (String str : protocol.mix.Mixers)
         {
-            reacs.addAll(global.get(str).scope.get(vv.CRN).crn);
+            if(global.get(str).scope.containsKey(vv.CRN))
+            {
+                reacs.addAll(global.get(str).scope.get(vv.CRN).crn);
+            }
+            if (global.get(str).scope.containsKey(vv.ADDMOL))
+            {
+                addmol.addAll(global.get(str).scope.get(vv.ADDMOL).titrations);
+            }
+            if (global.get(str).scope.containsKey(vv.REMMOL))
+            {
+                remmol.addAll(global.get(str).scope.get(vv.REMMOL).titrations);
+            }
+
+        }
+        if(!global.get(protocol.mix.ResultingSample).scope.containsKey(vv.CRN)) // TODO: 25/04/2020 make to method pls
+        {
+            global.get(protocol.mix.ResultingSample).scope.put(vv.CRN,new SymbolTableType(vv.CRN,vv.CRN,reacs));
+        }
+        else
+        {
+            global.get(protocol.mix.ResultingSample).scope.get(vv.CRN).crn = reacs;
+        }
+        if(!global.get(protocol.mix.ResultingSample).scope.containsKey(vv.ADDMOL))
+        {
+            global.get(protocol.mix.ResultingSample).scope.put(vv.ADDMOL, new SymbolTableType(vv.ADDMOL,addmol, vv.ADDMOL));
+        }
+        else
+        {
+            global.get(protocol.mix.ResultingSample).scope.get(vv.ADDMOL).titrations = addmol;
+        }
+        if(!global.get(protocol.mix.ResultingSample).scope.containsKey(vv.REMMOL))
+        {
+            global.get(protocol.mix.ResultingSample).scope.put(vv.REMMOL, new SymbolTableType(vv.REMMOL,remmol, vv.REMMOL));
+        }
+        else
+        {
+            global.get(protocol.mix.ResultingSample).scope.get(vv.REMMOL).titrations = remmol;
         }
 
-        global.get(protocol.mix.ResultingSample).scope.get(vv.CRN).crn.addAll(reacs);
 
         prettyResult += euler.Generate(global.get(protocol.mix.ResultingSample).scope,level,Integer.toString(mixCount));
         prettyResult += GetSampleName(protocol.mix.ResultingSample)+".Euler = Euler"+mixCount+"\n";
+
+        prettyResult += titration.Generate(global.get(protocol.mix.ResultingSample).scope.get(vv.ADDMOL).titrations, global.get(protocol.mix.ResultingSample).scope.get(vv.REMMOL).titrations, level,Integer.toString(mixCount));
+        prettyResult += GetSampleName(protocol.mix.ResultingSample)+".ApplyTitration = ApplyTitration"+mixCount+"\n";
 
         return prettyResult;
     }
