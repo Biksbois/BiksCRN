@@ -10,6 +10,7 @@ import simpleAdder.interpret.CompilerPhases.CodeGenerator;
 import simpleAdder.interpret.PythonFileGenerator;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 class MainTest {
@@ -36,7 +37,7 @@ class MainTest {
                 ast.apply(generator);
 
                 PY.WriteInputfile(generator.GetPython());
-                AssertFilesEqual("D:\\Java_programs\\P4\\BiksCRN\\Result.txt","D:\\Java_programs\\P4\\BiksCRN\\src\\UnitTestes\\ExspectedResult.txt");
+                AssertFilesEqual(Paths.get("").toAbsolutePath().toString()+"\\Result.txt",Paths.get("").toAbsolutePath().toString()+"\\src\\UnitTestes\\ExspectedResult.txt");
             }
             catch (Exception e) {
                 System.out.println (e) ;
