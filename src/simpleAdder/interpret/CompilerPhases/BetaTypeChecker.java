@@ -940,9 +940,9 @@ public class BetaTypeChecker extends DepthFirstAdapter {
                 {
                     stepSize = st.GetValue(((AVariableFactor) fNode).getTString().toString().trim());
                 }else
-                    {
-                        terminate.terminate_program("Step size should be an integer or float");
-                    }
+                {
+                    terminate.terminate_program("Step size should be an integer or float");
+                }
 
 
             }else if(fNode instanceof AFloatFactor)
@@ -999,7 +999,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     }
 
     public void CheckStacksOneValues(Stack<String> rhs, Stack<String> lhs, int limit, String sample){
-        if (!CalcOneStack(lhs, 0) && !CalcOneStack(rhs, limit)) {
+        if (!CalcOneStack(lhs, limit) || !CalcOneStack(rhs, limit)) {
             terminate.terminate_program("When equlibarating sample " + sample + " for " + 0 + " a function becomes negative(CheckFunctionValues)");
         }
     }
@@ -1035,6 +1035,6 @@ public class BetaTypeChecker extends DepthFirstAdapter {
                 result.push(stack.pop());
             }
         }
-        return result;
+        return BSC.ReverseStack(result);
     }
 }

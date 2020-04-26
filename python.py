@@ -90,7 +90,7 @@ class SampleQ():
 
     def Euler(self, i) :
         if(i < self.steps):
-            r1=(-100*i**(1))+1/2*self.sample.get("A")[-1]
+            r1=(-100)*i*self.sample.get("A")[-1]
             r2=1*self.sample.get("A")[-1]*self.sample.get("C")[-1]
             r3=2*self.sample.get("D")[-1]
             r4=2*self.sample.get("D")[-1]
@@ -311,63 +311,4 @@ sample = {
     "A":[100],
     "B":[12]
 }
-equilibrate(SampleQ, 0.0025, 40)
-SampleL.sample = mix([SampleQ.sample, Sampleempty.sample])
-def Euler0(self, i) :
-    if(i < self.steps):
-        r1=(-100*i**(1))+1/2*self.sample.get("A")[-1]
-        r2=1*self.sample.get("A")[-1]*self.sample.get("C")[-1]
-        r3=2*self.sample.get("D")[-1]
-        r4=2*self.sample.get("D")[-1]
-        r5=1*self.sample.get("U")[-1]*self.sample.get("E")[-1]
-        r6=1*self.sample.get("U")[-1]*self.sample.get("E")[-1]
-        r7=3*self.sample.get("A")[-1]*self.sample.get("C")[-1]
-        r8=3*self.sample.get("E")[-1]
-
-        self.sample["A"].append((-r1-r2+r3+r6-r7)*self.h+self.sample.get("A")[-1])
-        self.sample["C"].append((-r2+r3+r6-r7+r8)*self.h+self.sample.get("C")[-1])
-        self.sample["D"].append((r2-r3-r4+r5)*self.h+self.sample.get("D")[-1])
-        self.sample["U"].append((r1+r4-r5-r6+r7)*self.h+self.sample.get("U")[-1])
-        self.sample["E"].append((r4-r5-r6+r7-r8)*self.h+self.sample.get("E")[-1])
-
-SampleL.Euler = Euler0
-def ApplyTitration0(self,i):
-    Result, self.AddMol0 = self.TitAccumilationA(self, 1, self.AddMol0)
-    self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
-    Result, self.AddMol1 = self.TitAccumilationA(self, 1, self.AddMol1)
-    self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
-    Result, self.AddMol2 = self.TitAccumilationA(self, 1, self.AddMol2)
-    self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
-    Result, self.AddMol3 = self.TitAccumilationA(self, 1, self.AddMol3)
-    self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
-    Result, self.AddMol4 = self.TitAccumilationA(self, 1, self.AddMol4)
-    self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
-    if self.sample.get("U")[-1]-1 <= 0:
-        self.sample.get("U")[-1] = 0
-    else:
-        Result, self.RemMol0 = self.TitAccumilationA(self, 1, self.RemMol0)
-        self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
-    if self.sample.get("U")[-1]-1 <= 0:
-        self.sample.get("U")[-1] = 0
-    else:
-        Result, self.RemMol1 = self.TitAccumilationA(self, 1, self.RemMol1)
-        self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
-    if self.sample.get("U")[-1]+1>9:
-        if self.sample.get("U")[-1]-1 <= 0:
-            self.sample.get("U")[-1] = 0
-        else:
-            Result, self.RemMol2 = self.TitAccumilationA(self, 1, self.RemMol2)
-            self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
-    if self.sample.get("U")[-1]-1 <= 0:
-        self.sample.get("U")[-1] = 0
-    else:
-        Result, self.RemMol3 = self.TitAccumilationA(self, 1, self.RemMol3)
-        self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
-    if self.sample.get("U")[-1]/2<6:
-        if self.sample.get("U")[-1]-1 <= 0:
-            self.sample.get("U")[-1] = 0
-        else:
-            Result, self.RemMol4 = self.TitAccumilationA(self, 1, self.RemMol4)
-            self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
-
-SampleL.ApplyTitration = ApplyTitration0
+equilibrate(SampleQ, 5.0E-4, 20)
