@@ -114,29 +114,40 @@ public class Euler extends CodeGenerationMethods {
      */
     private int NumberOfReactions(reaction reac,int rNum, HashMap<String,String> Species)
     {
+
+        reac.lhsDerivedEq = GenerateDerivedEQ(rNum,reac.rateRhs,reac.lhsPair,Species);
+
+        if(!reac.isOneway)
+        {
+            reac.rhsDerivedEq = GenerateDerivedEQ(rNum,reac.rateLhs,reac.rhsPair,Species);
+        }
+        else
+        {
+            AddSpecieHash(Species, reac);
+        }
+        return rNum;
+    }
+
+    private void AddSpecieHash(HashMap<String,String> Species, reaction reac)
+    {
+        for (Pair<String, String> p : reac.rhsPair) {
+            if (!Species.containsKey(p.getKey())){
+                Species.put(p.getKey(),"");
+            }
+        }
+    }
+
+    private Pair<String,String> GenerateDerivedEQ(int rNum,String rate, List<Pair<String,String>> reac, HashMap<String,String> Species)
+    {
         String name = "r"+ ++rNum;
-        String Value = reac.rateRhs;
-        for (Pair<String, String> p : reac.lhsPair) {
+        String Value = rate;
+        for (Pair<String, String> p : reac) {
             if (!Species.containsKey(p.getKey())){
                 Species.put(p.getKey(),"");
             }
             Value += "*self.sample.get(\""+p.getKey()+"\")[-1]";
         }
-        reac.lhsDerivedEq = new Pair<>(name,Value);
-
-        if(!reac.isOneway)
-        {
-            name = "r"+ ++rNum;
-            Value = reac.rateLhs;
-            for (Pair<String, String> p : reac.rhsPair) {
-                if (!Species.containsKey(p.getKey())){
-                    Species.put(p.getKey(),"");
-                }
-                Value += "*self.sample.get(\""+p.getKey()+"\")[-1]";
-            }
-            reac.rhsDerivedEq = new Pair<>(name,Value);
-        }
-        return rNum;
+        return new Pair<>(name,Value);
     }
 
     /***
@@ -152,6 +163,7 @@ public class Euler extends CodeGenerationMethods {
         {
             PrettyResult += DerivedForOne(r.lhsPair, r.lhsDerivedEq.getKey(), specie, "-");
             PrettyResult += DerivedForOne(r.rhsPair, r.lhsDerivedEq.getKey(), specie, "+");
+
             if(!r.isOneway)
             {
                 PrettyResult += DerivedForOne(r.lhsPair, r.rhsDerivedEq.getKey(), specie, "+");
