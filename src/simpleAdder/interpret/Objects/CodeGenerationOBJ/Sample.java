@@ -71,7 +71,7 @@ public class Sample extends CodeGenerationMethods {
 
     private String GenerateApplyTitration()
     {
-        return  "    def TitAccumilationA(self, act, titra):\n" +
+        return  "    def AccTitration(self, act, titra):\n" +
                 "        titra += self.h\n" +
                 "        if(act <= titra):\n" +
                 "            result = math.floor(titra/act)\n" +

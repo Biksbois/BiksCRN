@@ -57,7 +57,7 @@ public class Titration extends CodeGenerationMethods{
                     PrettyResult += ConstructConditionalStatement(titra);
                     Level++;
                 }
-                PrettyResult += ApplyTap(Level,"Result, self."+vv.ADDMOL+ i +" = self.TitAccumilationA(self, "+titra.Timestep+", self."+vv.ADDMOL+ i++ +")\n");
+                PrettyResult += ApplyTap(Level,"Result, self."+vv.ADDMOL+ i +" = self.AccTitration(self, "+titra.Timestep+", self."+vv.ADDMOL+ i++ +")\n");
                 PrettyResult += ApplyTap(Level,"self.sample[\""+titra.Species+"\"][-1] = self.sample.get(\""+titra.Species+"\")[-1]+Result*1\n");
                 Level -= titra.LogicalExpr != null ? 1 : 0;
             }
@@ -79,13 +79,13 @@ public class Titration extends CodeGenerationMethods{
                     PrettyResult += ConstructConditionalStatement(titra);
                     Level++;
                 }
-                PrettyResult += ApplyTap(Level,"if self.sample.get(\""+titra.Species+"\")[-1]-1 <= 0:\n");
+                PrettyResult += ApplyTap(Level,"Result, self."+vv.REMMOL+ i +" = self.AccTitration(self, "+titra.Timestep+", self."+vv.REMMOL+ i++ +")\n");
+                PrettyResult += ApplyTap(Level,"if Result > 0 and self.sample.get(\""+titra.Species+"\")[-1]-1 <= 0:\n");
                 Level++;
                 PrettyResult += ApplyTap(Level,"self.sample.get(\""+titra.Species+"\")[-1] = 0\n");
                 Level--;
-                PrettyResult += ApplyTap(Level,"else:\n");
+                PrettyResult += ApplyTap(Level,"elif Result > 0:\n");
                 Level++;
-                PrettyResult += ApplyTap(Level,"Result, self."+vv.REMMOL+ i +" = self.TitAccumilationA(self, "+titra.Timestep+", self."+vv.REMMOL+ i++ +")\n");
                 PrettyResult += ApplyTap(Level,"self.sample[\""+titra.Species+"\"][-1] = self.sample.get(\""+titra.Species+"\")[-1]-Result*1\n");
                 Level -= titra.LogicalExpr != null ? 1 : 0;
                 Level--;
