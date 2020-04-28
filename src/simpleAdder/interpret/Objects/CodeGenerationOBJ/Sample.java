@@ -112,8 +112,10 @@ public class Sample extends CodeGenerationMethods {
                 "            " + GetSampleName(s) + ".stepList.append(next(Sample"+s+".index)*"+GetSampleName(s)+".h)\n" +
                 "\n" +
                 "        for key, value in Sample"+s+".sample.items():\n" +
-                "            plt.plot(Sample"+s+".stepList, value, label=key)\n" +
-                "            plt.legend()\n" +
+                "            plt.plot(Sample"+s+".stepList, value, label=key + \" = {:.2f} \".format(" + GetSampleName(s) + ".sample.get(key)[-1]))\n\n" +
+                "        plt.xlabel('Time (t)')\n" +
+                "        plt.ylabel('Concentration (mol/L)')\n" +
+                "        plt.legend()\n" +
                 "\n" +
                 "        if(i <= " + GetSampleName(s) + ".steps):\n"+
                 "            Sample" + s + ".Euler(Sample"+s+", i)\n" +
