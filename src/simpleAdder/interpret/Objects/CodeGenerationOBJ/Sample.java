@@ -115,6 +115,7 @@ public class Sample extends CodeGenerationMethods {
                 "            plt.plot(Sample"+s+".stepList, value, label=key + \" = {:.2f} \".format(" + GetSampleName(s) + ".sample.get(key)[-1]))\n\n" +
                 "        plt.xlabel('Time (t)')\n" +
                 "        plt.ylabel('Concentration (mol/L)')\n" +
+                "        plt.suptitle(\"Equilibrating sample " + s + " \" + str(" + GetSampleName(s) + ".steps) + \" (\" + GetPercent(i, " + GetSampleName(s) + ".steps) + \"%)\", fontsize=12)\n"+
                 "        plt.legend()\n" +
                 "\n" +
                 "        if(i <= " + GetSampleName(s) + ".steps):\n"+

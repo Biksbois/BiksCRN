@@ -35,7 +35,8 @@ public class PreGeneratedPython {
         return  GetpSplit() + "\n"+
                 GetpDispose() + "\n"+
                 GetpMix() + "\n"+
-                GetpEquilibrste() + "\n";
+                GetpEquilibrste() + "\n"+
+                GetPercent() + "\n";
     }
 
     /***
@@ -112,5 +113,14 @@ public class PreGeneratedPython {
                 "    sample.steps = times\n"+
                 "    ani = FuncAnimation(plt.gcf(), sample.Animate, interval=50)\n" +
                 "    plt.show()\n";
+    }
+
+    private String GetPercent(){
+        return  "def GetPercent(i, steps):\n" +
+                "    result = (i/steps)*100\n" +
+                "    if result > 100:\n" +
+                "        return \"100\"\n" +
+                "    else:\n" +
+                "        return \"{:.2f}\".format(result)";
     }
 }
