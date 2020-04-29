@@ -96,7 +96,8 @@ public class Euler extends CodeGenerationMethods {
         PrettyResult += "\n";
         Level++;
         for (Map.Entry<String, String> s : species.entrySet()){
-            PrettyResult += ApplyTap(Level, "self.sample[\"" + s.getKey() + "\"].append((" + GenerateReactionRef(s.getKey(),reacs)+ ")*self.h+self.sample.get(\"" + s.getKey() + "\")[-1])\n") ;
+            PrettyResult += ApplyTap(Level, "self.sample[\"" + s.getKey() + "\"].append(self.sample.get(\""+s.getKey()+"\")[-1]+("+GenerateReactionRef(s.getKey(),reacs)+")*SOMETHING*self.h\n");
+            //PrettyResult += ApplyTap(Level, "self.sample[\"" + s.getKey() + "\"].append((" + GenerateReactionRef(s.getKey(),reacs)+ ")*self.h+self.sample.get(\"" + s.getKey() + "\")[-1])\n") ;
         }
         Level--;
         Level--;
@@ -145,7 +146,7 @@ public class Euler extends CodeGenerationMethods {
             if (!Species.containsKey(p.getKey())){
                 Species.put(p.getKey(),"");
             }
-            Value += "*self.sample.get(\""+p.getKey()+"\")[-1]";
+            Value += "*(self.sample.get(\""+p.getKey()+"\")[-1]**" + p.getValue() + ")";
         }
         return new Pair<>(name,Value);
     }
@@ -191,8 +192,7 @@ public class Euler extends CodeGenerationMethods {
         for (Pair<String, String> p: pairs) {
             if(specie.equals(p.getKey()))
             {
-                PrettyResult += symbol+derivedEq;
-
+                PrettyResult += symbol + derivedEq;
             }
         }
         return PrettyResult;
