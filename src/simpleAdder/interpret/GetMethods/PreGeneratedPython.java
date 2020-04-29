@@ -111,6 +111,7 @@ public class PreGeneratedPython {
         return "\ndef equilibrate(sample, stepsize, times):\n" +
                 "    sample.h = stepsize\n" +
                 "    sample.steps = times\n"+
+                "    plt.figure(figsize=(12, 7),dpi=80, num='BiksCRN')\n" +
                 "    ani = FuncAnimation(plt.gcf(), sample.Animate, interval=50)\n" +
                 "    plt.show()\n";
     }
@@ -121,6 +122,6 @@ public class PreGeneratedPython {
                 "    if result > 100:\n" +
                 "        return \"100\"\n" +
                 "    else:\n" +
-                "        return \"{:.2f}\".format(result)";
+                "        return \"{:.2f}\".format(result)\n";
     }
 }

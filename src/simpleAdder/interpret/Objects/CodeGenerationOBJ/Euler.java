@@ -99,7 +99,6 @@ public class Euler extends CodeGenerationMethods {
         Level++;
         for (Map.Entry<String, String> s : species.entrySet()){
             PrettyResult += ApplyTap(Level, "self.sample[\"" + s.getKey() + "\"].append(self.sample.get(\""+s.getKey()+"\")[-1]+("+GenerateReactionRef(s.getKey(),reacs)+")*self.h)\n");
-            //PrettyResult += ApplyTap(Level, "self.sample[\"" + s.getKey() + "\"].append((" + GenerateReactionRef(s.getKey(),reacs)+ ")*self.h+self.sample.get(\"" + s.getKey() + "\")[-1])\n") ;
         }
         Level--;
         Level--;
@@ -121,7 +120,6 @@ public class Euler extends CodeGenerationMethods {
                     Side.remove(i);
                     Side.add(i,result);
                     i--;
-                   //Side.get(i).getValue() = String.valueOf(Integer.valueOf(Side.get(i).getValue()) + Integer.valueOf(Side.get(j).getValue()));
                 }
             }
         }
