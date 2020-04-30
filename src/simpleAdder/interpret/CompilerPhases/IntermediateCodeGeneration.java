@@ -10,7 +10,7 @@ public class IntermediateCodeGeneration {
 
     String rawPath;
     String Codename;
-    String OutputName = "tester.sa";
+    String OutputName = "BiksIntermediate.sa";
 
     public IntermediateCodeGeneration(String path,String codename)
     {

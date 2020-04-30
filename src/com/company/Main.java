@@ -17,7 +17,7 @@ public class Main {
         PythonFileGenerator PY = new PythonFileGenerator("python.py");
 
         String path = Paths.get("").toAbsolutePath().toString() + "\\";
-        String inputFile = "Code.sa";
+        String inputFile = "BiksCRN.sa";
 
         IntermediateCodeGeneration intermidiatCodeGeneration = new IntermediateCodeGeneration(path,inputFile);
         intermidiatCodeGeneration.Generate();
