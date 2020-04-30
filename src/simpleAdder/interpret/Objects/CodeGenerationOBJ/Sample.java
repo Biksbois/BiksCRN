@@ -111,12 +111,7 @@ public class Sample extends CodeGenerationMethods {
                 "        if(i <= "+GetSampleName(s)+".steps):\n"+
                 "            " + GetSampleName(s) + ".stepList.append(next(Sample"+s+".index)*"+GetSampleName(s)+".h)\n" +
                 "\n" +
-                "        for key, value in Sample"+s+".sample.items():\n" +
-                "            plt.plot(Sample"+s+".stepList, value, label=key + \" = {:.2f} mol/L\".format(" + GetSampleName(s) + ".sample.get(key)[-1]))\n\n" +
-                "        plt.xlabel('Time (t)')\n" +
-                "        plt.ylabel('Concentration (mol/L)')\n" +
-                "        plt.suptitle(\"Equilibrating sample " + s + " \" + str(" + GetSampleName(s) + ".steps) + \" cycles ( \" + GetPercent(i, " + GetSampleName(s) + ".steps) + \" % done )\", fontsize=18)\n"+
-                "        plt.legend()\n" +
+                "        DrawGraph(" + GetSampleName(s) + ".sample, " + GetSampleName(s) + ".stepList, \"A\", i, " + GetSampleName(s) + ".steps)\n" +
                 "\n" +
                 "        if(i <= " + GetSampleName(s) + ".steps):\n"+
                 "            Sample" + s + ".Euler(Sample"+s+", i)\n" +

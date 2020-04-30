@@ -18,6 +18,7 @@ public class Protocol extends CodeGenerationMethods {
     Titration titration = new Titration();
     int level = 0;
     int mixCount = 0;
+    int equilibrateCount = 0;
 
     /***
      * This method generates the Protocols based on the content of the SymbolTable and the operations 
@@ -36,7 +37,58 @@ public class Protocol extends CodeGenerationMethods {
             PrettyResult += ApplyProtocol(protocols.pop());
         }
 
+        if (equilibrateCount > 0){
+            PrettyResult += GenerateSavedGraphs();
+        }
+
         return PrettyResult;
+    }
+
+    private String GenerateSavedGraphs(){
+        String result = "";
+        if (equilibrateCount == 1){
+            result += "DrawGraph(Species0, Steps0, name0)\n" +
+                      "\n" +
+                      "plt.show()";
+        }else{
+            result = "count = 0\n";
+            result += ApplyTap(level, "def onclick(event):\n");
+            level++;
+            result += ApplyTap(level, "global count\n");
+            result += ApplyTap(level, "event.canvas.figure.clear()\n");
+            result += ApplyTap(level, "plt.clf()\n");
+
+            for (int i = 0; i <= equilibrateCount-1; i++){
+                if (i == 0){
+                    result += ApplyTap(level, "if count % " + equilibrateCount + " == 0:\n");// TODO: 01/05/2020 fix 
+                }else if(i == equilibrateCount-1){
+                    result += ApplyTap(level, "else:\n");
+                }else{
+                    result += ApplyTap(level, "elif count % " + i + " == 0: \n");
+                }
+                level++;
+                result += ApplyTap(level, "DrawGraph(Species" + i + ", Steps" + i + ", name" + i + ", len(Steps" + i + "), taken" + i + ")\n");
+                level--;
+            }
+
+            result += ApplyTap(level, "count += 1\n");
+            result += ApplyTap(level, "if count % " + equilibrateCount + " == 0:\n");
+            level++;
+            result += ApplyTap(level, "count -= " + equilibrateCount + "\n");
+            level--;
+            result += ApplyTap(level, "event.canvas.draw()\n");
+            level--;
+
+            result += "\n" +
+                    "fig = plt.figure()\n" +
+                    "fig.canvas.mpl_connect('button_press_event', onclick)\n" +
+                    "\n" +
+                    "DrawGraph(Species0, Steps0, name0, len(Steps0), taken0)\n" +
+                    "\n" +
+                    "plt.show()\n";
+
+        }
+        return result;
     }
 
     /***
@@ -163,6 +215,9 @@ public class Protocol extends CodeGenerationMethods {
                 }
             }
         }
+
+        PrettyResult += ApplyTap(level, "Species" + equilibrateCount + ", Steps" + equilibrateCount + ", name" + equilibrateCount + ", taken" + equilibrateCount++ +
+                " = SaveGraph(" + GetSampleName(protocol.equili.sample) + ", \"" + protocol.equili.sample + "\", " + GetSampleName(protocol.equili.sample) + ".steps )\n");
 
         return PrettyResult;
     }

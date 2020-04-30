@@ -36,7 +36,9 @@ public class PreGeneratedPython {
                 GetpDispose() + "\n"+
                 GetpMix() + "\n"+
                 GetpEquilibrste() + "\n"+
-                GetPercent() + "\n";
+                GetPercent() + "\n" +
+                GetSaveGraph() + "\n" +
+                GetPringGraph() + "\n";
     }
 
     /***
@@ -123,5 +125,28 @@ public class PreGeneratedPython {
                 "        return \"100\"\n" +
                 "    else:\n" +
                 "        return \"{:.2f}\".format(result)\n";
+    }
+
+    private String GetSaveGraph(){
+        return "def SaveGraph(Sample, name, taken):\n" +
+                "    if len(next(iter(Sample.sample.values()))) != len(Sample.stepList):\n" +
+                "        Sample.stepList.append(Sample.stepList[-1]+Sample.h)\n" +
+                "    rSpecies = Sample.sample.copy()\n" +
+                "    rSteps = Sample.stepList\n" +
+                "    for key in Sample.sample:\n" +
+                "        Sample.sample[key] = [Sample.sample.get(key)[-1]]\n" +
+                "    Sample.stepList = []\n" +
+                "    return rSpecies, rSteps, name, taken\n";
+    }
+
+    private String GetPringGraph(){
+        return "def DrawGraph(Species, Steps, name, i, s):\n" +
+                "        for key, value in Species.items():\n" +
+                "            plt.plot(Steps, value, label=key + \" = {:.2f} \".format(Species.get(key)[-1]))\n" +
+                "        plt.xlabel('Time (t)')\n" +
+                "        plt.suptitle(\"Equilibrating sample \" + name + \" for \" + str(len(Steps)) + \" cycles (\" + GetPercent(i, s) + \"%)\", fontsize=12)\n" +
+                "        plt.ylabel('Concentration (mol/L)')\n" +
+                "        \n" +
+                "        plt.legend()\n";
     }
 }
