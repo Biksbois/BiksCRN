@@ -56,7 +56,7 @@ public class BetaStackToString extends Checker {
             }else{
                 if (stack.peek().equals(vv.CYCLE)){
                     stack.pop();
-                    numbers.push("i");
+                    numbers.push("(i*self.h)");
                 }
                 else{
                     numbers.push(stack.pop());
@@ -97,7 +97,7 @@ public class BetaStackToString extends Checker {
             else{
                 if (stack.peek().equals(vv.CYCLE)){
                     stack.pop();
-                    return "i" + next;
+                    return "(i*self.h)" + next;
                 }
                 else{
                     return stack.pop() + next;

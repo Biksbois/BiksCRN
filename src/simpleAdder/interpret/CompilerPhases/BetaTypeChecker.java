@@ -843,8 +843,6 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         st.AddStringToField(get.Sample(node), "caseASplitSampleref");
         node.getProtoexstend().apply(this);
         node.getFuncParameters().apply(this);
-
-
     }
 
     /***

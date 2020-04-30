@@ -80,14 +80,18 @@ public class FuncChecker extends Checker {
         Object[] arrExpr = clone.toArray();
 
         for (int i = 0; i <= arrExpr.length-1; i++) {
-
             if (CheckStringLetter(arrExpr[i].toString())) {
-                for (int j = 0; j <= parameters.size() - 1; j++) {
-                    if (func.parameters.get(j).name.equals(arrExpr[i].toString()) && !vv.isReservedWord(arrExpr[i].toString())) {
-                        arrExpr[i] = parameters.get(j).name;
-                    }else if (vv.isReservedWord(arrExpr[i].toString())){
-                        IsCalcable = false;
+                if (parameters.size() != 0){
+                    for (int j = 0; j <= parameters.size() - 1; j++) {
+                        if (func.parameters.get(j).name.equals(arrExpr[i].toString()) && !vv.isReservedWord(arrExpr[i].toString())) {
+                            arrExpr[i] = parameters.get(j).name;
+                        }else if (vv.isReservedWord(arrExpr[i].toString())){
+                            IsCalcable = false;
+                        }
                     }
+                }
+                else if (vv.isReservedWord(arrExpr[i].toString())){
+                    IsCalcable = false;
                 }
             }
         }
