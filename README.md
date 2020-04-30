@@ -11,7 +11,7 @@ Example
 Here is a small axample off some working code
 
 Initialize {  
-    Sample A {  
+> Sample A {  
         Specie X=0, Y=100;  
         CRN {  
             Y->X, 1;  
