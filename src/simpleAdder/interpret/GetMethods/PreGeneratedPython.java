@@ -142,7 +142,7 @@ public class PreGeneratedPython {
     private String GetPringGraph(){
         return "def DrawGraph(Species, Steps, name, i, s):\n" +
                 "        for key, value in Species.items():\n" +
-                "            plt.plot(Steps, value, label=key + \" = {:.2f} \".format(Species.get(key)[-1]))\n" +
+                "            plt.plot(Steps, value, label=key + \" = {:.2f} mol/L\".format(Species.get(key)[-1]))\n" +
                 "        plt.xlabel('Time (t)')\n" +
                 "        plt.suptitle(\"Equilibrating sample \" + name + \" for \" + str(len(Steps)) + \" cycles (\" + GetPercent(i, s) + \"%)\", fontsize=12)\n" +
                 "        plt.ylabel('Concentration (mol/L)')\n" +

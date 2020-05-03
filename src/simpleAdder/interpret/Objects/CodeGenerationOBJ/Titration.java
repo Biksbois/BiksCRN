@@ -18,11 +18,13 @@ public class Titration extends CodeGenerationMethods{
     public String Generate(List<titration> AddMol, List<titration> RemMol, int level)
     {
         Level = level;
+        String PrettyResult = "";
 
-        if (AddMol == null && RemMol == null){
-            return "";
+        if (TitratoinNullOrZero(AddMol, RemMol)){
+            return GenerateEmptyTitration("");
+
         }
-        String PrettyResult = ApplyTap(Level,"def ApplyTitration(self,i):\n");
+        PrettyResult += ApplyTap(Level,"def ApplyTitration(self,i):\n");
         PrettyResult += GenerateAddMol(AddMol);
         PrettyResult += GenerateRemMol(RemMol);
         return PrettyResult + "\n";
@@ -33,14 +35,34 @@ public class Titration extends CodeGenerationMethods{
     public String Generate(List<titration> AddMol, List<titration> RemMol, int level, String name)
     {
         Level = level;
+        String PrettyResult = "";
 
-        if (AddMol == null && RemMol == null){
-            return "";
+        if (TitratoinNullOrZero(AddMol, RemMol)){
+            return GenerateEmptyTitration(name);
         }
-        String PrettyResult = ApplyTap(Level,"def ApplyTitration"+name+"(self,i):\n");
+        PrettyResult += ApplyTap(Level,"def ApplyTitration"+name+"(self,i):\n");
         PrettyResult += GenerateAddMol(AddMol);
         PrettyResult += GenerateRemMol(RemMol);
         return PrettyResult + "\n";
+    }
+
+    private Boolean TitratoinNullOrZero(List<titration> AddMol, List<titration> RemMol){
+        if (AddMol == null && RemMol == null){
+            return true;
+        }else if(AddMol.size() == 0 && RemMol.size() == 0){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    private String GenerateEmptyTitration(String name){
+        String PrettyResult = "";
+        PrettyResult += ApplyTap(Level,"def ApplyTitration" + name + "(self,i):\n");
+        Level++;
+        PrettyResult += ApplyTap(Level, "pass\n");
+        Level--;
+        return PrettyResult;
     }
 
     /**

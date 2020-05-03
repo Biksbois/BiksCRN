@@ -1,6 +1,7 @@
 package simpleAdder.interpret.Objects.CodeGenerationOBJ;
 
 import javafx.util.Pair;
+import simpleAdder.interpret.Objects.ProtocolOBJ.Mix;
 import simpleAdder.interpret.Objects.SymolTableOBJ.reaction;
 import simpleAdder.interpret.Objects.SymolTableOBJ.protocolOperation;
 import simpleAdder.interpret.Objects.SymolTableOBJ.SymbolTableType;
@@ -51,7 +52,7 @@ public class Protocol extends CodeGenerationMethods {
                       "\n" +
                       "plt.show()";
         }else{
-            result = "count = 0\n";
+            result = "count = 1\n";
             result += ApplyTap(level, "def onclick(event):\n");
             level++;
             result += ApplyTap(level, "global count\n");
@@ -64,7 +65,7 @@ public class Protocol extends CodeGenerationMethods {
                 }else if(i == equilibrateCount-1){
                     result += ApplyTap(level, "else:\n");
                 }else{
-                    result += ApplyTap(level, "elif count % " + i + " == 0: \n");
+                    result += ApplyTap(level, "elif count % " + (i+1) + " == 0: \n");
                 }
                 level++;
                 result += ApplyTap(level, "DrawGraph(Species" + i + ", Steps" + i + ", name" + i + ", len(Steps" + i + "), taken" + i + ")\n");
@@ -107,8 +108,9 @@ public class Protocol extends CodeGenerationMethods {
             return ApplyMix(protocol);
         }else if(protocol.dispose != null){
             return ApplyDispose(protocol);
+        }else {
+            return "";
         }
-        return "";
     }
 
     /***
@@ -123,47 +125,26 @@ public class Protocol extends CodeGenerationMethods {
         List<titration> addmol = new ArrayList<>();
         List<titration> remmol = new ArrayList<>();
         prettyResult += GetSampleName(protocol.mix.ResultingSample) + ".sample = mix(["+prettyMixers(protocol.mix.Mixers)+"])\n";
-        for (String str : protocol.mix.Mixers)
+        for (String mixer : protocol.mix.Mixers)
         {
-            if(global.get(str).scope.containsKey(vv.CRN))
+            if(global.get(mixer).scope.containsKey(vv.CRN))
             {
-                reacs.addAll(global.get(str).scope.get(vv.CRN).crn);
+                reacs.addAll(global.get(mixer).scope.get(vv.CRN).crn);
             }
-            if (global.get(str).scope.containsKey(vv.ADDMOL))
+            if (global.get(mixer).scope.containsKey(vv.ADDMOL))
             {
-                addmol.addAll(global.get(str).scope.get(vv.ADDMOL).titrations);
+                addmol.addAll(global.get(mixer).scope.get(vv.ADDMOL).titrations);
             }
-            if (global.get(str).scope.containsKey(vv.REMMOL))
+            if (global.get(mixer).scope.containsKey(vv.REMMOL))
             {
-                remmol.addAll(global.get(str).scope.get(vv.REMMOL).titrations);
+                remmol.addAll(global.get(mixer).scope.get(vv.REMMOL).titrations);
             }
 
         }
-        if(!global.get(protocol.mix.ResultingSample).scope.containsKey(vv.CRN)) // TODO: 25/04/2020 make to method pls
-        {
-            global.get(protocol.mix.ResultingSample).scope.put(vv.CRN,new SymbolTableType(vv.CRN,vv.CRN,reacs));
-        }
-        else
-        {
-            global.get(protocol.mix.ResultingSample).scope.get(vv.CRN).crn = reacs;
-        }
-        if(!global.get(protocol.mix.ResultingSample).scope.containsKey(vv.ADDMOL))
-        {
-            global.get(protocol.mix.ResultingSample).scope.put(vv.ADDMOL, new SymbolTableType(vv.ADDMOL,addmol, vv.ADDMOL));
-        }
-        else
-        {
-            global.get(protocol.mix.ResultingSample).scope.get(vv.ADDMOL).titrations = addmol;
-        }
-        if(!global.get(protocol.mix.ResultingSample).scope.containsKey(vv.REMMOL))
-        {
-            global.get(protocol.mix.ResultingSample).scope.put(vv.REMMOL, new SymbolTableType(vv.REMMOL,remmol, vv.REMMOL));
-        }
-        else
-        {
-            global.get(protocol.mix.ResultingSample).scope.get(vv.REMMOL).titrations = remmol;
-        }
 
+        AddToReaction(protocol.mix, vv.CRN, reacs, new SymbolTableType(vv.CRN,vv.CRN,reacs));
+        AddToReaction(protocol.mix, vv.ADDMOL, reacs, new SymbolTableType(vv.ADDMOL,addmol, vv.ADDMOL));
+        AddToReaction(protocol.mix, vv.REMMOL, reacs, new SymbolTableType(vv.REMMOL,remmol, vv.REMMOL));
 
         prettyResult += euler.Generate(global.get(protocol.mix.ResultingSample).scope,level,Integer.toString(mixCount));
         prettyResult += GetSampleName(protocol.mix.ResultingSample)+".Euler = Euler"+mixCount+"\n";
@@ -172,6 +153,17 @@ public class Protocol extends CodeGenerationMethods {
         prettyResult += GetSampleName(protocol.mix.ResultingSample)+".ApplyTitration = ApplyTitration"+mixCount+"\n";
 
         return prettyResult;
+    }
+
+    public void AddToReaction(Mix mix, String key, List<reaction> reacs, SymbolTableType obj){
+        if(!global.get(mix.ResultingSample).scope.containsKey(key))
+        {
+            global.get(mix.ResultingSample).scope.put(key, obj);
+        }
+        else
+        {
+            global.get(mix.ResultingSample).scope.get(key).crn = reacs;
+        }
     }
 
     /***

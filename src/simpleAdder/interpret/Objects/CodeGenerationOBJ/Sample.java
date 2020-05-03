@@ -115,9 +115,7 @@ public class Sample extends CodeGenerationMethods {
                 "\n" +
                 "        if(i <= " + GetSampleName(s) + ".steps):\n"+
                 "            Sample" + s + ".Euler(Sample"+s+", i)\n" +
-                (CallTitrationMethod ?
-                "            Sample"+s+".ApplyTitration(Sample"+s+", i+1)" : "") +
-                "\n\n";
+                "            Sample"+s+".ApplyTitration(Sample"+s+", i+1)\n\n";
 
     }
 
