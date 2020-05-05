@@ -6,6 +6,7 @@ import simpleAdder.interpret.Objects.SymolTableOBJ.reaction;
 import simpleAdder.interpret.Objects.SymolTableOBJ.SymbolTableType;
 import simpleAdder.interpret.TypeCheckers.BetaStackToString;
 import simpleAdder.interpret.GetMethods.ViableVariable;
+import simpleAdder.interpret.TypeCheckers.OptimizedStackToString;
 
 import javax.print.DocFlavor;
 import java.util.HashMap;
@@ -57,12 +58,17 @@ public class Euler extends CodeGenerationMethods {
      * @Param reac
      * @return
      */
+    OptimizedStackToString OSS = new OptimizedStackToString();
     private void SetRate(reaction reac){
         if (reac.rateLhs == null && reac.lhs != null){
             reac.rateLhs = BSTS.StackToString(reac.lhs);
+            //reac.rateLhs = OSS.Calculate(reac.lhs);
+            //System.out.println(reac.rateLhs);
         }
         if (reac.rateRhs == null){
             reac.rateRhs = BSTS.StackToString(reac.rhs);
+            //reac.rateRhs = OSS.Calculate(reac.rhs);
+            //System.out.println(reac.rateRhs);
         }
     }
 

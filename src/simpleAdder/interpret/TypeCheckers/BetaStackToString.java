@@ -48,7 +48,7 @@ public class BetaStackToString extends Checker {
                 if (!numbers.isEmpty()){
                     rhs = numbers.pop();
                     results = lhs + sym + rhs + results;
-                }else if(results.equals("") || sym.equals("-") && stack.peek().equals("(")){
+                }else if(results.equals("") || sym.equals("-") && !stack.isEmpty() && stack.peek().equals("(")){
                     results = sym + lhs;
                 }else{
                     results = lhs + sym + results;

@@ -3,6 +3,8 @@ package UnitTestes;
 import org.junit.jupiter.api.Test;
 import simpleAdder.interpret.TypeCheckers.BetaStackToString;
 
+import java.util.Stack;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class BetaStackToStringTest {
