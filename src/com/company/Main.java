@@ -6,6 +6,7 @@ import com.company.parser.* ;
 import com.company.lexer.*;
 import com.company.node.*;
 import simpleAdder.interpret.CompilerPhases.CodeGenerator;
+import simpleAdder.interpret.CompilerPhases.GenerateAST;
 import simpleAdder.interpret.CompilerPhases.IntermediateCodeGeneration;
 import simpleAdder.interpret.PythonFileGenerator;
 
@@ -32,6 +33,10 @@ public class Main {
 
                 // Token -> AST
                 Start ast = parser.parse() ;
+
+                //GenerateAST AST = new GenerateAST();
+                //ast.apply(AST);
+                //System.out.println(AST.GetAST());
 
                 BetaTypeChecker typeChecker = new BetaTypeChecker();
                 ast.apply(typeChecker);
