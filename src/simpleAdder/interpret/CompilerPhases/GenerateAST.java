@@ -21,16 +21,6 @@ public class GenerateAST extends DepthFirstAdapter {
         AddNode(node.getTInitializedcl());
     }
 
-    public void caseAIntNumber(AIntNumber node)
-    {
-        node.getExpression().apply(this);
-        node.getTIntType().apply(this);
-        node.getTString().apply(this);
-        node.getTEqual().apply(this);
-        node.getIntegers().apply(this);
-        outAIntNumber(node);
-    }
-
     public void outAIntegerFactor(AIntegerFactor node){
         String s = TemptAST.pop();
         TemptAST.push(GetNode("Int", s));

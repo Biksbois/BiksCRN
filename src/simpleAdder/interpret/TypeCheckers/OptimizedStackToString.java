@@ -112,12 +112,8 @@ public class OptimizedStackToString {
     }
 
     private boolean IsNegative(String s) {
-        if (s.length() > 7){
-            if('(' == s.charAt(0)){
-                if(")*(-1)".equals(s.substring(s.length()-6))){
-                    return true;
-                }
-            }
+        if (s.length() > 7 && '(' == s.charAt(0) && ")*(-1)".equals(s.substring(s.length()-6))){
+            return true;
         }
         return false;
     }
@@ -150,7 +146,7 @@ public class OptimizedStackToString {
 
     private String ApplyPlusMinus(Stack<String> operators, Stack<String> numbers, Stack<String> expr){
         String lhs = "";
-        String symLHS = expr.isEmpty() ? vv.plus : expr.pop();
+        String symLHS = expr.isEmpty() ? vv.plus : IsPlusMinus(expr.peek()) ? expr.pop() : vv.plus;
 
         if (numbers.size() == 0){
             if (expr.peek().equals(vv.CYCLE)){
@@ -181,7 +177,7 @@ public class OptimizedStackToString {
 
         while (!numbers.isEmpty() && !CycleMet){
             if (operators.peek().equals(vv.mult)){
-                if (numbers.peek().equals("i")){
+                if (numbers.peek().contains("i")){
                     CycleMet = true;
                 }else{
                     result *= Float.valueOf(numbers.pop());
