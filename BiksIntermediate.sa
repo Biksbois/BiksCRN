@@ -2,7 +2,7 @@ Initialize {
 Sample A {
 Specie X=0, Y=100;
 CRN {
-Y->X, 1;
+2*Y->X, 1;
 X+X -> Y, 2;
 }
 AddMol = X:0.1:while (X<3);
