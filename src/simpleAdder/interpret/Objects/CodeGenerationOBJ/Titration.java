@@ -25,12 +25,9 @@ public class Titration extends CodeGenerationMethods{
         }
         PrettyResult += ApplyTap(Level,"def ApplyTitration(self,i):\n");
 
-        if(AddMol == null || AddMol.size() == 0){
-            PrettyResult += GenerateAddMol(AddMol);
-        }
-        if (RemMol == null || RemMol.size() == 0){
-            PrettyResult += GenerateRemMol(RemMol);
-        }
+        PrettyResult += GenerateAddMol(AddMol);
+        PrettyResult += GenerateRemMol(RemMol);
+
         return PrettyResult + "\n";
     }
 
