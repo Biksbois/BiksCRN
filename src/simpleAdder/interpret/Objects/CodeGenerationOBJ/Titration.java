@@ -24,8 +24,13 @@ public class Titration extends CodeGenerationMethods{
             return GenerateEmptyTitration("");
         }
         PrettyResult += ApplyTap(Level,"def ApplyTitration(self,i):\n");
-        PrettyResult += GenerateAddMol(AddMol);
-        PrettyResult += GenerateRemMol(RemMol);
+
+        if(AddMol == null || AddMol.size() == 0){
+            PrettyResult += GenerateAddMol(AddMol);
+        }
+        if (RemMol == null || RemMol.size() == 0){
+            PrettyResult += GenerateRemMol(RemMol);
+        }
         return PrettyResult + "\n";
     }
 
@@ -46,7 +51,9 @@ public class Titration extends CodeGenerationMethods{
     }
 
     private Boolean TitratoinNullOrZero(List<titration> AddMol, List<titration> RemMol){
-        if (AddMol == null || AddMol.size() == 0 && RemMol == null || RemMol.size() == 0){
+        if (AddMol == null && RemMol == null){
+            return true;
+        }else if(AddMol != null && AddMol.size() == 0 && RemMol != null && RemMol.size() == 0){
             return true;
         }else {
             return false;
