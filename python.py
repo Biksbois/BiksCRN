@@ -61,6 +61,25 @@ def GetPercent(i, steps):
     else:
         return "{:.2f}".format(result)
 
+def SaveGraph(Sample, name, taken):
+    if len(next(iter(Sample.sample.values()))) != len(Sample.stepList):
+        Sample.stepList.append(Sample.stepList[-1]+Sample.h)
+    rSpecies = Sample.sample.copy()
+    rSteps = Sample.stepList
+    for key in Sample.sample:
+        Sample.sample[key] = [Sample.sample.get(key)[-1]]
+    Sample.stepList = []
+    return rSpecies, rSteps, name, taken
+
+def DrawGraph(Species, Steps, name, i, s):
+        for key, value in Species.items():
+            plt.plot(Steps, value, label=key + " = {:.2f} mol/L".format(Species.get(key)[-1]))
+        plt.xlabel('Time (t)')
+        plt.suptitle("Equilibrating sample " + name + " for " + str(len(Steps)) + " cycles (" + GetPercent(i, s) + "%)", fontsize=12)
+        plt.ylabel('Concentration (mol/L)')
+        
+        plt.legend()
+
 class SampleA():
     sample = {
         "X":[0],
@@ -85,15 +104,15 @@ class SampleA():
 
     def Euler(self, i) :
         if(i < self.steps):
-            r0=1*(self.sample.get("Y")[-1]**1)
+            r0=1*(self.sample.get("Y")[-1]**2)
             r1=2*(self.sample.get("X")[-1]**2)
 
             self.sample["X"].append(self.sample.get("X")[-1]+(r0*(1)+r1*(-2))*self.h)
-            self.sample["Y"].append(self.sample.get("Y")[-1]+(r0*(-1)+r1*(1))*self.h)
+            self.sample["Y"].append(self.sample.get("Y")[-1]+(r0*(-2)+r1*(1))*self.h)
 
     def ApplyTitration(self,i):
         if self.sample.get("X")[-1]<3:
-            Result, self.AddMol0 = self.AccTitration(self, 0.1, self.AddMol0)
+            Result, self.AddMol0 = self.AccTitration(self, 0.001, self.AddMol0)
             self.sample["X"][-1] = self.sample.get("X")[-1]+Result*1
 
 
@@ -104,13 +123,7 @@ class SampleA():
         if(i <= SampleA.steps):
             SampleA.stepList.append(next(SampleA.index)*SampleA.h)
 
-        for key, value in SampleA.sample.items():
-            plt.plot(SampleA.stepList, value, label=key + " = {:.2f} mol/L".format(SampleA.sample.get(key)[-1]))
-
-        plt.xlabel('Time (t)')
-        plt.ylabel('Concentration (mol/L)')
-        plt.suptitle("Equilibrating sample A " + str(SampleA.steps) + " cycles ( " + GetPercent(i, SampleA.steps) + " % done )", fontsize=18)
-        plt.legend()
+        DrawGraph(SampleA.sample, SampleA.stepList, "A", i, SampleA.steps)
 
         if(i <= SampleA.steps):
             SampleA.Euler(SampleA, i)
@@ -163,13 +176,7 @@ class SampleB():
         if(i <= SampleB.steps):
             SampleB.stepList.append(next(SampleB.index)*SampleB.h)
 
-        for key, value in SampleB.sample.items():
-            plt.plot(SampleB.stepList, value, label=key + " = {:.2f} mol/L".format(SampleB.sample.get(key)[-1]))
-
-        plt.xlabel('Time (t)')
-        plt.ylabel('Concentration (mol/L)')
-        plt.suptitle("Equilibrating sample B " + str(SampleB.steps) + " cycles ( " + GetPercent(i, SampleB.steps) + " % done )", fontsize=18)
-        plt.legend()
+        DrawGraph(SampleB.sample, SampleB.stepList, "A", i, SampleB.steps)
 
         if(i <= SampleB.steps):
             SampleB.Euler(SampleB, i)
@@ -196,6 +203,8 @@ class SampleC():
 
     def Euler(self, i) :
         pass
+    def ApplyTitration(self,i):
+        pass
 
     @staticmethod
     def Animate(i) :
@@ -204,24 +213,19 @@ class SampleC():
         if(i <= SampleC.steps):
             SampleC.stepList.append(next(SampleC.index)*SampleC.h)
 
-        for key, value in SampleC.sample.items():
-            plt.plot(SampleC.stepList, value, label=key + " = {:.2f} mol/L".format(SampleC.sample.get(key)[-1]))
-
-        plt.xlabel('Time (t)')
-        plt.ylabel('Concentration (mol/L)')
-        plt.suptitle("Equilibrating sample C " + str(SampleC.steps) + " cycles ( " + GetPercent(i, SampleC.steps) + " % done )", fontsize=18)
-        plt.legend()
+        DrawGraph(SampleC.sample, SampleC.stepList, "A", i, SampleC.steps)
 
         if(i <= SampleC.steps):
             SampleC.Euler(SampleC, i)
-
+            SampleC.ApplyTitration(SampleC, i+1)
 
 
 equilibrate(SampleA, 5.0E-4, 100)
+Species0, Steps0, name0, taken0 = SaveGraph(SampleA, "A", SampleA.steps )
 SampleC.sample = mix([SampleA.sample, SampleB.sample])
 def Euler0(self, i) :
     if(i < self.steps):
-        r0=1*(self.sample.get("Y")[-1]**1)
+        r0=1*(self.sample.get("Y")[-1]**2)
         r1=2*(self.sample.get("X")[-1]**2)
         r2=1*(self.sample.get("C")[-1]**1)
         r2=2*(self.sample.get("D")[-1]**1)
@@ -230,12 +234,12 @@ def Euler0(self, i) :
         self.sample["C"].append(self.sample.get("C")[-1]+(r2*(-1)+r2*(-1)+r3*(-2))*self.h)
         self.sample["D"].append(self.sample.get("D")[-1]+(r2*(1)+r2*(1)+r3*(2))*self.h)
         self.sample["X"].append(self.sample.get("X")[-1]+(r0*(1)+r1*(-2))*self.h)
-        self.sample["Y"].append(self.sample.get("Y")[-1]+(r0*(-1)+r1*(1))*self.h)
+        self.sample["Y"].append(self.sample.get("Y")[-1]+(r0*(-2)+r1*(1))*self.h)
 
 SampleC.Euler = Euler0
 def ApplyTitration0(self,i):
     if self.sample.get("X")[-1]<3:
-        Result, self.AddMol0 = self.AccTitration(self, 0.1, self.AddMol0)
+        Result, self.AddMol0 = self.AccTitration(self, 0.001, self.AddMol0)
         self.sample["X"][-1] = self.sample.get("X")[-1]+Result*1
     Result, self.RemMol0 = self.AccTitration(self, 0.3, self.RemMol0)
     if Result > 0 and self.sample.get("D")[-1]-1 <= 0:
@@ -247,3 +251,6 @@ SampleC.ApplyTitration = ApplyTitration0
 split(SampleC.sample,[SampleA.sample, SampleB.sample], [0.4, 0.5])
 disposePercent(SampleA.sample,1)
 disposePercent(SampleB.sample,0.5)
+DrawGraph(Species0, Steps0, name0)
+
+plt.show()
