@@ -1,5 +1,6 @@
 package simpleAdder.interpret.TypeCheckers;
 
+import simpleAdder.interpret.CompilerPhases.TerminateProgram;
 import simpleAdder.interpret.GetMethods.ViableVariable;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.Stack;
 
 public class OptimizedStackToString {
     ViableVariable vv = new ViableVariable();
+    TerminateProgram TP = new TerminateProgram();
 
     public String Calculate(Stack<String> stack){
         List<String> lResult = new ArrayList<>();
@@ -61,7 +63,14 @@ public class OptimizedStackToString {
         }
 
         if (fResult == 0){
-            return ListToString(lResult).substring(1);
+            String result = ListToString(lResult);
+            if (result.equals("0")){
+                return result;
+            }else if(result.equals("")){
+                return "0";
+            }else{
+                return result.substring(1);
+            }
         }else {
             return fResult + ListToString(lResult);
         }
@@ -69,7 +78,7 @@ public class OptimizedStackToString {
 
     private String ListToString(List<String> lResult) {
         if(lResult.size() == 0){
-            return "";
+            return "0";
         }
 
         String result = "";
@@ -78,9 +87,10 @@ public class OptimizedStackToString {
                 if (OutWeight(lResult.get(i), lResult.get(j))){
                     lResult.remove(j);
                     lResult.remove(i);
-                    if (i > 0){
+                    if (i == 0){
                         i--;
                         j--;
+                        break;
                     }
                 }
             }
@@ -124,10 +134,26 @@ public class OptimizedStackToString {
         String rhs = GetNext(expr);
         String lhs = GetNext(expr);
 
-        if (rhs.contains("i") || lhs.contains("i")){
+        if (IsZero(lhs)){
+            return "1";
+        }else if(IsZero(rhs)){
+            return "0";
+        }else if(IsOne(lhs)){
+            return "1";
+        }else if(IsOne(rhs)){
+            return lhs;
+        }else if (rhs.contains("i") || lhs.contains("i")){
             return lhs + "**" + "(" + rhs + ")";
         }else {
             return String.valueOf(Math.pow(Float.valueOf(lhs), Float.valueOf(rhs)));
+        }
+    }
+
+    private boolean IsOne(String val) {
+        if(!val.contains("i") && Float.parseFloat(val) == 1){
+            return true;
+        }else{
+            return false;
         }
     }
 
@@ -168,6 +194,7 @@ public class OptimizedStackToString {
     private String ApplyMultDivide(Stack<String> numbers, Stack<String> operators){
         float result = 0;
         Boolean CycleMet = false;
+        Boolean ZeroMet = false;
 
         if (numbers.peek().equals("i")){
             return StackToString(numbers, operators);
@@ -175,8 +202,14 @@ public class OptimizedStackToString {
             result = Float.valueOf(numbers.pop());
         }
 
-        while (!numbers.isEmpty() && !CycleMet){
-            if (operators.peek().equals(vv.mult)){
+        while (!numbers.isEmpty() && !CycleMet && !ZeroMet){
+            if (IsZero(numbers.peek())){
+                if(operators.peek().equals(vv.div)){
+                    TP.terminate_program("Dividing by zero is not allowed.");
+                }
+                ZeroMet = true;
+                EmptyStacks(numbers, operators);
+            }else if (operators.peek().equals(vv.mult)){
                 if (numbers.peek().contains("i")){
                     CycleMet = true;
                 }else{
@@ -193,22 +226,62 @@ public class OptimizedStackToString {
             }
         }
 
-        if (CycleMet){
-            return result + operators.pop() + StackToString(numbers, operators);
+        if (ZeroMet){
+            return "0";
+        }else if (CycleMet){
+            numbers.push(String.valueOf(result));
+            return StackToString(numbers, operators);
         }else {
             return String.valueOf(result);
         }
     }
 
+    private void EmptyStacks(Stack<String> numbers, Stack<String> operators) {
+        operators.clear();
+        numbers.clear();
+    }
+
     private String StackToString(Stack<String> numbers, Stack<String> operators) {
         String result = "";
+        Boolean ZeroMet = false;
 
-        while (!numbers.isEmpty()){
-            result += numbers.pop() + (operators.isEmpty() ? "" : operators.pop());
+        while (!numbers.isEmpty() && !ZeroMet){
+            if (IsZero(numbers.peek())){
+                if (DivideByZero(operators, result)){
+                    TP.terminate_program("Dividing by zero is not allowed.");
+                }
+                EmptyStacks(numbers, operators);
+                ZeroMet = true;
+            }else{
+                result += numbers.pop() + (operators.isEmpty() ? "" : operators.pop());
+            }
         }
 
-        return result;
+        if (ZeroMet){
+            return "0";
+        }else{
+            return result;
+        }
     }
+
+    private boolean IsZero(String peek) {
+        if(!peek.contains("i") && Float.parseFloat(peek) == 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    private boolean DivideByZero(Stack<String> operators, String result) {
+        if (!operators.isEmpty() && operators.peek().equals(vv.div)){
+            return true;
+        }else if(result != "" && vv.div.equals(result.substring(result.length()-1))){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 
     private String ApplySymbol(String sym, String value){
         if (value.contains("i")){

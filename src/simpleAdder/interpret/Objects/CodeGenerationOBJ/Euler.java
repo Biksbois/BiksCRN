@@ -217,7 +217,7 @@ public class Euler extends CodeGenerationMethods {
         for (Pair<String, String> rhs: side) {
             if(hash.containsKey(rhs.getKey()))
             {
-                hash.replace(rhs.getKey(), hash.get(rhs.getKey()+ ApplySymbol(rhs.getValue(),Symbol)));
+                hash.replace(rhs.getKey(), hash.get(rhs.getKey()) + ApplySymbol(rhs.getValue(),Symbol));
             }
             else
             {

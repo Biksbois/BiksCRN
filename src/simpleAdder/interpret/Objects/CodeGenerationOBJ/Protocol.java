@@ -48,7 +48,7 @@ public class Protocol extends CodeGenerationMethods {
     private String GenerateSavedGraphs(){
         String result = "";
         if (equilibrateCount == 1){
-            result += "DrawGraph(Species0, Steps0, name0)\n" +
+            result += "DrawGraph(Species0, Steps0, name0, len(Steps0), taken0)\n" +
                       "\n" +
                       "plt.show()";
         }else{
@@ -62,6 +62,7 @@ public class Protocol extends CodeGenerationMethods {
             for (int i = 0; i <= equilibrateCount-1; i++){
                 if (i == 0){
                     result += ApplyTab(level, "if count % " + equilibrateCount + " == 0:\n");// TODO: 01/05/2020 fix
+
                 }else if(i == equilibrateCount-1){
                     result += ApplyTab(level, "else:\n");
                 }else{

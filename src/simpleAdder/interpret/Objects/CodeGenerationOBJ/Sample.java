@@ -11,7 +11,7 @@ import java.util.*;
 public class Sample extends CodeGenerationMethods {
 
     int Level = 0; //Since the target code is python indents are important for the code to work, the integer level keeps track of how many indents shold be applied.
-    String PrettySample =""; //This is the string that willl contain the generated code.
+    String PrettySample =""; //This is the string that will contain the generated code.
     Dict dict = new Dict();
     Euler euler = new Euler();
     Titration titration = new Titration();
@@ -19,9 +19,6 @@ public class Sample extends CodeGenerationMethods {
     public String GenerateSample(HashMap<String, SymbolTableType> global, Stack<protocolOperation> stack, String sample)
     {
         HashMap<String,SymbolTableType> local = global.get(sample).scope;
-        //if (EmptySample(local)){
-        //    return "";
-        //}
         ResetGlobalValues(); //Reset global value in the code, since the same instance is used more than once.
         PrettySample += GenerateSampleCode(global,local,sample); //generates the python code for sample.
         return PrettySample;
@@ -71,14 +68,14 @@ public class Sample extends CodeGenerationMethods {
 
     private String GenerateApplyTitration()
     {
-        return  "    def AccTitration(self, act, titra):\n" +
-                "        titra += self.h\n" +
-                "        if(act <= titra):\n" +
-                "            result = math.floor(titra/act)\n" +
-                "            titra = titra - act * result\n" +
-                "            return result, titra\n" +
+        return  "    def AccTitration(self, act, time):\n" +
+                "        time += self.h\n" +
+                "        if(act <= time):\n" +
+                "            result = math.floor(time/act)\n" +
+                "            time = time - act * result\n" +
+                "            return result, time\n" +
                 "        else:\n" +
-                "            return 0, titra";
+                "            return 0, time";
     }
 
     /**
@@ -108,15 +105,16 @@ public class Sample extends CodeGenerationMethods {
                 "    def Animate(i) :\n" +
                 "        plt.cla()\n" +
                 "\n" +
-                "        if(i <= "+GetSampleName(s)+".steps):\n"+
-                "            " + GetSampleName(s) + ".stepList.append(next(Sample"+s+".index)*"+GetSampleName(s)+".h)\n" +
+                "        index = next(" + GetSampleName(s) + ".index)\n" +
+                "        \n" +
+                "        if(index < " + GetSampleName(s) + ".steps):\n" +
+                "            " + GetSampleName(s) + ".stepList.append(index*" + GetSampleName(s) + ".h)\n" +
                 "\n" +
-                "        DrawGraph(" + GetSampleName(s) + ".sample, " + GetSampleName(s) + ".stepList, \"A\", i, " + GetSampleName(s) + ".steps)\n" +
+                "        DrawGraph(" + GetSampleName(s) + ".sample, " + GetSampleName(s) + ".stepList, \"A\", index, " + GetSampleName(s) + ".steps)\n" +
                 "\n" +
-                "        if(i <= " + GetSampleName(s) + ".steps):\n"+
-                "            Sample" + s + ".Euler(Sample"+s+", i)\n" +
-                "            Sample"+s+".ApplyTitration(Sample"+s+", i+1)\n\n";
-
+                "        if(index+1 < " + GetSampleName(s) + ".steps):\n" +
+                "            " + GetSampleName(s) + ".Euler(" + GetSampleName(s) + ", index+1)\n" +
+                "            " + GetSampleName(s) + ".ApplyTitration(" + GetSampleName(s) + ", index+1)\n";
     }
 
     /**
