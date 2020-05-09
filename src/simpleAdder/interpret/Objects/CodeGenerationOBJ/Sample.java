@@ -11,7 +11,7 @@ import java.util.*;
 public class Sample extends CodeGenerationMethods {
 
     int Level = 0; //Since the target code is python indents are important for the code to work, the integer level keeps track of how many indents shold be applied.
-    String PrettySample =""; //This is the string that willl contain the generated code.
+    String PrettySample =""; //This is the string that will contain the generated code.
     Dict dict = new Dict();
     Euler euler = new Euler();
     Titration titration = new Titration();
@@ -19,9 +19,6 @@ public class Sample extends CodeGenerationMethods {
     public String GenerateSample(HashMap<String, SymbolTableType> global, Stack<protocolOperation> stack, String sample)
     {
         HashMap<String,SymbolTableType> local = global.get(sample).scope;
-        //if (EmptySample(local)){
-        //    return "";
-        //}
         ResetGlobalValues(); //Reset global value in the code, since the same instance is used more than once.
         PrettySample += GenerateSampleCode(global,local,sample); //generates the python code for sample.
         return PrettySample;
