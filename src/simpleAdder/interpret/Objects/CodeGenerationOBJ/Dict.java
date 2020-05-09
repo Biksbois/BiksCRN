@@ -25,7 +25,7 @@ public class Dict extends CodeGenerationMethods {
     {
 
         String PrettyResult = "";
-        PrettyResult += ApplyTap(level, GenerateDictInit());
+        PrettyResult += ApplyTab(level, GenerateDictInit());
 
         if (!local.containsKey(vv.CRN)){
             return PrettyResult;
@@ -54,7 +54,7 @@ public class Dict extends CodeGenerationMethods {
         String PrettyResult = "";
 
         if (global.containsKey(vv.SPECIE)){
-            PrettyResult += ApplyTap(level, GenerateDictInit());
+            PrettyResult += ApplyTab(level, GenerateDictInit());
             level++;
             PrettyResult += GenerateDictFromHashmap(global, level);
 
@@ -96,7 +96,7 @@ public class Dict extends CodeGenerationMethods {
         if(UsedSpecie != null)
         {
             for (Map.Entry<String,String> p: UsedSpecie.entrySet()) {
-                PrettyResult += ApplyTap(level,GenerateDictField(p.getKey(), p.getValue()));
+                PrettyResult += ApplyTab(level,GenerateDictField(p.getKey(), p.getValue()));
             }
         }
         return PrettyResult;
@@ -120,7 +120,7 @@ public class Dict extends CodeGenerationMethods {
         if(UsedSpecie != null)
         {
             for (Map.Entry<String,String> p: UsedSpecie.entrySet()) {
-                PrettyResult += ApplyTap(level,GenerateDictField(p.getKey(), p.getValue()));
+                PrettyResult += ApplyTab(level,GenerateDictField(p.getKey(), p.getValue()));
             }
         }
         return PrettyResult + GenerateDictEnd();

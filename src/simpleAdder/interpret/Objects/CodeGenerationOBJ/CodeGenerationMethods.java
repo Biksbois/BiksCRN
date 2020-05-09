@@ -13,7 +13,7 @@ public class CodeGenerationMethods {
      * @Param OutputStr
      * @return
      */
-    public String ApplyTap(int indent, String OutputStr)
+    public String ApplyTab(int indent, String OutputStr)
     {
         for(int i = 0; i < indent; i++)
         {

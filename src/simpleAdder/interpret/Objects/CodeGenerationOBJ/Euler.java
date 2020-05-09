@@ -1,6 +1,5 @@
 package simpleAdder.interpret.Objects.CodeGenerationOBJ;
 
-import com.company.node.Switch;
 import javafx.util.Pair;
 import simpleAdder.interpret.Objects.SymolTableOBJ.reaction;
 import simpleAdder.interpret.Objects.SymolTableOBJ.SymbolTableType;
@@ -8,7 +7,6 @@ import simpleAdder.interpret.TypeCheckers.BetaStackToString;
 import simpleAdder.interpret.GetMethods.ViableVariable;
 import simpleAdder.interpret.TypeCheckers.OptimizedStackToString;
 
-import javax.print.DocFlavor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +26,10 @@ public class Euler extends CodeGenerationMethods {
     public String Generate(HashMap<String, SymbolTableType> scope, int level, String str)
     {
         if (scope.get(vv.CRN) == null){
-            String PrettyResult = ApplyTap(level, GenerateEulerDcl(str));
+            String PrettyResult = ApplyTab(level, GenerateEulerDcl(str));
 
             level++;
-            PrettyResult += ApplyTap(level, "pass\n");
+            PrettyResult += ApplyTab(level, "pass\n");
             level--;
 
             return PrettyResult;
@@ -84,27 +82,27 @@ public class Euler extends CodeGenerationMethods {
      * @return
      */
     private String GenerateEuler(List<reaction> reacs, int Level, String str){
-        String PrettyResult = ApplyTap(Level, GenerateEulerDcl(str));
+        String PrettyResult = ApplyTab(Level, GenerateEulerDcl(str));
         HashMap<String, String> species = new HashMap<>();
         int rNum = 0;
         Level++;
-        PrettyResult += ApplyTap(Level,"if(i < self.steps):\n");
+        PrettyResult += ApplyTab(Level,"if(i < self.steps):\n");
         Level++;
         for (reaction r : reacs){
             Refragtor(r.lhsPair);
             Refragtor(r.rhsPair);
             SetRate(r);
             rNum = NumberOfReactions(r, rNum,species);
-            PrettyResult += ApplyTap(Level, r.lhsDerivedEq.getKey()+"="+r.lhsDerivedEq.getValue()+"\n");
+            PrettyResult += ApplyTab(Level, r.lhsDerivedEq.getKey()+"="+r.lhsDerivedEq.getValue()+"\n");
             if (!r.isOneway){
-                PrettyResult += ApplyTap(Level, r.rhsDerivedEq.getKey()+"="+r.rhsDerivedEq.getValue()+"\n");
+                PrettyResult += ApplyTab(Level, r.rhsDerivedEq.getKey()+"="+r.rhsDerivedEq.getValue()+"\n");
             }
         }
         Level--;
         PrettyResult += "\n";
         Level++;
         for (Map.Entry<String, String> s : species.entrySet()){
-            PrettyResult += ApplyTap(Level, "self.sample[\"" + s.getKey() + "\"].append(self.sample.get(\""+s.getKey()+"\")[-1]+("+GenerateReactionRef(s.getKey(),reacs)+")*self.h)\n");
+            PrettyResult += ApplyTab(Level, "self.sample[\"" + s.getKey() + "\"].append(self.sample.get(\""+s.getKey()+"\")[-1]+("+GenerateReactionRef(s.getKey(),reacs)+")*self.h)\n");
         }
         Level--;
         Level--;

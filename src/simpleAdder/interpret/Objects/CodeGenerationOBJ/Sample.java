@@ -30,10 +30,10 @@ public class Sample extends CodeGenerationMethods {
     private String GenerateSampleCode(HashMap<String, SymbolTableType> global, HashMap<String, SymbolTableType> local, String sample)
     {
         String PrettyResult = "";
-        PrettyResult += ApplyTap(Level,GenerateContruct(sample))+"\n";
+        PrettyResult += ApplyTab(Level,GenerateContruct(sample))+"\n";
         Level++;
         PrettyResult += dict.GenerateDictionary(global,local, Level);
-        PrettyResult += ApplyTap(Level,GenerateDictEnd()) + "\n";
+        PrettyResult += ApplyTab(Level,GenerateDictEnd()) + "\n";
         PrettyResult += GenerateApplyTitration() + "\n";
         PrettyResult += GenerateLocalVariables() + "\n\n";
         PrettyResult += GenerateGlobalTitVariables(local);
@@ -64,7 +64,7 @@ public class Sample extends CodeGenerationMethods {
         String PrettyResult = "";
         for (int i = 0; i < titrations.size();i++)
         {
-            PrettyResult += ApplyTap(Level,type+i+"=0\n");
+            PrettyResult += ApplyTab(Level,type+i+"=0\n");
         }
         return PrettyResult;
     }
