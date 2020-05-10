@@ -1,9 +1,6 @@
 package simpleAdder.interpret.CompilerPhases;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Scanner;
 import java.util.regex.*;
 
@@ -76,6 +73,53 @@ public class IntermediateCodeGeneration {
         code = code.replaceAll("Mix\\(", "Mix (");
         code = code.replaceAll("Dispose\\(", "Dispose (");
         code = code.replaceAll("Split\\(", "Split (");
+        code = ReplaceCRNSpecies(code);
         WriteInputfile(code);
+    }
+
+    public String ReplaceCRNSpecies(String str)
+    {
+        String[] matches = Pattern.compile("CRN\\s*\\{(\\s|\\w|\\d|->|<->|,|\\*|\\+|;|:)*\\}")
+                .matcher(str)
+                .results()
+                .map(MatchResult::group)
+                .toArray(String[]::new);
+        for (var s: matches) {
+            String Notation = ReplaceNotation(s);
+            str = str.replace(s,Notation);
+        }
+        return str;
+    }
+
+    public String ReplaceNotation(String str)
+    {
+        String[] matches = Pattern.compile("\\d+([a-z]|[A-Z])+(([a-z]|[A-Z])|\\d)*")
+                .matcher(str)
+                .results()
+                .map(MatchResult::group)
+                .toArray(String[]::new);
+        for (var blip: matches) {
+            String test = GetNumeral(blip)+"*"+GetName(blip);
+            str = str.replaceAll(blip,test);
+        }
+        return str;
+    }
+
+    public String GetNumeral(String str)
+    {
+            return Pattern.compile("\\d+")
+                    .matcher(str)
+                    .results()
+                    .map(MatchResult::group)
+                    .toArray(String[]::new)[0];
+    }
+
+    public String GetName(String str)
+    {
+            return Pattern.compile("([a-z]|[A-Z])+(([a-z]|[A-Z])|\\d)*")
+                .matcher(str)
+                .results()
+                .map(MatchResult::group)
+                .toArray(String[]::new)[0];
     }
 }
