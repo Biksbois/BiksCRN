@@ -5,7 +5,7 @@ Initialize {
             2*Y->X, 1;
             X+X -> Y, 2;
         }
-        AddMol = X:0.1:while(X<3);
+        AddMol = X:0.01:while(X>3);
     }
     Sample B {
         Specie C=0, D=10;
