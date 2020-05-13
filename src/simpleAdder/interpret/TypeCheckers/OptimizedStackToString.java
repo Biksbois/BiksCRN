@@ -193,14 +193,16 @@ public class OptimizedStackToString {
 
     private String ApplyMultDivide(Stack<String> numbers, Stack<String> operators){
         float result = 0;
+        String sRes = "";
         Boolean CycleMet = false;
         Boolean ZeroMet = false;
+        Boolean UseResult = true;
+        RemoveOneAndZero(operators, numbers);
 
         if (numbers.peek().equals("i")){
-            return StackToString(numbers, operators);
-        }else{
-            result = Float.valueOf(numbers.pop());
+            sRes = AssignToResult(numbers, operators, result);
         }
+        result = Float.valueOf(numbers.pop());
 
         while (!numbers.isEmpty() && !CycleMet && !ZeroMet){
             if (IsZero(numbers.peek())){
@@ -211,14 +213,28 @@ public class OptimizedStackToString {
                 EmptyStacks(numbers, operators);
             }else if (operators.peek().equals(vv.mult)){
                 if (numbers.peek().contains("i")){
-                    CycleMet = true;
+                    sRes += AssignToResult(numbers, operators, result);
+                    if (!numbers.isEmpty()){
+                        result = Float.valueOf(numbers.pop());
+                    }else{
+                        UseResult = false;
+                    }
+                    //CycleMet = true;
                 }else{
                     result *= Float.valueOf(numbers.pop());
                     operators.pop();
+
                 }
+
             }else if(operators.peek().equals(vv.div)){
                 if (numbers.peek().equals("i")){
-                    CycleMet = true;
+                    sRes += AssignToResult(numbers, operators, result);
+                    if (!numbers.isEmpty()){
+                        result = Float.valueOf(numbers.pop());
+                    }else {
+                        UseResult = false;
+                    }
+                    //CycleMet = true;
                 }else {
                     result /= Float.valueOf(numbers.pop());
                     operators.pop();
@@ -228,11 +244,52 @@ public class OptimizedStackToString {
 
         if (ZeroMet){
             return "0";
-        }else if (CycleMet){
-            numbers.push(String.valueOf(result));
-            return StackToString(numbers, operators);
+        }else if (!UseResult){
+            return sRes;
         }else {
-            return String.valueOf(result);
+            return sRes + operators.pop() + result;
+        }
+    }
+
+    private void RemoveOneAndZero(Stack<String> operators, Stack<String> numbers) {
+        while (!numbers.isEmpty()){
+            if(IsZero(numbers.peek())){
+                if (operators.peek().equals(vv.div)){
+                    TP.terminate_program("Dividing by zero is not allowed.");
+                }
+                numbers.pop();
+                PopOperator(operators);
+            }else if(IsOne(numbers.peek())){
+                numbers.pop();
+                PopOperator(operators);
+            }else{
+                break;
+            }
+        }
+    }
+
+    private String AssignToResult(Stack<String> numbers, Stack<String> operators, float result) {
+        String sRes = "";
+        if (result == 0){
+            sRes = numbers.pop();
+            operators.pop();
+        }else{
+            sRes = result + operators.pop() + numbers.pop();
+        }
+        while (!numbers.isEmpty()){
+            RemoveOneAndZero(operators, numbers);
+            if (numbers.peek().equals("i")){
+                sRes += operators.pop() + numbers.pop();
+            }else{
+                break;
+            }
+        }
+        return sRes;
+    }
+
+    private void PopOperator(Stack<String> operators) {
+        if (!operators.isEmpty()){
+            operators.pop();
         }
     }
 
