@@ -2909,6 +2909,10 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getExtendequili().apply(this);
         }
+        if(node.getOption() != null)
+        {
+            node.getOption().apply(this);
+        }
         if(node.getFactor() != null)
         {
             node.getFactor().apply(this);
@@ -2928,6 +2932,48 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outASingleEquili(node);
     }
 
+    public void inATimeOption(ATimeOption node)
+    {
+        defaultIn(node);
+    }
+
+    public void outATimeOption(ATimeOption node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseATimeOption(ATimeOption node)
+    {
+        inATimeOption(node);
+        if(node.getTTime() != null)
+        {
+            node.getTTime().apply(this);
+        }
+        outATimeOption(node);
+    }
+
+    public void inACycleOption(ACycleOption node)
+    {
+        defaultIn(node);
+    }
+
+    public void outACycleOption(ACycleOption node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseACycleOption(ACycleOption node)
+    {
+        inACycleOption(node);
+        if(node.getTCycle() != null)
+        {
+            node.getTCycle().apply(this);
+        }
+        outACycleOption(node);
+    }
+
     public void inASemiExtendequili(ASemiExtendequili node)
     {
         defaultIn(node);
@@ -2942,9 +2988,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     public void caseASemiExtendequili(ASemiExtendequili node)
     {
         inASemiExtendequili(node);
-        if(node.getTSemicolon() != null)
+        if(node.getTimestep() != null)
         {
-            node.getTSemicolon().apply(this);
+            node.getTimestep().apply(this);
         }
         outASemiExtendequili(node);
     }
@@ -2963,9 +3009,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     public void caseAStepExtendequili(AStepExtendequili node)
     {
         inAStepExtendequili(node);
-        if(node.getTSemicolon() != null)
+        if(node.getTimestep() != null)
         {
-            node.getTSemicolon().apply(this);
+            node.getTimestep().apply(this);
         }
         if(node.getFactor() != null)
         {
@@ -2976,5 +3022,55 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getTBydcl().apply(this);
         }
         outAStepExtendequili(node);
+    }
+
+    public void inAWithTimestep(AWithTimestep node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAWithTimestep(AWithTimestep node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAWithTimestep(AWithTimestep node)
+    {
+        inAWithTimestep(node);
+        if(node.getTSemicolon() != null)
+        {
+            node.getTSemicolon().apply(this);
+        }
+        if(node.getFactor() != null)
+        {
+            node.getFactor().apply(this);
+        }
+        if(node.getTEach() != null)
+        {
+            node.getTEach().apply(this);
+        }
+        outAWithTimestep(node);
+    }
+
+    public void inANoTimestep(ANoTimestep node)
+    {
+        defaultIn(node);
+    }
+
+    public void outANoTimestep(ANoTimestep node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseANoTimestep(ANoTimestep node)
+    {
+        inANoTimestep(node);
+        if(node.getTSemicolon() != null)
+        {
+            node.getTSemicolon().apply(this);
+        }
+        outANoTimestep(node);
     }
 }

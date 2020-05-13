@@ -199,7 +199,7 @@ public class Protocol extends CodeGenerationMethods {
     public String ApplyEquilibrat(protocolOperation protocol){
         HashMap<String, SymbolTableType> local = global.get(protocol.equili.sample).scope;
         String PrettyResult = "";
-        PrettyResult += "equilibrate("+ GetSampleName(protocol.equili.sample) +", "+ protocol.equili.stepSize +", "+ protocol.equili.amount +")\n";
+        PrettyResult += "equilibrate("+ GetSampleName(protocol.equili.sample) +", "+ protocol.equili.stepSize +", "+ protocol.equili.amount + ", " + protocol.equili.timeInterval + ")\n";
 
         if (global.containsKey(vv.SPECIE)){
             for (String key: global.get(vv.SPECIE).species.keySet()){

@@ -5,46 +5,46 @@ package com.company.node;
 import com.company.analysis.*;
 
 @SuppressWarnings("nls")
-public final class ASemiExtendequili extends PExtendequili
+public final class ANoTimestep extends PTimestep
 {
-    private PTimestep _timestep_;
+    private TTSemicolon _tSemicolon_;
 
-    public ASemiExtendequili()
+    public ANoTimestep()
     {
         // Constructor
     }
 
-    public ASemiExtendequili(
-        @SuppressWarnings("hiding") PTimestep _timestep_)
+    public ANoTimestep(
+        @SuppressWarnings("hiding") TTSemicolon _tSemicolon_)
     {
         // Constructor
-        setTimestep(_timestep_);
+        setTSemicolon(_tSemicolon_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new ASemiExtendequili(
-            cloneNode(this._timestep_));
+        return new ANoTimestep(
+            cloneNode(this._tSemicolon_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseASemiExtendequili(this);
+        ((Analysis) sw).caseANoTimestep(this);
     }
 
-    public PTimestep getTimestep()
+    public TTSemicolon getTSemicolon()
     {
-        return this._timestep_;
+        return this._tSemicolon_;
     }
 
-    public void setTimestep(PTimestep node)
+    public void setTSemicolon(TTSemicolon node)
     {
-        if(this._timestep_ != null)
+        if(this._tSemicolon_ != null)
         {
-            this._timestep_.parent(null);
+            this._tSemicolon_.parent(null);
         }
 
         if(node != null)
@@ -57,23 +57,23 @@ public final class ASemiExtendequili extends PExtendequili
             node.parent(this);
         }
 
-        this._timestep_ = node;
+        this._tSemicolon_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._timestep_);
+            + toString(this._tSemicolon_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._timestep_ == child)
+        if(this._tSemicolon_ == child)
         {
-            this._timestep_ = null;
+            this._tSemicolon_ = null;
             return;
         }
 
@@ -84,9 +84,9 @@ public final class ASemiExtendequili extends PExtendequili
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._timestep_ == oldChild)
+        if(this._tSemicolon_ == oldChild)
         {
-            setTimestep((PTimestep) newChild);
+            setTSemicolon((TTSemicolon) newChild);
             return;
         }
 
