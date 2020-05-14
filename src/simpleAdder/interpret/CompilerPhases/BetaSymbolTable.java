@@ -1,18 +1,15 @@
 package simpleAdder.interpret.CompilerPhases;
 
 import com.company.node.*;
-import javafx.util.Pair;
-
-import java.util.*;
-
 import simpleAdder.interpret.GetMethods.Get;
 import simpleAdder.interpret.Objects.SymolTableOBJ.*;
-import simpleAdder.interpret.Objects.SymolTableOBJ.Temporary;
-import simpleAdder.interpret.Objects.SymolTableOBJ.protocolOperation;
-import simpleAdder.interpret.Objects.SymolTableOBJ.SymbolTableType;
 import simpleAdder.interpret.TypeCheckers.BetaStackToString;
 import simpleAdder.interpret.TypeCheckers.Check;
 import simpleAdder.interpret.TypeCheckers.Checker;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
 
 public class BetaSymbolTable extends Checker {
     Check check = new Check();

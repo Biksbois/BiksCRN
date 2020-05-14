@@ -1,9 +1,9 @@
 
-public class Pair<First, Second> {
+public class BiksPair<First, Second> {
     private First first;
     private Second second;
 
-    public Pair(First first, Second second) {
+    public BiksPair(First first, Second second) {
         this.first = first;
         this.second = second;
     }
@@ -34,7 +34,7 @@ public class Pair<First, Second> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Pair pair = (Pair) o;
+        BiksPair pair = (BiksPair) o;
 
         if (first != null ? !first.equals(pair.first) : pair.first != null) return false;
         if (second != null ? !second.equals(pair.second) : pair.second != null) return false;
