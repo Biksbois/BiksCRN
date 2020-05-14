@@ -1,5 +1,6 @@
 package simpleAdder.interpret.TypeCheckers;
 
+import simpleAdder.interpret.GetMethods.ViableVariable;
 import simpleAdder.interpret.Objects.SymolTableOBJ.function;
 import simpleAdder.interpret.Objects.SymolTableOBJ.parameter;
 
@@ -39,7 +40,7 @@ public class FuncChecker extends Checker {
      * @return
      */
     private Boolean ParametersMatchType(String called, String actual, String calledValue){
-        if (actual.equals(vv.RATE) && called.equals(vv.FLOAT) && !calledValue.contains("-") && !calledValue.contains(".")){
+        if (actual.equals(ViableVariable.RATE) && called.equals(ViableVariable.FLOAT) && !calledValue.contains("-") && !calledValue.contains(".")){
             return true;
         }else {
             return actual.equals(called);

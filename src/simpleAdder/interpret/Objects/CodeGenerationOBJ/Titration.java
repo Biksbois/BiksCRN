@@ -1,5 +1,6 @@
 package simpleAdder.interpret.Objects.CodeGenerationOBJ;
 
+import simpleAdder.interpret.GetMethods.ViableVariable;
 import simpleAdder.interpret.Objects.SymolTableOBJ.titration;
 import simpleAdder.interpret.TypeCheckers.BetaStackToString;
 import simpleAdder.interpret.TypeCheckers.StackChecker;
@@ -49,11 +50,7 @@ public class Titration extends CodeGenerationMethods{
     private Boolean TitratoinNullOrZero(List<titration> AddMol, List<titration> RemMol){
         if (AddMol == null && RemMol == null){
             return true;
-        }else if(AddMol != null && AddMol.size() == 0 && RemMol != null && RemMol.size() == 0){
-            return true;
-        }else {
-            return false;
-        }
+        }else return AddMol != null && AddMol.size() == 0 && RemMol != null && RemMol.size() == 0;
     }
 
     private String GenerateEmptyTitration(String name){
@@ -79,7 +76,7 @@ public class Titration extends CodeGenerationMethods{
                     PrettyResult += ConstructConditionalStatement(titra);
                     Level++;
                 }
-                PrettyResult += ApplyTab(Level,"Result, self."+vv.ADDMOL+ i +" = self.AccTitration(self, "+titra.Timestep+", self."+vv.ADDMOL+ i++ +")\n");
+                PrettyResult += ApplyTab(Level,"Result, self."+ ViableVariable.ADDMOL + i +" = self.AccTitration(self, "+titra.Timestep+", self."+ ViableVariable.ADDMOL + i++ +")\n");
                 PrettyResult += ApplyTab(Level,"self.sample[\""+titra.Species+"\"][-1] = self.sample.get(\""+titra.Species+"\")[-1]+Result*1\n");
                 Level -= titra.LogicalExpr != null ? 1 : 0;
             }
@@ -101,7 +98,7 @@ public class Titration extends CodeGenerationMethods{
                     PrettyResult += ConstructConditionalStatement(titra);
                     Level++;
                 }
-                PrettyResult += ApplyTab(Level,"Result, self."+vv.REMMOL+ i +" = self.AccTitration(self, "+titra.Timestep+", self."+vv.REMMOL+ i++ +")\n");
+                PrettyResult += ApplyTab(Level,"Result, self."+ ViableVariable.REMMOL + i +" = self.AccTitration(self, "+titra.Timestep+", self."+ ViableVariable.REMMOL + i++ +")\n");
                 PrettyResult += ApplyTab(Level,"if Result > 0 and self.sample.get(\""+titra.Species+"\")[-1]-1 <= 0:\n");
                 Level++;
                 PrettyResult += ApplyTab(Level,"self.sample.get(\""+titra.Species+"\")[-1] = 0\n");

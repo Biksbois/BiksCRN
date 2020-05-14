@@ -4320,7 +4320,7 @@ public class Parser
 			{{-1, REDUCE, 51}, },
 			{{-1, REDUCE, 50}, },
         };*/
-    private static int[][][] gotoTable;
+    private static final int[][][] gotoTable;
 /*      {
 			{{-1, 2}, },
 			{{-1, 3}, },
@@ -4383,7 +4383,7 @@ public class Parser
 			{{-1, 86}, },
 			{{-1, 41}, },
         };*/
-    private static String[] errorMessages;
+    private static final String[] errorMessages;
 /*      {
 			"expecting: t initializedcl",
 			"expecting: t l turborg",
@@ -4436,7 +4436,7 @@ public class Parser
 			"expecting: t equal or greater, t equal or smaller, t not, t not equal, t logical equal, t greater, t smaller",
 			"expecting: t and, t or, t r paren",
         };*/
-    private static int[] errors;
+    private static final int[] errors;
 /*      {
 			0, 1, 2, 3, 4, 1, 2, 5, 3, 6, 6, 6, 6, 6, 6, 4, 4, 4, 4, 4, 4, 4, 4, 7, 8, 1, 5, 9, 5, 9, 10, 5, 5, 3, 4, 11, 2, 6, 6, 7, 7, 7, 12, 12, 12, 13, 14, 15, 16, 17, 17, 17, 18, 4, 8, 19, 20, 8, 8, 21, 22, 23, 2, 7, 24, 25, 9, 8, 8, 8, 8, 8, 8, 4, 5, 5, 1, 18, 18, 18, 18, 18, 18, 5, 18, 18, 18, 26, 26, 6, 6, 6, 25, 25, 6, 26, 26, 10, 27, 6, 7, 5, 24, 25, 17, 28, 15, 15, 8, 16, 16, 29, 18, 6, 4, 18, 6, 9, 6, 9, 30, 31, 6, 9, 9, 6, 9, 9, 32, 14, 10, 22, 6, 33, 17, 25, 34, 18, 35, 29, 36, 29, 37, 18, 9, 9, 8, 20, 5, 5, 14, 25, 7, 6, 5, 11, 38, 38, 38, 16, 24, 6, 24, 24, 29, 18, 29, 24, 14, 25, 8, 8, 14, 39, 40, 7, 24, 24, 7, 7, 41, 42, 39, 39, 43, 9, 26, 26, 6, 10, 44, 14, 24, 24, 24, 6, 45, 18, 18, 6, 9, 9, 31, 25, 24, 7, 7, 41, 46, 47, 14, 47, 37, 10, 26, 18, 6, 14, 31, 25, 32, 29, 24, 8, 6, 18, 25, 7, 24, 14, 47, 47, 25, 14, 14, 48, 25, 49, 25, 7, 47, 29, 8, 8, 8, 8, 8, 8, 8, 8, 26, 8, 8, 8, 49, 49, 25, 
         };*/

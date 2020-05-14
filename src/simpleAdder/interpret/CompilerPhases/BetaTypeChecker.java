@@ -3,6 +3,7 @@ package simpleAdder.interpret.CompilerPhases;
 import com.company.analysis.DepthFirstAdapter;
 import com.company.node.*;
 import simpleAdder.interpret.GetMethods.Get;
+import simpleAdder.interpret.GetMethods.ViableVariable;
 import simpleAdder.interpret.Objects.SymolTableOBJ.parameter;
 import simpleAdder.interpret.Objects.SymolTableOBJ.protocolOperation;
 import simpleAdder.interpret.Objects.SymolTableOBJ.reaction;
@@ -13,8 +14,8 @@ import java.util.*;
 
 public class BetaTypeChecker extends DepthFirstAdapter {
     public BetaSymbolTable st;
-    private BetaStackCalculator BSC = new BetaStackCalculator();
-    private Get get = new Get();
+    private final BetaStackCalculator BSC = new BetaStackCalculator();
+    private final Get get = new Get();
     TerminateProgram terminate = new TerminateProgram();
 
     public BetaTypeChecker() {
@@ -31,7 +32,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             terminate.terminate_program("Either the expression, recursion or string was null (caseAFloatNumber)");
         }
         String id = get.Id(node);
-        st.CreateInstance(st.vv.FLOAT, id, "caseAFloatNumber");
+        st.CreateInstance(ViableVariable.FLOAT, id, "caseAFloatNumber");
         node.getExpression().apply(this);
         st.NodeToCurrentScope(node.getTString());
         node.getFloats().apply(this);
@@ -47,7 +48,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             terminate.terminate_program("Either the expression, recursion or string was null (caseAMultipleFloats)");
         }
         String id = get.Id(node);
-        st.CreateInstance(st.vv.FLOAT, id, "caseAMultipleFloats");
+        st.CreateInstance(ViableVariable.FLOAT, id, "caseAMultipleFloats");
         node.getExpression().apply(this);
         st.NodeToCurrentScope(node.getTString());
         node.getFloats().apply(this);
@@ -63,7 +64,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             terminate.terminate_program("Either the expression, recursion or string was null (caseAFloatNumber)");
         }
         String id = get.Id(node);
-        st.CreateInstance(st.vv.INT, id, "caseAFloatNumber");
+        st.CreateInstance(ViableVariable.INT, id, "caseAFloatNumber");
         node.getExpression().apply(this);
         st.NodeToCurrentScope(node.getTString());
         node.getIntegers().apply(this);
@@ -79,7 +80,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             terminate.terminate_program("Either the expression, recursion or string was null (caseAFloatNumber)");
         }
         String id = get.Id(node);
-        st.CreateInstance(st.vv.INT, id, "caseAMultipleIntegers");
+        st.CreateInstance(ViableVariable.INT, id, "caseAMultipleIntegers");
         node.getExpression().apply(this);
         st.NodeToCurrentScope(node.getTString());
         node.getIntegers().apply(this);
@@ -95,7 +96,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             terminate.terminate_program("Something was null (caseAMultipleSpecie)");
         }
         String id = get.Id(node);
-        st.CreateInstance(st.vv.SPECIE, id, "caseAMultipleSpecie");
+        st.CreateInstance(ViableVariable.SPECIE, id, "caseAMultipleSpecie");
         node.getExpression().apply(this);
         st.NodeToCurrentScope(node.getTString());
         node.getSpecie().apply(this);
@@ -111,7 +112,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             terminate.terminate_program("Something was null (caseAMultipleSpecie)");
         }
         String id = get.Id(node);
-        st.CreateInstance(st.vv.SPECIE, id, "caseAMultipleSpecie");
+        st.CreateInstance(ViableVariable.SPECIE, id, "caseAMultipleSpecie");
         node.getExpression().apply(this);
         st.NodeToCurrentScope(node.getTString());
     }
@@ -167,7 +168,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(node.getTFloat() != null && st.StackinstanceExists())
         {
-            st.SymbolToStack(node.getTFloat().toString().trim(), st.vv.FLOAT);
+            st.SymbolToStack(node.getTFloat().toString().trim(), ViableVariable.FLOAT);
         }
     }
 
@@ -179,7 +180,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(node.getTString() != null && st.StackinstanceExists())
         {
-            st.SymbolToStack(node.getTString().toString().trim(), st.vv.Variable);
+            st.SymbolToStack(node.getTString().toString().trim(), ViableVariable.Variable);
         }
     }
 
@@ -191,7 +192,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(node.getTInt() != null && st.StackinstanceExists())
         {
-            st.SymbolToStack(node.getTInt().toString().trim(), st.vv.INT);
+            st.SymbolToStack(node.getTInt().toString().trim(), ViableVariable.INT);
         }
     }
 
@@ -316,7 +317,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         {
             terminate.terminate_program("Something was null (caseABlockCrnfunc)");
         }
-        st.CreateInstance(st.vv.CRN,"caseABlockCrnfunc");
+        st.CreateInstance(ViableVariable.CRN,"caseABlockCrnfunc");
 
         List<PReaction> copy = new ArrayList<PReaction>(node.getReaction());
         for(PReaction e : copy)
@@ -413,7 +414,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         if(node instanceof AVariableFactor)
         {
             String key = ((AVariableFactor) node).getTString().toString().trim();
-            if(st.VerifyKeyAndTypeInBoth(key,st.vv.INT) || st.VerifyKeyAndTypeInBoth(key,st.vv.FLOAT))
+            if(st.VerifyKeyAndTypeInBoth(key, ViableVariable.INT) || st.VerifyKeyAndTypeInBoth(key, ViableVariable.FLOAT))
             {
                 return st.GetValue(key);
             }else
@@ -519,7 +520,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             terminate.terminate_program("Something was null (caseAFCallFuncCall)");
         }
         String funcName = get.FunctionName(node);
-        if (!st.VerifyKeyAndTypeInBoth(funcName, st.vv.FUNC)){
+        if (!st.VerifyKeyAndTypeInBoth(funcName, ViableVariable.FUNC)){
             terminate.VarDontExist(node.getTString(), funcName, "Function", "caseAFCallFuncCall");
             //terminate.terminate_program("Function \"" + funcName + "\" is not defined (caseAFCallFuncCall)");
         }
@@ -539,7 +540,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         {
             terminate.terminate_program("Something was null (caseADclTitration)");
         }
-        st.CreateInstance(st.vv.TITRATIONLIST,"caseADclTitration");
+        st.CreateInstance(ViableVariable.TITRATIONLIST,"caseADclTitration");
         node.getTitrations().apply(this);
         st.NodeToCurrentScope(node);
     }
@@ -566,7 +567,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
      */
     public void NodeToFactor(ASingleTitrations node, String method)
     {
-        if (!st.VerifyKeyAndTypeInBoth(get.Specie(node), st.vv.SPECIE)){
+        if (!st.VerifyKeyAndTypeInBoth(get.Specie(node), ViableVariable.SPECIE)){
             terminate.terminate_program("It should be of the species type");
         }
 
@@ -587,7 +588,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     public void NodeToFactor(AMultipleTitrations node, String method)
     {
         String specie = node.getTString().toString().trim();
-        if (!st.VerifyKeyAndTypeInBoth(specie, st.vv.SPECIE)){
+        if (!st.VerifyKeyAndTypeInBoth(specie, ViableVariable.SPECIE)){
             terminate.terminate_program("It should be of the species type");
         }
         CreateTitNodeObject(node.getFactor(), specie, method);
@@ -709,7 +710,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         {
             terminate.terminate_program("Something was null (caseASampleProtocolbody)");
         }
-        if(!st.VerifyKeyAndTypeInST(get.Id(node),st.vv.SAMPLE))
+        if(!st.VerifyKeyAndTypeInST(get.Id(node), ViableVariable.SAMPLE))
         {
             terminate.terminate_program("It is only possible to mix objects of type sample (caseASampleProtocolbody)");
         }
@@ -752,7 +753,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         }
 
         Node input = node.getDisposePara();
-        if(!st.VerifyKeyAndTypeInST(get.Sample(node),st.vv.SAMPLE))
+        if(!st.VerifyKeyAndTypeInST(get.Sample(node), ViableVariable.SAMPLE))
         {
             terminate.terminate_program("It is only possible to dispose a sample (caseADisposeProtocolbody)");
         }
@@ -762,13 +763,13 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             if (input instanceof AVariableFactor){
                 String key = ((AVariableFactor) input).getTString().toString().trim();
                 //String type = st.GetType(((AVariableFactor) input).getTString().toString().trim());
-                if(st.VerifyKeyAndTypeInST(key, st.vv.FLOAT) || st.VerifyKeyAndTypeInST(key, st.vv.INT))
+                if(st.VerifyKeyAndTypeInST(key, ViableVariable.FLOAT) || st.VerifyKeyAndTypeInST(key, ViableVariable.INT))
                 {
                     String value = st.GetValue(((AVariableFactor) input).getTString().toString().trim());
                     if (ValueExceedsLimits(value)){
                         terminate.terminate_program("When disposing, the value should be between 0 and 1. \""  +key + "\" with value " + value + " exceeds this limit.");
                     }
-                    st.tempProtocol = new protocolOperation(st.vv.DISPOSE, get.Sample(node), value);
+                    st.tempProtocol = new protocolOperation(ViableVariable.DISPOSE, get.Sample(node), value);
                 }
                 else
                 {
@@ -783,24 +784,20 @@ public class BetaTypeChecker extends DepthFirstAdapter {
                     terminate.terminate_program("When disposing, the value should be between 0 and 1. the value of " + value + " exceeds this limit.");
                 }
 
-                st.tempProtocol = new protocolOperation(st.vv.DISPOSE, get.Sample(node), value);
+                st.tempProtocol = new protocolOperation(ViableVariable.DISPOSE, get.Sample(node), value);
             }
 
         }
         else
         {
-            st.tempProtocol = new protocolOperation(st.vv.DISPOSE, get.Sample(node), "1");
+            st.tempProtocol = new protocolOperation(ViableVariable.DISPOSE, get.Sample(node), "1");
         }
         st.protocols.push(st.tempProtocol);
         st.tempProtocol = null;
     }
 
     private boolean ValueExceedsLimits(String value){
-        if (Float.parseFloat(value) > 1 || Float.parseFloat(value) < 0){
-            return true;
-        }else{
-            return false;
-        }
+        return Float.parseFloat(value) > 1 || Float.parseFloat(value) < 0;
     }
 
     /***
@@ -818,7 +815,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         {
             terminate.terminate_program("Should be null (caseAMixSampleref)");
         }
-        st.tempProtocol = new protocolOperation(st.vv.MIX);
+        st.tempProtocol = new protocolOperation(ViableVariable.MIX);
         st.tempProtocol.addToMix(node.getTString().toString().trim(),"caseAMixSampleref"); //TODO AddStringAttribute
         node.getProtocolparam().apply(this);
     }
@@ -835,8 +832,8 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         {
             terminate.terminate_program("Something was null (caseASplitSampleref)");
         }
-        st.tempProtocol = new protocolOperation(st.vv.SPLIT);
-        if(!st.VerifyKeyAndTypeInST(get.Sample(node),st.vv.SAMPLE))
+        st.tempProtocol = new protocolOperation(ViableVariable.SPLIT);
+        if(!st.VerifyKeyAndTypeInST(get.Sample(node), ViableVariable.SAMPLE))
         {
             terminate.terminate_program("It is only possible to split the object type sample (caseASplitSampleref)");
         }
@@ -856,7 +853,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         {
             terminate.terminate_program("null (caseASingleProtocolparam)");
         }
-        if(!st.VerifyKeyAndTypeInST(get.Sample(node),st.vv.SAMPLE))
+        if(!st.VerifyKeyAndTypeInST(get.Sample(node), ViableVariable.SAMPLE))
         {
             terminate.terminate_program("It is only possible to mix objects of type sample (caseAMultiProtocolparam)");
         }
@@ -873,7 +870,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         if (get.VerifyProperties(node)){
             terminate.terminate_program("Something was null, while it really not be (caseAMultiProtocolparam)");
         }
-        if(!st.VerifyKeyAndTypeInST(get.Sample(node),st.vv.SAMPLE))
+        if(!st.VerifyKeyAndTypeInST(get.Sample(node), ViableVariable.SAMPLE))
         {
             terminate.terminate_program("It is only possible to mix objects of type sample (caseAMultiProtocolparam)");
         }
@@ -893,11 +890,11 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             terminate.terminate_program("Something was null (caseASingleProtoexstend)");
         }
         String sample = get.Sample(node);
-        if(!st.VerifyKeyAndTypeInST(sample,st.vv.SAMPLE))
+        if(!st.VerifyKeyAndTypeInST(sample, ViableVariable.SAMPLE))
         {
             terminate.terminate_program("It is only possible to split samples in split (caseASingleProtoexstend)");
         }
-        st.tempProtocol.addToSplit(st.vv.SAMPLE,sample,"caseASingleProtoexstend"); //TODO convert to AddStringAttribute
+        st.tempProtocol.addToSplit(ViableVariable.SAMPLE,sample,"caseASingleProtoexstend"); //TODO convert to AddStringAttribute
     }
 
     /***
@@ -912,11 +909,11 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             terminate.terminate_program("Something was null (caseAMultiProtoexstend)");
         }
         String Sample = get.Sample(node);
-        if(!st.VerifyKeyAndTypeInST(Sample,st.vv.SAMPLE))
+        if(!st.VerifyKeyAndTypeInST(Sample, ViableVariable.SAMPLE))
         {
             terminate.terminate_program("It is not possible use other than sample in the split function (caseAMultiProtoexstend)");
         }
-        st.tempProtocol.addToSplit(st.vv.SAMPLE,Sample,"caseAMultiProtoexstend");
+        st.tempProtocol.addToSplit(ViableVariable.SAMPLE,Sample,"caseAMultiProtoexstend");
         node.getProtoexstend().apply(this);
     }
 
@@ -948,7 +945,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         }
 
         String sample = get.Sample(node);
-        if(st.VerifyKeyAndTypeInBoth(sample,st.vv.SAMPLE))
+        if(st.VerifyKeyAndTypeInBoth(sample, ViableVariable.SAMPLE))
         {
             cycles = GetPositiveWholeFactor(node.getFactor(), node.getTString());
 
@@ -970,11 +967,11 @@ public class BetaTypeChecker extends DepthFirstAdapter {
                 }
                 stepSize = FactorToValues(((AStepExtendequili) step).getFactor());
             }
-            st.protocols.push(new protocolOperation(st.vv.EQUILIBRATE,sample, cycles, stepSize, interval));
+            st.protocols.push(new protocolOperation(ViableVariable.EQUILIBRATE,sample, cycles, stepSize, interval));
         }
         else
         {
-            terminate.WrongType(node.getTString(), st.TypeForMessage(sample), st.vv.SAMPLE, sample, "outASingleEquili");
+            terminate.WrongType(node.getTString(), st.TypeForMessage(sample), ViableVariable.SAMPLE, sample, "outASingleEquili");
             terminate.terminate_program(sample + " not sample (outASingleEquili)");
         }
     }
@@ -992,8 +989,8 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     }
 
     public void CheckFunctionValues (int endValue, String sample) {
-        if (st.st.get(sample).scope.containsKey(st.vv.CRN)) {
-            for (reaction reac : st.st.get(sample).scope.get(st.vv.CRN).crn) {
+        if (st.st.get(sample).scope.containsKey(ViableVariable.CRN)) {
+            for (reaction reac : st.st.get(sample).scope.get(ViableVariable.CRN).crn) {
                 CheckStacksOneValues(reac.lhs, reac.rhs, 0, sample);
                 CheckStacksOneValues(reac.lhs, reac.rhs, 1, sample);
                 CheckStacksOneValues(reac.lhs, reac.rhs, endValue, sample);
@@ -1014,10 +1011,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         {
             temp = ReplaceStack((Stack<String>) stack.clone(), end);
             float f = BSC.Calculate(temp);
-            if (f < 0)
-            {
-                return false;
-            }
+            return !(f < 0);
         }
 
         return true;
@@ -1028,7 +1022,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         Stack<String> result = new Stack<>();
         while (!stack.empty())
         {
-            if(stack.peek().equals(st.vv.CYCLE))
+            if(stack.peek().equals(ViableVariable.CYCLE))
             {
                 stack.pop();
                 result.push(Integer.toString(value));

@@ -25,7 +25,7 @@ public class Euler extends CodeGenerationMethods {
      */
     public String Generate(HashMap<String, SymbolTableType> scope, int level, String str)
     {
-        if (scope.get(vv.CRN) == null){
+        if (scope.get(ViableVariable.CRN) == null){
             String PrettyResult = ApplyTab(level, GenerateEulerDcl(str));
 
             level++;
@@ -36,7 +36,7 @@ public class Euler extends CodeGenerationMethods {
         }
         else
         {
-            return GenerateEuler(scope.get(vv.CRN).crn, level, str);
+            return GenerateEuler(scope.get(ViableVariable.CRN).crn, level, str);
         }
     }
 
@@ -206,8 +206,8 @@ public class Euler extends CodeGenerationMethods {
     public HashMap<String,Integer> CountSpecies(reaction reac)
     {
         HashMap<String,Integer> result = new HashMap<>();
-        CountSide(result,reac.rhsPair,vv.plus);
-        CountSide(result,reac.lhsPair,vv.minus);
+        CountSide(result,reac.rhsPair, ViableVariable.plus);
+        CountSide(result,reac.lhsPair, ViableVariable.minus);
 
         return result;
     }

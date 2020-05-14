@@ -1,5 +1,6 @@
 package simpleAdder.interpret.Objects.CodeGenerationOBJ;
 
+import simpleAdder.interpret.GetMethods.ViableVariable;
 import simpleAdder.interpret.Objects.SymolTableOBJ.titration;
 import simpleAdder.interpret.Objects.SymolTableOBJ.protocolOperation;
 import simpleAdder.interpret.Objects.SymolTableOBJ.SymbolTableType;
@@ -35,8 +36,8 @@ public class Sample extends CodeGenerationMethods {
         PrettyResult += GenerateLocalVariables() + "\n\n";
         PrettyResult += GenerateGlobalTitVariables(local);
         PrettyResult += euler.Generate(local,Level,"");
-        PrettyResult += titration.Generate(CheckNullTitra(local,vv.ADDMOL), CheckNullTitra(local,vv.REMMOL), Level) + "\n";
-        PrettyResult += GenerateAnimation(sample, TitrationExists(CheckNullTitra(local,vv.ADDMOL), CheckNullTitra(local,vv.REMMOL))) + "\n";
+        PrettyResult += titration.Generate(CheckNullTitra(local, ViableVariable.ADDMOL), CheckNullTitra(local, ViableVariable.REMMOL), Level) + "\n";
+        PrettyResult += GenerateAnimation(sample, TitrationExists(CheckNullTitra(local, ViableVariable.ADDMOL), CheckNullTitra(local, ViableVariable.REMMOL))) + "\n";
         Level--;
         return PrettyResult;
     }
@@ -44,13 +45,13 @@ public class Sample extends CodeGenerationMethods {
     private String GenerateGlobalTitVariables(HashMap<String, SymbolTableType> local)
     {
         String PrettyResult = "";
-        if(local.containsKey(vv.ADDMOL))
+        if(local.containsKey(ViableVariable.ADDMOL))
         {
-            PrettyResult += GenerateTitName(vv.ADDMOL, local.get(vv.ADDMOL).titrations) + "\n";
+            PrettyResult += GenerateTitName(ViableVariable.ADDMOL, local.get(ViableVariable.ADDMOL).titrations) + "\n";
         }
-        if(local.containsKey(vv.REMMOL))
+        if(local.containsKey(ViableVariable.REMMOL))
         {
-            PrettyResult += GenerateTitName(vv.REMMOL, local.get(vv.REMMOL).titrations) + "\n";
+            PrettyResult += GenerateTitName(ViableVariable.REMMOL, local.get(ViableVariable.REMMOL).titrations) + "\n";
         }
         return PrettyResult;
 
@@ -89,12 +90,12 @@ public class Sample extends CodeGenerationMethods {
     /**
      Checks if titaration exsists on the sample*/
     private boolean TitrationExists(List<titration> add, List<titration> rem){
-        return (add == null && rem == null) ? false: true;
+        return add != null || rem != null;
     }
 
     /**Checks if the sample is empty*/
     private boolean EmptySample(HashMap<String, SymbolTableType> sample){
-        return sample.isEmpty() ? true:false;
+        return sample.isEmpty();
     }
 
     /**

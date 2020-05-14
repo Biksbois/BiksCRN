@@ -18,11 +18,11 @@ public class protocolOperation {
     public protocolOperation(String type)
     {
 
-        if(type.equals(vv.MIX))
+        if(type.equals(ViableVariable.MIX))
         {
             this.mix = new Mix();
         }
-        else if(type.equals(vv.SPLIT))
+        else if(type.equals(ViableVariable.SPLIT))
         {
             this.split = new Split();
         }
@@ -116,10 +116,10 @@ public class protocolOperation {
         {
             TH.terminate_program("split was null in ("+methodName+")");
         }
-        else if(type.equals(vv.SAMPLE))
+        else if(type.equals(ViableVariable.SAMPLE))
         {
                 split.ResultingSamples.add(sample);
-        }else if(type.equals(vv.INT) || type.equals(vv.FLOAT))
+        }else if(type.equals(ViableVariable.INT) || type.equals(ViableVariable.FLOAT))
         {
             split.DestributionValue.add(sample);
         }

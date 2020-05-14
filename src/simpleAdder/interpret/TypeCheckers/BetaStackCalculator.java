@@ -16,7 +16,7 @@ public class BetaStackCalculator {
                 result += ApplyPlusMinus(operators, numbers, stack);
             }else if(IsMultDivide(stack.peek())){
                 operators.push(stack.pop());
-            }else if(stack.peek().equals(vv.power)){
+            }else if(stack.peek().equals(ViableVariable.power)){
                 numbers.push(ApplyPower(stack));
             }else if(stack.peek().equals(")")){
                 stack.pop();
@@ -59,7 +59,7 @@ public class BetaStackCalculator {
 
     private float ApplyPlusMinus(Stack<String> operators, Stack<Float> numbers, Stack<String> expr){
         float lhs;
-        String symLHS = expr.isEmpty() ? vv.plus : expr.pop();
+        String symLHS = expr.isEmpty() ? ViableVariable.plus : expr.pop();
 
         if (numbers.size() == 0){
             lhs = Float.parseFloat(expr.pop());
@@ -76,9 +76,9 @@ public class BetaStackCalculator {
     private float ApplyMultDivide(Stack<Float> numbers, Stack<String> operators){
         float result = numbers.pop();
         while (!numbers.isEmpty()){
-            if (operators.peek().equals(vv.mult)){
+            if (operators.peek().equals(ViableVariable.mult)){
                 result *= numbers.pop();
-            }else if(operators.peek().equals(vv.div)){
+            }else if(operators.peek().equals(ViableVariable.div)){
                 result /= numbers.pop();
             }
             operators.pop();
@@ -87,15 +87,15 @@ public class BetaStackCalculator {
     }
 
     private float ApplySymbol(String sym, float value){
-        return sym.equals(vv.minus) ? -value : value;
+        return sym.equals(ViableVariable.minus) ? -value : value;
     }
 
     public boolean IsMultDivide(String s){
-        return s.equals(vv.mult) || s.equals(vv.div) ? true: false;
+        return s.equals(vv.mult) || s.equals(vv.div);
     }
 
     public boolean IsPlusMinus(String s){
-        return s.equals(vv.plus) || s.equals(vv.minus) ? true: false;
+        return s.equals(vv.plus) || s.equals(vv.minus);
     }
 
     public <E> Stack<E> ReverseStack(Stack<E> entries) {

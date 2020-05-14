@@ -63,7 +63,7 @@ public class Get {
      */
     //<editor-fold desc="Checks">
     public Boolean IsValidType(String type){
-        return type.equals(vv.INT) || type.equals(vv.FLOAT) || type.equals(vv.RATE);
+        return type.equals(ViableVariable.INT) || type.equals(ViableVariable.FLOAT) || type.equals(ViableVariable.RATE);
     }
     public Boolean IsNegative(String value){
         return value.contains("-");
@@ -142,7 +142,7 @@ public class Get {
     }
 
     public String Type(AMultipleRates node){
-        return vv.RATE;
+        return ViableVariable.RATE;
     }
 
     public String Id(ASampleProtocolbody node){
@@ -159,7 +159,7 @@ public class Get {
 
     public String Id(ALambdaFuncFunc node){return node.getTString().toString().trim(); }
 
-    public String Type(ALambdaFuncFunc node){return vv.FUNC; }
+    public String Type(ALambdaFuncFunc node){return ViableVariable.FUNC; }
 
     public String Id(AMultiInput node)
     {
@@ -188,7 +188,7 @@ public class Get {
 
     public String Type(ASampleinitSample node)
     {
-        return vv.SAMPLE;
+        return ViableVariable.SAMPLE;
     }
     //</editor-fold>
 
@@ -198,147 +198,147 @@ public class Get {
      */
     //<editor-fold desc="VerifyProperties">
     public Boolean VerifyProperties(ADisposeProtocolbody node){
-        return node.getTString() == null || node.getDisposePara() == null ? true : false;
+        return node.getTString() == null || node.getDisposePara() == null;
     }
 
     public Boolean VerifyProperties(AMixSampleref node){
-        return node.getProtocolparam() == null || node.getTString() == null ? true : false;
+        return node.getProtocolparam() == null || node.getTString() == null;
     }
 
     public Boolean VerifyProperties(ASplitSampleref node){
-        return node.getFuncParameters() == null || node.getProtoexstend() == null || node.getTString() == null ? true : false;
+        return node.getFuncParameters() == null || node.getProtoexstend() == null || node.getTString() == null;
     }
 
     public Boolean VerifyProperties(AMultiProtocolparam node){
-        return node.getTString() == null || node.getProtocolparam() == null ? true : false;
+        return node.getTString() == null || node.getProtocolparam() == null;
     }
 
     public Boolean VerifyProperties(ASingleProtocolparam node){
-        return node.getTString() == null ? true : false;
+        return node.getTString() == null;
     }
 
     public Boolean VerifyProperties(AMultiProtoexstend node){
-        return node.getProtoexstend() == null || node.getTString() == null ? true : false;
+        return node.getProtoexstend() == null || node.getTString() == null;
     }
 
     public Boolean VerifyProperties(ASingleProtoexstend node){
-        return node.getTString() == null ? true : false;
+        return node.getTString() == null;
     }
 
     public Boolean VerifyProperties(AFloatNumber node){
-        return node.getExpression() == null || node.getFloats() == null || node.getTString() == null|| node.getTString() == null ? true : false;
+        return node.getExpression() == null || node.getFloats() == null || node.getTString() == null || node.getTString() == null;
     }
 
     public Boolean VerifyProperties(AIntNumber node){
-        return node.getExpression() == null || node.getIntegers() == null || node.getTString() == null|| node.getTString() == null ? true : false;
+        return node.getExpression() == null || node.getIntegers() == null || node.getTString() == null || node.getTString() == null;
     }
 
     public Boolean VerifyProperties(AMultipleFloats node){
-        return node.getExpression() == null || node.getFloats() == null || node.getTString() == null ? true : false;
+        return node.getExpression() == null || node.getFloats() == null || node.getTString() == null;
     }
 
     public Boolean VerifyProperties(AMultipleRates node)
     {
-        return node.getTString() == null || node.getTFloat() == null || node.getRates() == null ?true:false;
+        return node.getTString() == null || node.getTFloat() == null || node.getRates() == null;
     }
 
     public Boolean VerifyProperties(AMultipleIntegers node){
-        return node.getExpression() == null || node.getIntegers() == null || node.getTString() == null || node.getTString() == null ? true : false;
+        return node.getExpression() == null || node.getIntegers() == null || node.getTString() == null || node.getTString() == null;
     }
 
     public Boolean VerifyProperties(ANegativeParenPolarity node){
-        return node.getTMinus() == null || node.getFactor() == null || node.getTLParen() == null || node.getTRParen() == null ? true : false;
+        return node.getTMinus() == null || node.getFactor() == null || node.getTLParen() == null || node.getTRParen() == null;
     }
 
     public Boolean VerifyProperties(ASingleSpecie node){
-        return node.getTString() == null || node.getExpression() == null ? true : false;
+        return node.getTString() == null || node.getExpression() == null;
     }
 
     public Boolean VerifyProperties(AMultipleSpecie node){
-        return node.getTString() == null || node.getExpression() == null || node.getSpecie() == null ? true : false;
+        return node.getTString() == null || node.getExpression() == null || node.getSpecie() == null;
     }
 
     public Boolean VerifyProperties(ASingleRates node)
     {
-        return node.getTString() == null || node.getTFloat() == null ? true:false;
+        return node.getTString() == null || node.getTFloat() == null;
     }
 
     public Boolean VerifyProperties(ALambdaFuncFunc node)
     {
-        return node.getTString() == null || node.getInput() == null || node.getExpression() == null ? true:false;
+        return node.getTString() == null || node.getInput() == null || node.getExpression() == null;
     }
 
     public Boolean VerifyProperties(AMultiInput node)
     {
-        return node.getTString() == null || node.getInput() == null || node.getType() == null ? true:false;
+        return node.getTString() == null || node.getInput() == null || node.getType() == null;
     }
 
     public Boolean VerifyProperties(AVoidInput node)
     {
-        return node.getTVoiddcl() == null ? true:false;
+        return node.getTVoiddcl() == null;
     }
 
     public Boolean VerifyProperties(ASingleInput node)
     {
-        return node.getTString() == null || node.getType() == null ? true:false;
+        return node.getTString() == null || node.getType() == null;
     }
 
     public Boolean VerifyProperties(ASampleinitSample node)
     {
-        return node.getTString() == null || node.getSamplefunc() == null ? true:false;
+        return node.getTString() == null || node.getSamplefunc() == null;
     }
 
     public Boolean VerifyProperties(ABlockCrnfunc node)
     {
-        return node.getReaction() == null ? true:false;
+        return node.getReaction() == null;
     }
 
     public Boolean VerifyProperties(AOneWayArrows node)
     {
-        return node.getReactant() == null || node.getReactionRateI() == null ? true:false;
+        return node.getReactant() == null || node.getReactionRateI() == null;
     }
 
     public Boolean VerifyProperties(ATwoWayArrows node)
     {
-        return node.getReactant() == null || node.getReactionRateI() == null || node.getReactionRateIi() == null ? true:false;
+        return node.getReactant() == null || node.getReactionRateI() == null || node.getReactionRateIi() == null;
     }
 
     public Boolean VerifyProperties(ADoubleReaction node)
     {
-        return node.getReactant() == null || node.getArrows() == null ? true:false;
+        return node.getReactant() == null || node.getArrows() == null;
     }
 
     public Boolean VerifyProperties(AFCallFuncCall node)
     {
-        return node.getTString() == null || node.getFuncParen() == null ? true:false;
+        return node.getTString() == null || node.getFuncParen() == null;
     }
 
     public Boolean VerifyProperties(AReactionRateReactionRateIi node){
-        return node.getReactionRateI() == null ? true : false;
+        return node.getReactionRateI() == null;
     }
 
     public Boolean VerifyProperties(AWhileLoop node){
-        return node.getLogicalExprs() == null ? true : false;
+        return node.getLogicalExprs() == null;
     }
 
     public Boolean VerifyProperties(AMultipleLogicalExprs node){
-        return node.getLogicalExpr() == null || node.getLogicalExprs() == null || node.getBoolOperator() == null ? true : false;
+        return node.getLogicalExpr() == null || node.getLogicalExprs() == null || node.getBoolOperator() == null;
     }
 
     public Boolean VerifyProperties(ASingleLogicalExpr node){
-        return node.getExpression() == null || node.getDouble() == null || node.getLogicalOperator() == null ? true : false;
+        return node.getExpression() == null || node.getDouble() == null || node.getLogicalOperator() == null;
     }
 
     public Boolean VerifyProperties(ADclTitration node){
-        return node.getTitrations() == null ? true : false;
+        return node.getTitrations() == null;
     }
 
     public Boolean VerifyProperties(ASingleTitrations node){
-        return node.getTString() == null || node.getFactor() == null || node.getTitrationEnd() == null ? true : false;
+        return node.getTString() == null || node.getFactor() == null || node.getTitrationEnd() == null;
     }
 
     public Boolean VerifyProperties(AMultipleTitrations node){
-        return node.getTitrationContinue() == null || node.getTString() == null || node.getFactor() == null || node.getTitrations() == null ? true : false;
+        return node.getTitrationContinue() == null || node.getTString() == null || node.getFactor() == null || node.getTitrations() == null;
     }
     //</editor-fold>
 

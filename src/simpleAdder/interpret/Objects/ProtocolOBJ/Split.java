@@ -11,12 +11,12 @@ public class Split {
     public String SplitSample = null;
     public List<String> DestributionValue = new ArrayList<>();
 
-    private Boolean AddInt = true;
-    private Boolean AddFloat = true;
-    private Boolean AddSpecie = false;
-    private Boolean AddRate = false;
+    private final Boolean AddInt = true;
+    private final Boolean AddFloat = true;
+    private final Boolean AddSpecie = false;
+    private final Boolean AddRate = false;
 
-    private PossibleToAdd ps = new PossibleToAdd(AddInt, AddFloat, AddSpecie, AddRate);
+    private final PossibleToAdd ps = new PossibleToAdd(AddInt, AddFloat, AddSpecie, AddRate);
 
     /**
      * Checks if the sample is valid.

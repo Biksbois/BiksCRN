@@ -6,15 +6,15 @@ import simpleAdder.interpret.TypeCheckers.PossibleToAdd;
 import java.util.Stack;
 
 public class PrimitiveType {
-    private String ID;
+    private final String ID;
     public String type;
-    private Stack<String> stack = new Stack<>();
+    private final Stack<String> stack = new Stack<>();
     private String result;
 
-    private Boolean CanBeNegative;
-    private Boolean CanHaveDecimals;
+    private final Boolean CanBeNegative;
+    private final Boolean CanHaveDecimals;
 
-    private PossibleToAdd ps;
+    private final PossibleToAdd ps;
 
     public PrimitiveType(String ID, String type, Boolean AddInt, Boolean AddFloat, Boolean AddSpecie, Boolean AddRate, Boolean CanBeNegative, Boolean CanHaveDecimals){
         this.ID = ID;
@@ -47,17 +47,11 @@ public class PrimitiveType {
     }
 
     public Boolean ResultIsValid(){
-        if (!IsValid()){
-            return false;
-        }
-        return true;
+        return IsValid();
     }
 
     private Boolean IsValid(){
-        if (result.contains("-") && !CanBeNegative){
-            return false;
-        }
-        return true;
+        return !result.contains("-") || CanBeNegative;
     }
 
     public Stack<String> GetStack(){

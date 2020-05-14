@@ -1,5 +1,7 @@
 package simpleAdder.interpret.TypeCheckers;
 
+import simpleAdder.interpret.GetMethods.ViableVariable;
+
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -54,7 +56,7 @@ public class BetaStackToString extends Checker {
                     results = lhs + sym + results;
                 }
             }else{
-                if (stack.peek().equals(vv.CYCLE)){
+                if (stack.peek().equals(ViableVariable.CYCLE)){
                     numbers.push(TranslateCycle(stack));
                 }
                 else{
@@ -94,7 +96,7 @@ public class BetaStackToString extends Checker {
                 return next + stack.pop();
             }
             else{
-                if (stack.peek().equals(vv.CYCLE)){
+                if (stack.peek().equals(ViableVariable.CYCLE)){
                     return TranslateCycle(stack) + next;
                 }
                 else{
@@ -116,7 +118,7 @@ public class BetaStackToString extends Checker {
      * @return
      */
     private boolean IsPlusMinus(String s){
-        return s.equals(vv.plus) || s.equals(vv.minus) ? true: false;
+        return s.equals(vv.plus) || s.equals(vv.minus);
     }
 
     /***
@@ -125,7 +127,7 @@ public class BetaStackToString extends Checker {
      * @return
      */
     private boolean IsMultDivide(String s){
-        return s.equals(vv.mult) || s.equals(vv.div) || s.equals(vv.power) ? true: false;
+        return s.equals(vv.mult) || s.equals(vv.div) || s.equals(vv.power);
     }
 
     public boolean IsOperator(String str){

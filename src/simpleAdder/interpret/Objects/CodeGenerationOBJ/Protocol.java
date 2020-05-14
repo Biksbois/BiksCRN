@@ -1,5 +1,6 @@
 package simpleAdder.interpret.Objects.CodeGenerationOBJ;
 
+import simpleAdder.interpret.GetMethods.ViableVariable;
 import simpleAdder.interpret.Objects.ProtocolOBJ.Mix;
 import simpleAdder.interpret.Objects.SymolTableOBJ.reaction;
 import simpleAdder.interpret.Objects.SymolTableOBJ.protocolOperation;
@@ -128,29 +129,29 @@ public class Protocol extends CodeGenerationMethods {
         prettyResult += GetSampleName(protocol.mix.ResultingSample) + ".sample = mix(["+prettyMixers(protocol.mix.Mixers)+"])\n";
         for (String mixer : protocol.mix.Mixers)
         {
-            if(global.get(mixer).scope.containsKey(vv.CRN))
+            if(global.get(mixer).scope.containsKey(ViableVariable.CRN))
             {
-                reacs.addAll(global.get(mixer).scope.get(vv.CRN).crn);
+                reacs.addAll(global.get(mixer).scope.get(ViableVariable.CRN).crn);
             }
-            if (global.get(mixer).scope.containsKey(vv.ADDMOL))
+            if (global.get(mixer).scope.containsKey(ViableVariable.ADDMOL))
             {
-                addmol.addAll(global.get(mixer).scope.get(vv.ADDMOL).titrations);
+                addmol.addAll(global.get(mixer).scope.get(ViableVariable.ADDMOL).titrations);
             }
-            if (global.get(mixer).scope.containsKey(vv.REMMOL))
+            if (global.get(mixer).scope.containsKey(ViableVariable.REMMOL))
             {
-                remmol.addAll(global.get(mixer).scope.get(vv.REMMOL).titrations);
+                remmol.addAll(global.get(mixer).scope.get(ViableVariable.REMMOL).titrations);
             }
 
         }
 
-        AddToReaction(protocol.mix, vv.CRN, reacs, new SymbolTableType(vv.CRN,vv.CRN,reacs));
-        AddToReaction(protocol.mix, vv.ADDMOL, reacs, new SymbolTableType(vv.ADDMOL,addmol, vv.ADDMOL));
-        AddToReaction(protocol.mix, vv.REMMOL, reacs, new SymbolTableType(vv.REMMOL,remmol, vv.REMMOL));
+        AddToReaction(protocol.mix, ViableVariable.CRN, reacs, new SymbolTableType(ViableVariable.CRN, ViableVariable.CRN,reacs));
+        AddToReaction(protocol.mix, ViableVariable.ADDMOL, reacs, new SymbolTableType(ViableVariable.ADDMOL,addmol, ViableVariable.ADDMOL));
+        AddToReaction(protocol.mix, ViableVariable.REMMOL, reacs, new SymbolTableType(ViableVariable.REMMOL,remmol, ViableVariable.REMMOL));
 
         prettyResult += euler.Generate(global.get(protocol.mix.ResultingSample).scope,level,Integer.toString(mixCount));
         prettyResult += GetSampleName(protocol.mix.ResultingSample)+".Euler = Euler"+mixCount+"\n";
 
-        prettyResult += titration.Generate(global.get(protocol.mix.ResultingSample).scope.get(vv.ADDMOL).titrations, global.get(protocol.mix.ResultingSample).scope.get(vv.REMMOL).titrations, level,Integer.toString(mixCount));
+        prettyResult += titration.Generate(global.get(protocol.mix.ResultingSample).scope.get(ViableVariable.ADDMOL).titrations, global.get(protocol.mix.ResultingSample).scope.get(ViableVariable.REMMOL).titrations, level,Integer.toString(mixCount));
         prettyResult += GetSampleName(protocol.mix.ResultingSample)+".ApplyTitration = ApplyTitration"+mixCount+"\n";
 
         return prettyResult;
@@ -201,8 +202,8 @@ public class Protocol extends CodeGenerationMethods {
         String PrettyResult = "";
         PrettyResult += "equilibrate("+ GetSampleName(protocol.equili.sample) +", "+ protocol.equili.stepSize +", "+ protocol.equili.amount + ", " + protocol.equili.timeInterval + ")\n";
 
-        if (global.containsKey(vv.SPECIE)){
-            for (String key: global.get(vv.SPECIE).species.keySet()){
+        if (global.containsKey(ViableVariable.SPECIE)){
+            for (String key: global.get(ViableVariable.SPECIE).species.keySet()){
                 if (VerifySpecie(key, local)){
                     PrettyResult += ApplyTab(level, "sample[\""+ key +"\"] = [" + GetSampleName(protocol.equili.sample) + ".sample.get(\"" + key + "\")[-1]]\n");
                 }
@@ -224,10 +225,8 @@ public class Protocol extends CodeGenerationMethods {
      * @return
      */
     public boolean VerifySpecie(String specie, HashMap<String, SymbolTableType> local){
-        if(local != null && local.containsKey(vv.CRN)){
-            if ((!local.containsKey(vv.SPECIE) || ContaionsNotUsed(local, specie)) && UsedInCRN(specie, local.get(vv.CRN).crn)){
-                return true;
-            }
+        if(local != null && local.containsKey(ViableVariable.CRN)){
+            return (!local.containsKey(ViableVariable.SPECIE) || ContaionsNotUsed(local, specie)) && UsedInCRN(specie, local.get(ViableVariable.CRN).crn);
         }
         return false;
     }
@@ -239,7 +238,7 @@ public class Protocol extends CodeGenerationMethods {
      * @return
      */
     public boolean ContaionsNotUsed(HashMap<String, SymbolTableType> sample, String specie){
-        return sample.containsKey(vv.SPECIE) && !sample.get(vv.SPECIE).species.containsKey(specie);
+        return sample.containsKey(ViableVariable.SPECIE) && !sample.get(ViableVariable.SPECIE).species.containsKey(specie);
     }
 
     /***

@@ -23,16 +23,12 @@ public class PossibleToAdd {
      * @return
      */
     public boolean CanBeAdded(String type){
-        if (type.equals(vv.INT) && AddInt == true){
+        if (type.equals(ViableVariable.INT) && AddInt == true){
             return true;
-        }else if(type.equals(vv.FLOAT) && AddFloat == true){
+        }else if(type.equals(ViableVariable.FLOAT) && AddFloat == true){
             return true;
-        }else if(type.equals(vv.SPECIE) && AddSpecie == true){
+        }else if(type.equals(ViableVariable.SPECIE) && AddSpecie == true){
             return true;
-        }else if(type.equals(vv.RATE) && AddRate == true){
-            return true;
-        }else{
-            return false;
-        }
+        }else return type.equals(ViableVariable.RATE) && AddRate == true;
     }
 }

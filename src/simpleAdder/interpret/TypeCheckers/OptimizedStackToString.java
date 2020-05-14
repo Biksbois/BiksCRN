@@ -28,7 +28,7 @@ public class OptimizedStackToString {
                 temp = "";
             }else if(IsMultDivide(stack.peek())){
                 operators.push(stack.pop());
-            }else if(stack.peek().equals(vv.power)){
+            }else if(stack.peek().equals(ViableVariable.power)){
                 numbers.push(ApplyPower(stack));
             }else if(stack.peek().equals(")")){
                 stack.pop();
@@ -36,7 +36,7 @@ public class OptimizedStackToString {
             }else if(stack.peek().equals("(")){
                 stack.pop();
                 break;
-            }else if(stack.peek().equals(vv.CYCLE)){
+            }else if(stack.peek().equals(ViableVariable.CYCLE)){
                 numbers.push("i");
                 stack.pop();
             }
@@ -102,10 +102,7 @@ public class OptimizedStackToString {
     }
 
     private boolean OutWeight(String s1, String s2) {
-        if (IsNegative(s1) != IsNegative(s2) && AreEqual(s1, s2)){
-            return true;
-        }
-        return false;
+        return IsNegative(s1) != IsNegative(s2) && AreEqual(s1, s2);
     }
 
     private boolean AreEqual(String s1, String s2) {
@@ -114,7 +111,7 @@ public class OptimizedStackToString {
         }else {
             s2 = ParseNegativeString(s2);
         }
-        return s1.equals(s2) ? true : false;
+        return s1.equals(s2);
     }
 
     private String ParseNegativeString(String s1) {
@@ -122,10 +119,7 @@ public class OptimizedStackToString {
     }
 
     private boolean IsNegative(String s) {
-        if (s.length() > 7 && '(' == s.charAt(0) && ")*(-1)".equals(s.substring(s.length()-6))){
-            return true;
-        }
-        return false;
+        return s.length() > 7 && '(' == s.charAt(0) && ")*(-1)".equals(s.substring(s.length() - 6));
     }
 
     private String ApplyPower(Stack<String> expr){
@@ -150,18 +144,14 @@ public class OptimizedStackToString {
     }
 
     private boolean IsOne(String val) {
-        if(!val.contains("i") && Float.parseFloat(val) == 1){
-            return true;
-        }else{
-            return false;
-        }
+        return !val.contains("i") && Float.parseFloat(val) == 1;
     }
 
     private String GetNext(Stack<String> expr){
         if (expr.peek().equals(")")){
             expr.pop();
             return Calculate(expr);
-        }else if(expr.peek().equals(vv.CYCLE)){
+        }else if(expr.peek().equals(ViableVariable.CYCLE)){
             expr.pop();
             return "i";
         }
@@ -172,10 +162,10 @@ public class OptimizedStackToString {
 
     private String ApplyPlusMinus(Stack<String> operators, Stack<String> numbers, Stack<String> expr){
         String lhs = "";
-        String symLHS = expr.isEmpty() ? vv.plus : IsPlusMinus(expr.peek()) ? expr.pop() : vv.plus;
+        String symLHS = expr.isEmpty() ? ViableVariable.plus : IsPlusMinus(expr.peek()) ? expr.pop() : ViableVariable.plus;
 
         if (numbers.size() == 0){
-            if (expr.peek().equals(vv.CYCLE)){
+            if (expr.peek().equals(ViableVariable.CYCLE)){
                 lhs = "i";
                 expr.pop();
             }else {
@@ -197,7 +187,7 @@ public class OptimizedStackToString {
         Boolean ZeroMet = false;
         Boolean UseResult = true;
 
-        if (numbers.peek().contains("1") && operators.peek().equals(vv.mult)){
+        if (numbers.peek().contains("1") && operators.peek().equals(ViableVariable.mult)){
             operators.pop();
             numbers.pop();
         }
@@ -208,12 +198,12 @@ public class OptimizedStackToString {
             return sRes;
         }else{
             result = Float.valueOf(numbers.pop());
-            ZeroMet = result == 0 ? true : false;
+            ZeroMet = result == 0;
         }
 
         while (!numbers.isEmpty() && !ZeroMet){
             if (IsZero(numbers.peek())){
-                if(operators.peek().equals(vv.div)){
+                if(operators.peek().equals(ViableVariable.div)){
                     TP.terminate_program("Dividing by zero is not allowed.");
                 }
                 ZeroMet = true;
@@ -222,16 +212,16 @@ public class OptimizedStackToString {
                 sRes += AssignToResult(numbers, operators, result, true) + (operators.isEmpty() ? "" : operators.pop());
                 if (!numbers.isEmpty()){
                     result = Float.valueOf(numbers.pop());
-                    ZeroMet = result == 0 ? true : false;
+                    ZeroMet = result == 0;
                 }else{
                     UseResult = false;
                 }
             }
-            else if (operators.peek().equals(vv.mult)){
+            else if (operators.peek().equals(ViableVariable.mult)){
                 result *= Float.valueOf(numbers.pop());
                 operators.pop();
 
-            }else if(operators.peek().equals(vv.div)){
+            }else if(operators.peek().equals(ViableVariable.div)){
                 result /= Float.valueOf(numbers.pop());
                 operators.pop();
             }
@@ -323,37 +313,29 @@ public class OptimizedStackToString {
     }
 
     private boolean IsZero(String peek) {
-        if(!peek.contains("i") && Float.parseFloat(peek) == 0){
-            return true;
-        }else{
-            return false;
-        }
+        return !peek.contains("i") && Float.parseFloat(peek) == 0;
     }
 
     private boolean DivideByZero(Stack<String> operators, String result) {
-        if (!operators.isEmpty() && operators.peek().equals(vv.div)){
+        if (!operators.isEmpty() && operators.peek().equals(ViableVariable.div)){
             return true;
-        }else if(result != "" && vv.div.equals(result.substring(result.length()-1))){
-            return true;
-        }else{
-            return false;
-        }
+        }else return result != "" && ViableVariable.div.equals(result.substring(result.length() - 1));
     }
 
 
     private String ApplySymbol(String sym, String value){
         if (value.contains("i")){
-            return sym.equals(vv.minus) ? "(" + value + ")*(-1)" : value;
+            return sym.equals(ViableVariable.minus) ? "(" + value + ")*(-1)" : value;
         }
-        return sym.equals(vv.minus) ? "-" + value : value;
+        return sym.equals(ViableVariable.minus) ? "-" + value : value;
     }
 
     public boolean IsMultDivide(String s){
-        return s.equals(vv.mult) || s.equals(vv.div) ? true: false;
+        return s.equals(vv.mult) || s.equals(vv.div);
     }
 
     public boolean IsPlusMinus(String s){
-        return s.equals(vv.plus) || s.equals(vv.minus) ? true: false;
+        return s.equals(vv.plus) || s.equals(vv.minus);
     }
 
     public <E> Stack<E> ReverseStack(Stack<E> entries) {

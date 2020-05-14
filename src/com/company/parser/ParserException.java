@@ -7,7 +7,7 @@ import com.company.node.*;
 @SuppressWarnings("serial")
 public class ParserException extends Exception
 {
-    private Token token;
+    private final Token token;
 
     public ParserException(@SuppressWarnings("hiding") Token token, String  message)
     {

@@ -1,22 +1,23 @@
 package com.company;
 
 /* Create an AST, then invoke our interpreter. */
+import com.company.lexer.Lexer;
+import com.company.node.Start;
+import com.company.parser.Parser;
 import simpleAdder.interpret.CompilerPhases.BetaTypeChecker;
-import com.company.parser.* ;
-import com.company.lexer.*;
-import com.company.node.*;
 import simpleAdder.interpret.CompilerPhases.CodeGenerator;
-import simpleAdder.interpret.CompilerPhases.GenerateAST;
 import simpleAdder.interpret.CompilerPhases.IntermediateCodeGeneration;
 import simpleAdder.interpret.PythonFileGenerator;
 
-import java.io.* ;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PushbackReader;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        //System.out.println("test");
         PythonFileGenerator PY = new PythonFileGenerator("python.py");
         String[] filepath = new String[1];
 
@@ -69,6 +70,7 @@ public class Main {
                 ast.apply(generator);
 
                 PY.WriteInputfile(generator.GetPython());
+                System.out.println("Build was succesful ;)");
             }
             catch (Exception e) {
                 System.out.println (e) ;

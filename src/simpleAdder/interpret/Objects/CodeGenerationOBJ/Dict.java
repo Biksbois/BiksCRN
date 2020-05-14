@@ -27,7 +27,7 @@ public class Dict extends CodeGenerationMethods {
         String PrettyResult = "";
         PrettyResult += ApplyTab(level, GenerateDictInit());
 
-        if (!local.containsKey(vv.CRN)){
+        if (!local.containsKey(ViableVariable.CRN)){
             return PrettyResult;
         }
 
@@ -53,7 +53,7 @@ public class Dict extends CodeGenerationMethods {
     {
         String PrettyResult = "";
 
-        if (global.containsKey(vv.SPECIE)){
+        if (global.containsKey(ViableVariable.SPECIE)){
             PrettyResult += ApplyTab(level, GenerateDictInit());
             level++;
             PrettyResult += GenerateDictFromHashmap(global, level);
@@ -83,13 +83,13 @@ public class Dict extends CodeGenerationMethods {
         String PrettyResult = "";
         HashMap<String, String> UsedSpecie = new HashMap<>();
 
-        if(local.containsKey(vv.CRN)) {
-            if (local.containsKey(vv.SPECIE)){
-                UniqueSpecieToHash(local.get(vv.SPECIE).species, local.get(vv.CRN).crn, UsedSpecie);
+        if(local.containsKey(ViableVariable.CRN)) {
+            if (local.containsKey(ViableVariable.SPECIE)){
+                UniqueSpecieToHash(local.get(ViableVariable.SPECIE).species, local.get(ViableVariable.CRN).crn, UsedSpecie);
 
             }
-            if (global.containsKey(vv.SPECIE)){
-                UniqueSpecieToHash(global.get(vv.SPECIE).species, local.get(vv.CRN).crn, UsedSpecie);
+            if (global.containsKey(ViableVariable.SPECIE)){
+                UniqueSpecieToHash(global.get(ViableVariable.SPECIE).species, local.get(ViableVariable.CRN).crn, UsedSpecie);
             }
         }
 
@@ -113,8 +113,8 @@ public class Dict extends CodeGenerationMethods {
 
         String PrettyResult = "";
         HashMap<String, String> UsedSpecie = new HashMap<>();
-        if (global.containsKey(vv.SPECIE)){
-            UniqueSpecieToHash(global.get(vv.SPECIE).species, UsedSpecie);
+        if (global.containsKey(ViableVariable.SPECIE)){
+            UniqueSpecieToHash(global.get(ViableVariable.SPECIE).species, UsedSpecie);
         }
 
         if(UsedSpecie != null)

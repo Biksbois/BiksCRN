@@ -39,13 +39,13 @@ public class Temporary {
     public Temporary(String type, String id, String method){
         switch (type){
             case ViableVariable.INT:
-                Prim = check.ValueType.NewPrimitiveType(Prim, vv.INT, id, method, true, true, false, false, true, false);
+                Prim = check.ValueType.NewPrimitiveType(Prim, ViableVariable.INT, id, method, true, true, false, false, true, false);
                 break;
             case ViableVariable.SPECIE:
-                Prim = check.ValueType.NewPrimitiveType(Prim, vv.SPECIE, id, method, true, true, true, false, false, false);
+                Prim = check.ValueType.NewPrimitiveType(Prim, ViableVariable.SPECIE, id, method, true, true, true, false, false, false);
                 break;
             case ViableVariable.FLOAT:
-                Prim = check.ValueType.NewPrimitiveType(Prim, vv.FLOAT, id, method, true, true, false, false, true, true);
+                Prim = check.ValueType.NewPrimitiveType(Prim, ViableVariable.FLOAT, id, method, true, true, false, false, true, true);
                 break;
             case ViableVariable.FUNC:
                 Func = check.FuncType.CheckFunction(Func, id, method);
@@ -177,7 +177,7 @@ public class Temporary {
             return Func.GetInstanece();
         }else if(crn != null)
         {
-            return new BiksPair<>(vv.CRN,new SymbolTableType(vv.CRN,vv.CRN,crn));
+            return new BiksPair<>(ViableVariable.CRN,new SymbolTableType(ViableVariable.CRN, ViableVariable.CRN,crn));
         }
 
         TH.terminate_program("No possible outcome was met (GetInstanece)");
@@ -192,7 +192,7 @@ public class Temporary {
     {
         if(TitList != null && Tit == null)
         {
-            return new BiksPair<>(key,new SymbolTableType(key,TitList,vv.TITRATIONLIST));
+            return new BiksPair<>(key,new SymbolTableType(key,TitList, ViableVariable.TITRATIONLIST));
         }
         else
         {
@@ -206,10 +206,7 @@ public class Temporary {
      * @return
      */
     public boolean StackinstanceExists(){
-        if (Prim != null || Func != null || Reac != null || LogExpr != null){
-            return true;
-        }
-        return false;
+        return Prim != null || Func != null || Reac != null || LogExpr != null;
     }
 
     /***

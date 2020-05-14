@@ -1,4 +1,5 @@
 package simpleAdder.interpret.Objects.SymolTableOBJ;
+import simpleAdder.interpret.GetMethods.ViableVariable;
 import simpleAdder.interpret.TypeCheckers.BiksPair;
 import simpleAdder.interpret.TypeCheckers.Checker;
 
@@ -33,7 +34,7 @@ public class function extends Checker {
      * Creates a pair of string and symboltable type, the symboltabletype will contain the current instance of function.
      */
     public BiksPair<String, SymbolTableType> GetInstanece(){
-        return new BiksPair<>(this.id, new SymbolTableType(this.id, vv.FUNC, this));
+        return new BiksPair<>(this.id, new SymbolTableType(this.id, ViableVariable.FUNC, this));
     }
 
     /**

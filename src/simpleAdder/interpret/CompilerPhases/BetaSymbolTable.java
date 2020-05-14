@@ -2,6 +2,7 @@ package simpleAdder.interpret.CompilerPhases;
 
 import com.company.node.*;
 import simpleAdder.interpret.GetMethods.Get;
+import simpleAdder.interpret.GetMethods.ViableVariable;
 import simpleAdder.interpret.Objects.SymolTableOBJ.*;
 import simpleAdder.interpret.TypeCheckers.BetaStackToString;
 import simpleAdder.interpret.TypeCheckers.BiksPair;
@@ -74,15 +75,15 @@ public class BetaSymbolTable extends Checker {
     }
 
     private void SpeciesToCurrentScope(HashMap<String, SymbolTableType> scope, String id, SymbolTableType value, Token token){
-        if(!scope.containsKey(vv.SPECIE)) {
-            scope.put(vv.SPECIE, new SymbolTableType(vv.SPECIE));
+        if(!scope.containsKey(ViableVariable.SPECIE)) {
+            scope.put(ViableVariable.SPECIE, new SymbolTableType(ViableVariable.SPECIE));
         }
 
-        if (scope.containsKey(vv.SPECIE) && !scope.get(vv.SPECIE).species.containsKey(id)){
-            scope.get(vv.SPECIE).species.put(id, value.value);
+        if (scope.containsKey(ViableVariable.SPECIE) && !scope.get(ViableVariable.SPECIE).species.containsKey(id)){
+            scope.get(ViableVariable.SPECIE).species.put(id, value.value);
         }
         else {
-            terminate.VarExistsAlready(token, vv.SPECIE, id, "PutInCurrentScope");
+            terminate.VarExistsAlready(token, ViableVariable.SPECIE, id, "PutInCurrentScope");
             //TH.terminate_program("Species \"" + id + "\" already exist (SpeciesToCurrentScope)");
         }
     }
@@ -101,11 +102,11 @@ public class BetaSymbolTable extends Checker {
 
     public void reactionToReaction(BiksPair<String, String> R, Boolean isFirst, Token token){
         if (IsTempActive()){
-            if (!VerifyKeyAndTypeInBoth(R.getKey(), vv.SPECIE)){
-                terminate.WrongType(token, vv.SPECIE, TypeForMessage(R.getKey()), R.getKey(), "reactionToReaction");
+            if (!VerifyKeyAndTypeInBoth(R.getKey(), ViableVariable.SPECIE)){
+                terminate.WrongType(token, ViableVariable.SPECIE, TypeForMessage(R.getKey()), R.getKey(), "reactionToReaction");
                 //TH.terminate_program("\"" + R.getKey() + "\" should be of type specie. It either does not exists or is the wrong type.");
             }else if(!isWholePositiveFloat(R.getValue())){
-                terminate.ShouldBeWhole(token, vv.SPECIE,R.getKey(), R.getValue(),"reactionToReaction");
+                terminate.ShouldBeWhole(token, ViableVariable.SPECIE,R.getKey(), R.getValue(),"reactionToReaction");
                 //TH.terminate_program("The float value \"" + R.getValue() + "\" is not a whole number, which is should be");
             }
             else{
@@ -120,7 +121,7 @@ public class BetaSymbolTable extends Checker {
         }if (fVal.contains(".")){
             String sub = fVal.split("\\.")[1];
             String zeroes = GetZeroes(sub.length());
-            return sub.equals(zeroes) ? true : false;
+            return sub.equals(zeroes);
         }else{
             return true;
         }
@@ -147,7 +148,7 @@ public class BetaSymbolTable extends Checker {
         {
             TH.terminate_program("Temp instance was null");
         }
-        return temp.Func.parameters.size() == 0 ? true : false;
+        return temp.Func.parameters.size() == 0;
     }
 
     /***
@@ -159,12 +160,12 @@ public class BetaSymbolTable extends Checker {
     {
         if(sample != null && sample.containsKey(key)) {
             return sample.get(key).value;
-        }else if(sample != null && sample.containsKey(vv.SPECIE) && sample.get(vv.SPECIE).species.containsKey(key)){
-            return sample.get(vv.SPECIE).species.get(key);
+        }else if(sample != null && sample.containsKey(ViableVariable.SPECIE) && sample.get(ViableVariable.SPECIE).species.containsKey(key)){
+            return sample.get(ViableVariable.SPECIE).species.get(key);
         } else if(st.containsKey(key)) {
             return st.get(key).value;
-        }else if(st.containsKey(vv.SPECIE) && st.get(vv.SPECIE).species.containsKey(key)){
-            return st.get(vv.SPECIE).species.get(key);
+        }else if(st.containsKey(ViableVariable.SPECIE) && st.get(ViableVariable.SPECIE).species.containsKey(key)){
+            return st.get(ViableVariable.SPECIE).species.get(key);
         } else {
             TH.terminate_program("Key "+ key +" is not initialized (GetValue)");
             return "";
@@ -203,15 +204,15 @@ public class BetaSymbolTable extends Checker {
         {
             if (sample.containsKey(key)){
                 return sample.get(key).type;
-            }else if(sample.containsKey(vv.SPECIE) && sample.get(vv.SPECIE).species.containsKey(key)){
-                return vv.SPECIE;
+            }else if(sample.containsKey(ViableVariable.SPECIE) && sample.get(ViableVariable.SPECIE).species.containsKey(key)){
+                return ViableVariable.SPECIE;
             }
         }
 
         if(st.containsKey(key)){
             return st.get(key).type;
-        }else if(st.containsKey(vv.SPECIE) && st.get(vv.SPECIE).species.containsKey(key)){
-            return vv.SPECIE;
+        }else if(st.containsKey(ViableVariable.SPECIE) && st.get(ViableVariable.SPECIE).species.containsKey(key)){
+            return ViableVariable.SPECIE;
         }
         else if(IsFuncActive())
         {
@@ -236,15 +237,15 @@ public class BetaSymbolTable extends Checker {
         {
             if (sample.containsKey(key)){
                 return sample.get(key).type;
-            }else if(sample.containsKey(vv.SPECIE) && sample.get(vv.SPECIE).species.containsKey(key)){
-                return vv.SPECIE;
+            }else if(sample.containsKey(ViableVariable.SPECIE) && sample.get(ViableVariable.SPECIE).species.containsKey(key)){
+                return ViableVariable.SPECIE;
             }
         }
 
         if(st.containsKey(key)){
             return st.get(key).type;
-        }else if(st.containsKey(vv.SPECIE) && st.get(vv.SPECIE).species.containsKey(key)){
-            return vv.SPECIE;
+        }else if(st.containsKey(ViableVariable.SPECIE) && st.get(ViableVariable.SPECIE).species.containsKey(key)){
+            return ViableVariable.SPECIE;
         }
         return "";
     }
@@ -254,15 +255,15 @@ public class BetaSymbolTable extends Checker {
         {
             if (sample.containsKey(key) && sample.get(key).value != null){
                 return sample.get(key).value;
-            }else if(sample.containsKey(vv.SPECIE) && sample.get(vv.SPECIE).species.containsKey(key)){
-                return sample.get(vv.SPECIE).species.get(key);
+            }else if(sample.containsKey(ViableVariable.SPECIE) && sample.get(ViableVariable.SPECIE).species.containsKey(key)){
+                return sample.get(ViableVariable.SPECIE).species.get(key);
             }
         }
 
         if(st.containsKey(key) && st.get(key).value != null){
             return st.get(key).value;
-        }else if(st.containsKey(vv.SPECIE) && st.get(vv.SPECIE).species.containsKey(key)){
-            return st.get(vv.SPECIE).species.get(key);
+        }else if(st.containsKey(ViableVariable.SPECIE) && st.get(ViableVariable.SPECIE).species.containsKey(key)){
+            return st.get(ViableVariable.SPECIE).species.get(key);
         }
         return "";
     }
@@ -300,13 +301,9 @@ public class BetaSymbolTable extends Checker {
     public boolean VerifyKeyAndTypeInScope(String key, String type){
         if (sample == null){
             return  false;
-        } else if (type.equals(vv.SPECIE) && sample.containsKey(vv.SPECIE) && sample.get(vv.SPECIE).species.containsKey(key)) {
+        } else if (type.equals(ViableVariable.SPECIE) && sample.containsKey(ViableVariable.SPECIE) && sample.get(ViableVariable.SPECIE).species.containsKey(key)) {
             return true;
-        }else if (sample.containsKey(key) && sample.get(key).type.equals(type)){
-            return true;
-        }else {
-            return false;
-        }
+        }else return sample.containsKey(key) && sample.get(key).type.equals(type);
     }
 
     /***
@@ -316,13 +313,9 @@ public class BetaSymbolTable extends Checker {
      * @return
      */
     public Boolean VerifyKeyAndTypeInST(String key, String type){
-        if (type.equals(vv.SPECIE) && st.containsKey(vv.SPECIE) && st.get(vv.SPECIE).species.containsKey(key)) {
+        if (type.equals(ViableVariable.SPECIE) && st.containsKey(ViableVariable.SPECIE) && st.get(ViableVariable.SPECIE).species.containsKey(key)) {
             return true;
-        } else if (st.containsKey(key) && st.get(key).type.equals(type)) {
-            return true;
-        } else {
-            return false;
-        }
+        } else return st.containsKey(key) && st.get(key).type.equals(type);
     }
 
     /***
@@ -334,11 +327,7 @@ public class BetaSymbolTable extends Checker {
     public Boolean VerifyKeyAndTypeInBoth(String key, String type){
         if (VerifyKeyAndTypeInST(key, type)){
             return true;
-        }else if(VerifyKeyAndTypeInScope(key, type)){
-            return  true;
-        }else{
-            return false;
-        }
+        }else return VerifyKeyAndTypeInScope(key, type);
     }
 
     //</editor-fold>
@@ -350,7 +339,7 @@ public class BetaSymbolTable extends Checker {
      */
     public void NodeToCurrentScope(Token token){
         BiksPair<String, SymbolTableType> pair = temp.GetInstanece();
-        if (pair.getValue().type.equals(vv.SPECIE)){
+        if (pair.getValue().type.equals(ViableVariable.SPECIE)){
             SpeciesToCurrentScope(CurrentScope(), pair.getKey(), pair.getValue(), token);
         }
         else{
@@ -394,7 +383,7 @@ public class BetaSymbolTable extends Checker {
      */
     public void NodeToCurrentScope(ASingleRates node){
         String id = node.getTString().toString().trim();
-        String type = check.vv.RATE;
+        String type = ViableVariable.RATE;
         String value = node.getTFloat().toString();
         PutInCurrentScope(id,type,value, node.getTFloat());
     }
@@ -488,9 +477,9 @@ public class BetaSymbolTable extends Checker {
      * @param type
      */
     public void SymbolToStack(String  value, String type){
-        if (type.equals(vv.Variable)){
+        if (type.equals(ViableVariable.Variable)){
             type = GetType(value);
-            if (type.equals(vv.SPECIE) && loopSide != null){
+            if (type.equals(ViableVariable.SPECIE) && loopSide != null){
                 loopSide.push(value);
                 return;
             }
@@ -514,17 +503,11 @@ public class BetaSymbolTable extends Checker {
     }
 
     public boolean StackinstanceExists(){
-        if ((IsTempActive() && temp.StackinstanceExists()) || tempProtocol != null || loopSide != null){
-            return true;
-        }
-        return false;
+        return (IsTempActive() && temp.StackinstanceExists()) || tempProtocol != null || loopSide != null;
     }
 
     public boolean IsTempActive(){
-        if (temp == null){
-            return false;
-        }
-        return true;
+        return temp != null;
     }
 
     public void SetBoolean(Boolean bool, String method){
@@ -563,7 +546,7 @@ public class BetaSymbolTable extends Checker {
             if (st.containsKey(str)){
                 type = GetType(str);
                 value = GetValue(str);
-            }else if(st.containsKey(vv.SPECIE) && st.get(vv.SPECIE).species.containsKey(str)){
+            }else if(st.containsKey(ViableVariable.SPECIE) && st.get(ViableVariable.SPECIE).species.containsKey(str)){
                 if (VerifySpecie(str)){
                     return str;
                 }else{
@@ -574,7 +557,7 @@ public class BetaSymbolTable extends Checker {
                 if (sample.containsKey(str)){
                     type = GetType(str);
                     value = GetValue(str);
-                }else if(sample.containsKey(vv.SPECIE) && sample.get(vv.SPECIE).species.containsKey(str)){
+                }else if(sample.containsKey(ViableVariable.SPECIE) && sample.get(ViableVariable.SPECIE).species.containsKey(str)){
                     if (VerifySpecie(str)){
                         return str;
                     }else{
@@ -586,7 +569,7 @@ public class BetaSymbolTable extends Checker {
                 TH.terminate_program("Value " + str + " is not initialized");
             }
 
-            if (value != null && type.equals(vv.INT) || type.equals(vv.FLOAT)){
+            if (value != null && type.equals(ViableVariable.INT) || type.equals(ViableVariable.FLOAT)){
                 return value;
             }else{
                 TH.terminate_program("You cannot compare type " + type + " in titration");
@@ -602,13 +585,11 @@ public class BetaSymbolTable extends Checker {
      * @return
      */
     public boolean VerifySpecie(String specie){
-        if(sample != null && sample.containsKey(vv.CRN)){
-            if (st.containsKey(vv.SPECIE) && UsedInCRN(specie, sample.get(vv.CRN).crn)){
+        if(sample != null && sample.containsKey(ViableVariable.CRN)){
+            if (st.containsKey(ViableVariable.SPECIE) && UsedInCRN(specie, sample.get(ViableVariable.CRN).crn)){
                 return true;
             }
-            if (sample.containsKey(vv.SPECIE) && UsedInCRN(specie, sample.get(vv.CRN).crn)){
-                return true;
-            }
+            return sample.containsKey(ViableVariable.SPECIE) && UsedInCRN(specie, sample.get(ViableVariable.CRN).crn);
         }
         return false;
     }
