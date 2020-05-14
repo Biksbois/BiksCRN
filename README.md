@@ -4,7 +4,31 @@ BiksCRN is a first order programming languege used to simulate Chemical Reaction
 
 How get started
 ---------------
-###Python
+When using BiksCrn some preparations are necessary, these will be covered briefly here
+#### Build Project
+Firstly when building the .jar file. Click on the **file**->**Project Structure**->**artifacts**. Then click on the **plus(+)**, then clik on the **JAR** and select the **From modules with dependencies**. When this is done the **main class** should be selected in this case it is called **com.company.Main**. When this is done click **ok**, and **apply** the changes and click in the **project structure menu**. Now click on the **build menue** and **click build**.
+
+#### Python Packages
+Since the compiled program will be a **.py file** it is requirement to install [python](https://www.python.org/downloads/).
+When installing python, note that it is important that the boxes for **enviorment variables** and the **pip installation**.
+
+After succesful installation some pakages that are required to run the target code these are:
+* numpy
+* matplotlib
+* scipy
+* itertools
+* threading
+* math
+* warnings
+
+To install the pakages trough pip a comman like this should in the terminal "pip install numpy"
+
+#### Executing the .jar
+There is a couple diffrent ways to give arguments to the .jar file to tell it which program should be compiled. 
+1. Giving the path to the program trough the terminal as a program argument like so "java -jar SableCC_V3.jar [path]"
+1. Dont give it an argument, and follow the intruction given by the compiler.
+
+The path can either be the absolute path or a path relative to the compiler folder.
 
 Example
 -------
