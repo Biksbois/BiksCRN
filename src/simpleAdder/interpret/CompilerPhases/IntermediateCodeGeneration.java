@@ -1,18 +1,21 @@
 package simpleAdder.interpret.CompilerPhases;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Scanner;
-import java.util.regex.*;
+import java.util.regex.MatchResult;
+import java.util.regex.Pattern;
 
 public class IntermediateCodeGeneration {
 
     String rawPath;
-    String Codename;
     String OutputName = "BiksIntermediate.sa";
 
-    public IntermediateCodeGeneration(String path,String codename)
+    public IntermediateCodeGeneration(String path)
     {
-        Codename = codename;
         rawPath = path;
     }
 
@@ -24,7 +27,7 @@ public class IntermediateCodeGeneration {
     {
         String data = "";
         try {
-            File myObj = new File(rawPath+Codename);
+            File myObj = new File(rawPath);
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 data += myReader.nextLine();
@@ -44,16 +47,21 @@ public class IntermediateCodeGeneration {
      */
     private void WriteInputfile(String code) throws IOException {
         try{
-            FileWriter fw = new FileWriter(rawPath + OutputName);
+            FileWriter fw = new FileWriter(Paths.get("").toAbsolutePath().toString() + OutputName);
             fw.write(code);
             fw.close();
         }catch (IOException e)
         {
-            System.err.println("File path did not exist: "+ rawPath+OutputName);
+            System.err.println("File path did not exist: "+ Paths.get("").toAbsolutePath().toString()+OutputName);
             System.exit(1);
         }
 
 
+    }
+
+    public String GetPath()
+    {
+        return Paths.get("").toAbsolutePath().toString()+OutputName;
     }
 
     /***

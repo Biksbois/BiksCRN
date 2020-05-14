@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PushbackReader;
-import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Main {
@@ -41,18 +40,17 @@ public class Main {
                     filepath[0] = args[0];
                 }
         }
-
-
-        String path = Paths.get("").toAbsolutePath().toString() + "\\";
-        String inputFile = "BiksCRN.sa";
-        IntermediateCodeGeneration intermidiatCodeGeneration = new IntermediateCodeGeneration(path,inputFile);
+        String path = filepath[0];
+        //String path = Paths.get("").toAbsolutePath().toString() + "\\";
+        //String inputFile = "BiksCRN.sa";
+        IntermediateCodeGeneration intermidiatCodeGeneration = new IntermediateCodeGeneration(path);
         intermidiatCodeGeneration.Generate();
-
-        if (filepath.length > 0) {
+        path = intermidiatCodeGeneration.GetPath();
+        if (path.length() > 0) {
             try {
                 // Character -> Token
                 Lexer lexer = new Lexer (new PushbackReader(
-                        new FileReader(filepath[0]), 1024));
+                        new FileReader(path), 1024));
 
                 Parser parser = new Parser(lexer);
 
