@@ -1,9 +1,9 @@
 package simpleAdder.interpret.Objects.CodeGenerationOBJ;
 
-import javafx.util.Pair;
 import simpleAdder.interpret.Objects.SymolTableOBJ.reaction;
 import simpleAdder.interpret.Objects.SymolTableOBJ.SymbolTableType;
 import simpleAdder.interpret.GetMethods.ViableVariable;
+import simpleAdder.interpret.TypeCheckers.BiksPair;
 
 import java.util.HashMap;
 import java.util.List;
@@ -181,8 +181,8 @@ public class Dict extends CodeGenerationMethods {
      * @Param reactiones
      * @return
      */
-    private boolean CheckOnePairlist(List<Pair<String, String>> pairs, String specie){
-        for (Pair<String, String> p: pairs) {
+    private boolean CheckOnePairlist(List<BiksPair<String, String>> pairs, String specie){
+        for (BiksPair<String, String> p: pairs) {
             if (specie.equals(p.getKey())){
                 return true;
             }

@@ -1,6 +1,5 @@
 package simpleAdder.interpret.TypeCheckers;
 
-import javafx.util.Pair;
 import simpleAdder.interpret.Objects.SymolTableOBJ.function;
 import simpleAdder.interpret.Objects.SymolTableOBJ.parameter;
 
@@ -69,7 +68,7 @@ public class FuncChecker extends Checker {
      * @param func
      * @return
      */
-    public Pair<Boolean, Stack<String>> ParametersToStack(List<parameter> parameters, function func){
+    public BiksPair<Boolean, Stack<String>> ParametersToStack(List<parameter> parameters, function func){
         if (func == null || func.body == null || parameters == null){
             TH.terminate_program("The stack or parameter list is null, handle this (ParameterToExpressoin)");
         }
@@ -101,6 +100,6 @@ public class FuncChecker extends Checker {
             clone.push(arr.toString());
         }
 
-        return new Pair<>(IsCalcable, clone);
+        return new BiksPair<>(IsCalcable, clone);
     }
 }

@@ -1,12 +1,12 @@
 package simpleAdder.interpret.Objects.SymolTableOBJ;
 
-import javafx.util.Pair;
 import simpleAdder.interpret.TypeCheckers.BiksPair;
 import simpleAdder.interpret.TypeCheckers.Check;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.function.BiConsumer;
 
 public class reaction extends Check {
     public String rateRhs = null;
@@ -16,8 +16,9 @@ public class reaction extends Check {
     public boolean isOneway = false;
     public List<BiksPair<String,String>> rhsPair = null;
     public List<BiksPair<String,String>> lhsPair = null;
-    public Pair<String,String> lhsDerivedEq = null;
-    public Pair<String,String> rhsDerivedEq = null;
+
+    public BiksPair<String,String> lhsDerivedEq = null;
+    public BiksPair<String,String> rhsDerivedEq = null;
 
 
     public boolean isRhsSet()

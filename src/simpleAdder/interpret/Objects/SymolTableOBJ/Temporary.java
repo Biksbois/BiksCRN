@@ -1,6 +1,5 @@
 package simpleAdder.interpret.Objects.SymolTableOBJ;
 
-import javafx.util.Pair;
 import simpleAdder.interpret.CompilerPhases.TerminateProgram;
 import simpleAdder.interpret.TypeCheckers.BiksPair;
 import simpleAdder.interpret.TypeCheckers.Check;
@@ -149,7 +148,7 @@ public class Temporary {
      */
     public void VerifyAndSetRate(function func, String method){
         check.FuncType.VerifyParameters(func, Para);
-        Pair<Boolean, Stack<String>> pair = check.FuncType.ParametersToStack(Para, func);
+        BiksPair<Boolean, Stack<String>> pair = check.FuncType.ParametersToStack(Para, func);
         if (pair.getKey()){
             Reac.SetRate(check.StackType.Calculate(pair.getValue()));
         }else if(!pair.getKey() && pair.getValue() != null){
@@ -178,7 +177,7 @@ public class Temporary {
             return Func.GetInstanece();
         }else if(crn != null)
         {
-            return new Pair<>(vv.CRN,new SymbolTableType(vv.CRN,vv.CRN,crn));
+            return new BiksPair<>(vv.CRN,new SymbolTableType(vv.CRN,vv.CRN,crn));
         }
 
         TH.terminate_program("No possible outcome was met (GetInstanece)");
