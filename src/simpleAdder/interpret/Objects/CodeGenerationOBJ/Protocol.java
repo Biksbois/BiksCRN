@@ -1,11 +1,11 @@
 package simpleAdder.interpret.Objects.CodeGenerationOBJ;
 
-import javafx.util.Pair;
 import simpleAdder.interpret.Objects.ProtocolOBJ.Mix;
 import simpleAdder.interpret.Objects.SymolTableOBJ.reaction;
 import simpleAdder.interpret.Objects.SymolTableOBJ.protocolOperation;
 import simpleAdder.interpret.Objects.SymolTableOBJ.SymbolTableType;
 import simpleAdder.interpret.Objects.SymolTableOBJ.titration;
+import simpleAdder.interpret.TypeCheckers.BiksPair;
 import simpleAdder.interpret.TypeCheckers.Check;
 
 import java.util.*;
@@ -265,8 +265,8 @@ public class Protocol extends CodeGenerationMethods {
      * @Param specie
      * @return
      */
-    private boolean CheckOnePairlist(List<Pair<String, String>> pairs, String specie){
-        for (Pair<String, String> p: pairs) {
+    private boolean CheckOnePairlist(List<BiksPair<String, String>> pairs, String specie){
+        for (BiksPair<String, String> p: pairs) {
             if (specie.equals(p.getKey())){
                 return true;
             }

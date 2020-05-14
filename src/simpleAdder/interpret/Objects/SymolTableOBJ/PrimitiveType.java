@@ -1,6 +1,6 @@
 package simpleAdder.interpret.Objects.SymolTableOBJ;
 
-import javafx.util.Pair;
+import simpleAdder.interpret.TypeCheckers.BiksPair;
 import simpleAdder.interpret.TypeCheckers.PossibleToAdd;
 
 import java.util.Stack;
@@ -64,7 +64,7 @@ public class PrimitiveType {
         return stack;
     }
 
-    public Pair<String, SymbolTableType> GetIntance(){
-        return new Pair<>(ID, new SymbolTableType(ID, type, result));
+    public BiksPair<String, SymbolTableType> GetIntance(){
+        return new BiksPair<>(ID, new SymbolTableType(ID, type, result));
     }
 }

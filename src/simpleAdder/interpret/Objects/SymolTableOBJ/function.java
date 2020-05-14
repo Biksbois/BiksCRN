@@ -1,5 +1,5 @@
 package simpleAdder.interpret.Objects.SymolTableOBJ;
-import javafx.util.Pair;
+import simpleAdder.interpret.TypeCheckers.BiksPair;
 import simpleAdder.interpret.TypeCheckers.Checker;
 
 import java.util.ArrayList;
@@ -32,8 +32,8 @@ public class function extends Checker {
     /**
      * Creates a pair of string and symboltable type, the symboltabletype will contain the current instance of function.
      */
-    public Pair<String, SymbolTableType> GetInstanece(){
-        return new Pair<>(this.id, new SymbolTableType(this.id, vv.FUNC, this));
+    public BiksPair<String, SymbolTableType> GetInstanece(){
+        return new BiksPair<>(this.id, new SymbolTableType(this.id, vv.FUNC, this));
     }
 
     /**
