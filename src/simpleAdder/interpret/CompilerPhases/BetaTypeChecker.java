@@ -2,12 +2,12 @@ package simpleAdder.interpret.CompilerPhases;
 
 import com.company.analysis.DepthFirstAdapter;
 import com.company.node.*;
-import javafx.util.Pair;
 import simpleAdder.interpret.GetMethods.Get;
 import simpleAdder.interpret.Objects.SymolTableOBJ.parameter;
 import simpleAdder.interpret.Objects.SymolTableOBJ.protocolOperation;
 import simpleAdder.interpret.Objects.SymolTableOBJ.reaction;
 import simpleAdder.interpret.TypeCheckers.BetaStackCalculator;
+import simpleAdder.interpret.TypeCheckers.BiksPair;
 
 import java.util.*;
 
@@ -355,7 +355,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         String specie = node.getTString().toString().trim();
         String value = FactorToValues(node.getFactor());
-        st.reactionToReaction(new Pair<>(specie,value), true, node.getTString());
+        st.reactionToReaction(new BiksPair<>(specie,value), true, node.getTString());
         node.getReactant().apply(this);
     }
 
@@ -370,7 +370,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         String specie = node.getTString().toString().trim();
         String value = "1";
-        st.reactionToReaction(new Pair<>(specie,value), true, node.getTString());
+        st.reactionToReaction(new BiksPair<>(specie,value), true, node.getTString());
         node.getReactant().apply(this);
     }
 
@@ -385,7 +385,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         String specie = node.getTString().toString().trim();
         String value = "1";
-        st.reactionToReaction(new Pair<>(specie,value), false, node.getTString());
+        st.reactionToReaction(new BiksPair<>(specie,value), false, node.getTString());
     }
 
     /***
@@ -399,7 +399,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         String specie = node.getTString().toString().trim();
         String value = FactorToValues(node.getFactor());
-        st.reactionToReaction(new Pair<>(specie,value), false, node.getTString());
+        st.reactionToReaction(new BiksPair<>(specie,value), false, node.getTString());
     }
 
     /***
@@ -724,7 +724,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         {
             st.AddStringToField(get.Id(node), "caseASampleProtocolbody");
 
-            Pair<Boolean, String> pair = st.tempProtocol.split.IsDistributionvalueValid();
+            BiksPair<Boolean, String> pair = st.tempProtocol.split.IsDistributionvalueValid();
             if (!pair.getKey()){
                 terminate.terminate_program(pair.getValue() + " (caseASplitSampleref)");
             }

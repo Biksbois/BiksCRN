@@ -1,6 +1,6 @@
 package simpleAdder.interpret.Objects.ProtocolOBJ;
 
-import javafx.util.Pair;
+import simpleAdder.interpret.TypeCheckers.BiksPair;
 import simpleAdder.interpret.TypeCheckers.PossibleToAdd;
 
 import java.util.ArrayList;
@@ -22,11 +22,11 @@ public class Split {
      * Checks if the sample is valid.
      * @return Pair of a boolean and a string, which denotes what type of error occurred, and if the program should terminate.
      */
-    public Pair<Boolean, String> IsDistributionvalueValid(){
+    public BiksPair<Boolean, String> IsDistributionvalueValid(){
         double result = 0.0;
 
         if (ResultingSamples.size() != DestributionValue.size()){
-            return new Pair<>(false, "When splitting sample " + SplitSample + " there should be an equal amount of Sampels to split to " +
+            return new BiksPair<>(false, "When splitting sample " + SplitSample + " there should be an equal amount of Sampels to split to " +
                     "(" + ResultingSamples.size() + ") and slices (" + DestributionValue.size() + ")");
         }
 
@@ -37,7 +37,7 @@ public class Split {
                 System.out.println("Value in distributionValue could not be parsed to a float (Split)");
             }
         }
-        return result <= 1.0 ? new Pair<>(true, "") : new Pair<>(false, "The distribution value in split should not equal a value higher than 1. The value is: " + result);
+        return result <= 1.0 ? new BiksPair<>(true, "") : new BiksPair<>(false, "The distribution value in split should not equal a value higher than 1. The value is: " + result);
     }
 
     /**
