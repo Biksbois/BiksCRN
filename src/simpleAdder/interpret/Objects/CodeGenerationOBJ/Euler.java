@@ -1,10 +1,10 @@
 package simpleAdder.interpret.Objects.CodeGenerationOBJ;
 
-import javafx.util.Pair;
 import simpleAdder.interpret.Objects.SymolTableOBJ.reaction;
 import simpleAdder.interpret.Objects.SymolTableOBJ.SymbolTableType;
 import simpleAdder.interpret.TypeCheckers.BetaStackToString;
 import simpleAdder.interpret.GetMethods.ViableVariable;
+import simpleAdder.interpret.TypeCheckers.BiksPair;
 import simpleAdder.interpret.TypeCheckers.OptimizedStackToString;
 
 import java.util.HashMap;
@@ -110,7 +110,7 @@ public class Euler extends CodeGenerationMethods {
         return PrettyResult + "\n";
     }
 
-    public void Refragtor(List<Pair<String,String>> Side)
+    public void Refragtor(List<BiksPair<String,String>> Side)
     {
         for (int i = 0; i < Side.size(); i++)
         {
@@ -119,7 +119,7 @@ public class Euler extends CodeGenerationMethods {
                 if(Side.get(i).getKey().equals(Side.get(j).getKey()))
                 {
                     String Value = String.valueOf(Integer.valueOf(Side.get(i).getValue()) + Integer.valueOf(Side.get(j).getValue()));
-                    Pair<String, String> result = new Pair<>(Side.get(i).getKey(),Value);
+                    BiksPair<String, String> result = new BiksPair<>(Side.get(i).getKey(),Value);
                     Side.remove(j);
                     Side.remove(i);
                     Side.add(i,result);
@@ -155,24 +155,24 @@ public class Euler extends CodeGenerationMethods {
 
     private void AddSpecieHash(HashMap<String,String> Species, reaction reac)
     {
-        for (Pair<String, String> p : reac.rhsPair) {
+        for (BiksPair<String, String> p : reac.rhsPair) {
             if (!Species.containsKey(p.getKey())){
                 Species.put(p.getKey(),"");
             }
         }
     }
 
-    private Pair<String,String> GenerateDerivedEQ(int rNum,String rate, List<Pair<String,String>> reac, HashMap<String,String> Species)
+    private BiksPair<String,String> GenerateDerivedEQ(int rNum,String rate, List<BiksPair<String,String>> reac, HashMap<String,String> Species)
     {
         String name = "r"+ rNum;
         String Value = rate;
-        for (Pair<String, String> p : reac) {
+        for (BiksPair<String, String> p : reac) {
             if (!Species.containsKey(p.getKey())){
                 Species.put(p.getKey(),"");
             }
             Value += "*(self.sample.get(\""+p.getKey()+"\")[-1]**" + p.getValue() + ")";
         }
-        return new Pair<>(name,Value);
+        return new BiksPair<>(name,Value);
     }
 
     /***
@@ -212,9 +212,9 @@ public class Euler extends CodeGenerationMethods {
         return result;
     }
 
-    public void CountSide(HashMap<String,Integer> hash, List<Pair<String, String>> side, String Symbol)
+    public void CountSide(HashMap<String,Integer> hash, List<BiksPair<String, String>> side, String Symbol)
     {
-        for (Pair<String, String> rhs: side) {
+        for (BiksPair<String, String> rhs: side) {
             if(hash.containsKey(rhs.getKey()))
             {
                 hash.replace(rhs.getKey(), hash.get(rhs.getKey()) + ApplySymbol(rhs.getValue(),Symbol));
@@ -243,9 +243,9 @@ public class Euler extends CodeGenerationMethods {
      * @Param symbol
      * @return
      */
-    private String DerivedForOne(List<Pair<String, String>> pairs, String derivedEq, String specie, String symbol, HashMap<String,Integer> species){
+    private String DerivedForOne(List<BiksPair<String, String>> pairs, String derivedEq, String specie, String symbol, HashMap<String,Integer> species){
         String PrettyResult = "";
-        for (Pair<String, String> p: pairs) {
+        for (BiksPair<String, String> p: pairs) {
             if(specie.equals(p.getKey()))
             {
                 PrettyResult += "+"+ derivedEq +"*("+species.get(specie) +")";
