@@ -3,7 +3,7 @@ package simpleAdder.interpret.TypeCheckers;
 import java.util.Stack;
 
 public class StackChecker extends Checker {
-    BetaStackCalculator BS = new BetaStackCalculator();
+    OptimizedStackToString CALC = new OptimizedStackToString();
 
     /***
      * Calculates the value of a expression as a stack
@@ -11,7 +11,7 @@ public class StackChecker extends Checker {
      * @return
      */
     public String Calculate(Stack<String> Stack){ //TODO obselete
-        return String.valueOf(BS.Calculate(Stack));
+        return String.valueOf(CALC.Calculate(Stack));
     }
 
     public <E> Stack<E> ReverseStack(Stack<E> entries) {

@@ -2,16 +2,14 @@ package simpleAdder.interpret.Objects.CodeGenerationOBJ;
 
 import simpleAdder.interpret.GetMethods.ViableVariable;
 import simpleAdder.interpret.Objects.SymolTableOBJ.titration;
-import simpleAdder.interpret.TypeCheckers.BetaStackToString;
-import simpleAdder.interpret.TypeCheckers.StackChecker;
+import simpleAdder.interpret.TypeCheckers.Checker;
 
 import java.util.List;
 import java.util.Stack;
 
 public class Titration extends CodeGenerationMethods{
     int Level = 0;
-    BetaStackToString BSTS = new BetaStackToString();
-    StackChecker SC = new StackChecker();
+    Checker check = new Checker();
 
     /**
      Generates the python code for the titration mecanic*/
@@ -158,13 +156,13 @@ public class Titration extends CodeGenerationMethods{
         while (!stack.isEmpty()){
             result.push(CheckValue(stack.pop()));
         }
-        return BSTS.StackToString(SC.ReverseStack(result));
+        return CALC.Calculate(check.ReverseStack(result));
     }
 
     /**Checks if a String value is variable name*/
     private String CheckValue(String str)
     {
-        return Character.isDigit(str.charAt(0)) || BSTS.IsOperator(str) ? str : "self.sample.get(\""+str+"\")[-1]";
+        return Character.isDigit(str.charAt(0)) || check.IsOperator(str) ? str : "self.sample.get(\""+str+"\")[-1]";
     }
 
     /**

@@ -8,7 +8,7 @@ import java.util.Stack;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BetaStackToStringTest {
-
+/*
     BetaStackToString BSTS = new BetaStackToString();
     TestGetMethods get = new TestGetMethods();
 
@@ -19,4 +19,6 @@ class BetaStackToStringTest {
 
         assertEquals(ExpectedResult, ActualResult);
     }
+
+ */
 }

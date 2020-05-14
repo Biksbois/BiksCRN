@@ -9,7 +9,7 @@ import java.util.Stack;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BetaStackCalculatorTest {
-
+/*
     BetaStackCalculator BS = new BetaStackCalculator();
     TestGetMethods get = new TestGetMethods();
 
@@ -24,4 +24,6 @@ class BetaStackCalculatorTest {
 
         assertEquals(df.format(ExpectedResult), df.format(ActualResult));
     }
+
+ */
 }

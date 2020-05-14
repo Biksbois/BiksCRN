@@ -13,7 +13,6 @@ import java.util.Map;
 
 public class Euler extends CodeGenerationMethods {
     ViableVariable vv = new ViableVariable();
-    BetaStackToString BSTS = new BetaStackToString();
 
     /***
      * This method, checks wether the CRN exist in the scope, if it does not exist it will return a
@@ -56,17 +55,12 @@ public class Euler extends CodeGenerationMethods {
      * @Param reac
      * @return
      */
-    OptimizedStackToString OSS = new OptimizedStackToString();
     private void SetRate(reaction reac){
         if (reac.rateLhs == null && reac.lhs != null){
-            reac.rateLhs = BSTS.StackToString(reac.lhs);
-            //reac.rateLhs = OSS.Calculate(reac.lhs);
-            //System.out.println(reac.rateLhs);
+            reac.rateLhs = CALC.Calculate(reac.lhs);
         }
         if (reac.rateRhs == null){
-            reac.rateRhs = BSTS.StackToString(reac.rhs);
-            //reac.rateRhs = OSS.Calculate(reac.rhs);
-            //System.out.println(reac.rateRhs);
+            reac.rateRhs = CALC.Calculate(reac.rhs);
         }
     }
 

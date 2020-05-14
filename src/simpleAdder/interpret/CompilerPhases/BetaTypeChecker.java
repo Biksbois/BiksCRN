@@ -9,6 +9,7 @@ import simpleAdder.interpret.Objects.SymolTableOBJ.protocolOperation;
 import simpleAdder.interpret.Objects.SymolTableOBJ.reaction;
 import simpleAdder.interpret.TypeCheckers.BetaStackCalculator;
 import simpleAdder.interpret.TypeCheckers.BiksPair;
+import simpleAdder.interpret.TypeCheckers.OptimizedStackToString;
 
 import java.util.*;
 
@@ -17,6 +18,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     private final BetaStackCalculator BSC = new BetaStackCalculator();
     private final Get get = new Get();
     TerminateProgram terminate = new TerminateProgram();
+    OptimizedStackToString CALC = new OptimizedStackToString();
 
     public BetaTypeChecker() {
         st = new BetaSymbolTable();
@@ -1010,7 +1012,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         if(stack != null)
         {
             temp = ReplaceStack((Stack<String>) stack.clone(), end);
-            float f = BSC.Calculate(temp);
+            float f = Float.parseFloat(CALC.Calculate(temp));
             return !(f < 0);
         }
 
