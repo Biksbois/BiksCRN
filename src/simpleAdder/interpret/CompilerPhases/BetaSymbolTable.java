@@ -349,7 +349,7 @@ public class BetaSymbolTable extends Checker {
      * Adds the active object from temp to the current scope
      */
     public void NodeToCurrentScope(Token token){
-        Pair<String, SymbolTableType> pair = temp.GetInstanece();
+        BiksPair<String, SymbolTableType> pair = temp.GetInstanece();
         if (pair.getValue().type.equals(vv.SPECIE)){
             SpeciesToCurrentScope(CurrentScope(), pair.getKey(), pair.getValue(), token);
         }
@@ -363,14 +363,14 @@ public class BetaSymbolTable extends Checker {
      * Adds the active object from temp to the current scope
      */
     public void NodeToCurrentScope(ADclTitration node){
-        Pair<String, SymbolTableType> pair = temp.GetInstanece(node.getTitrationdcl().toString().trim());
+        BiksPair<String, SymbolTableType> pair = temp.GetInstanece(node.getTitrationdcl().toString().trim());
         PairToCurrentScope(pair);
     }
 
     /***
      * Adds the active object from temp to the current scope
      */
-    private void PairToCurrentScope(Pair<String, SymbolTableType> pair){
+    private void PairToCurrentScope(BiksPair<String, SymbolTableType> pair){
         if (CurrentScope().containsKey(pair.getKey())){
             TH.terminate_program("There already exists a variable of with a similar name as \"" + pair.getValue().type + " " + pair.getKey() + "\".");
         }
@@ -635,8 +635,8 @@ public class BetaSymbolTable extends Checker {
      * @param specie
      * @return
      */
-    private boolean CheckOnePairlist(List<Pair<String, String>> pairs, String specie){
-        for (Pair<String, String> p: pairs) {
+    private boolean CheckOnePairlist(List<BiksPair<String, String>> pairs, String specie){
+        for (BiksPair<String, String> p: pairs) {
             if (specie.equals(p.getKey())){
                 return true;
             }

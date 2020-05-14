@@ -1,6 +1,7 @@
 package simpleAdder.interpret.Objects.SymolTableOBJ;
 
 import javafx.util.Pair;
+import simpleAdder.interpret.TypeCheckers.BiksPair;
 import simpleAdder.interpret.TypeCheckers.Check;
 
 import java.util.ArrayList;
@@ -13,8 +14,8 @@ public class reaction extends Check {
     public Stack<String> lhs = null;
     public Stack<String> rhs = null;
     public boolean isOneway = false;
-    public List<Pair<String,String>> rhsPair = null;
-    public List<Pair<String,String>> lhsPair = null;
+    public List<BiksPair<String,String>> rhsPair = null;
+    public List<BiksPair<String,String>> lhsPair = null;
     public Pair<String,String> lhsDerivedEq = null;
     public Pair<String,String> rhsDerivedEq = null;
 
@@ -88,7 +89,7 @@ public class reaction extends Check {
         }
     }
 
-    public Boolean ReactionToReactionList(Pair<String, String> R, Boolean isFirst)
+    public Boolean ReactionToReactionList(BiksPair<String, String> R, Boolean isFirst)
     {
         if(lhsPair == null && !isFirst){
             lhsPair = new ArrayList<>();

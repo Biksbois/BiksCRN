@@ -2,6 +2,7 @@ package simpleAdder.interpret.Objects.SymolTableOBJ;
 
 import javafx.util.Pair;
 import simpleAdder.interpret.CompilerPhases.TerminateProgram;
+import simpleAdder.interpret.TypeCheckers.BiksPair;
 import simpleAdder.interpret.TypeCheckers.Check;
 import simpleAdder.interpret.GetMethods.ViableVariable;
 
@@ -105,7 +106,7 @@ public class Temporary {
         }
     }
 
-    public void reactionToReaction(Pair<String, String> R, Boolean isFirst){
+    public void reactionToReaction(BiksPair<String, String> R, Boolean isFirst){
         if (Reac == null){
             TH.terminate_program("All instances was null (reactionToReaction)");
         }else if (!Reac.ReactionToReactionList(R, isFirst)) {
@@ -163,7 +164,7 @@ public class Temporary {
      * Returns the active instance.
      * @return
      */
-    public Pair<String, SymbolTableType> GetInstanece(){
+    public BiksPair<String, SymbolTableType> GetInstanece(){
         if (Prim != null) {
             Prim.SetResult(check.StackType.Calculate(Prim.GetStack()));
             if (Prim.ResultIsValid()){
@@ -181,23 +182,23 @@ public class Temporary {
         }
 
         TH.terminate_program("No possible outcome was met (GetInstanece)");
-        return new Pair<String, SymbolTableType>("", new SymbolTableType("","",""));
+        return new BiksPair<>("", new SymbolTableType("","",""));
     }
 
     /***
      * Returns the active instance
      * @return
      */
-    public  Pair<String, SymbolTableType> GetInstanece(String key)
+    public  BiksPair<String, SymbolTableType> GetInstanece(String key)
     {
         if(TitList != null && Tit == null)
         {
-            return new Pair<>(key,new SymbolTableType(key,TitList,vv.TITRATIONLIST));
+            return new BiksPair<>(key,new SymbolTableType(key,TitList,vv.TITRATIONLIST));
         }
         else
         {
             TH.terminate_program("No possible outcome was met (GetInstanece)");
-            return new Pair<String, SymbolTableType>("", new SymbolTableType("","",""));
+            return new BiksPair<>("", new SymbolTableType("","",""));
         }
     }
 
