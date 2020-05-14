@@ -16,18 +16,32 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        //System.out.println("test");
         PythonFileGenerator PY = new PythonFileGenerator("python.py");
         String[] filepath = new String[1];
-        if(args.length == 0)
+
+        if(args.length == 0 )
         {
-            Scanner myObj = new Scanner(System.in);  // Create a Scanner object
-            System.out.println("Input file not provided");
-            System.out.println("Enter filepath:");
-            filepath[0] = myObj.nextLine();
+                Scanner myObj = new Scanner(System.in);  // Create a Scanner object
+                System.out.println("Input file not provided");
+                System.out.println("Enter filepath:");
+                filepath[0] = myObj.nextLine();
         }else
+        {
+            File arg = new File(args[0]);
+            if(!arg.exists())
             {
-                filepath[0] = args[0];
-            }
+                Scanner myObj = new Scanner(System.in);  // Create a Scanner object
+                System.out.println("Input file not provided");
+                System.out.println("Enter filepath:");
+                filepath[0] = myObj.nextLine();
+            }else
+                {
+                    filepath[0] = args[0];
+                }
+        }
+
+
         String path = Paths.get("").toAbsolutePath().toString() + "\\";
         String inputFile = "BiksCRN.sa";
         IntermediateCodeGeneration intermidiatCodeGeneration = new IntermediateCodeGeneration(path,inputFile);
