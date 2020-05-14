@@ -7,6 +7,7 @@ import com.company.parser.Parser;
 import simpleAdder.interpret.CompilerPhases.BetaTypeChecker;
 import simpleAdder.interpret.CompilerPhases.CodeGenerator;
 import simpleAdder.interpret.CompilerPhases.IntermediateCodeGeneration;
+import simpleAdder.interpret.GetMethods.FilePath;
 import simpleAdder.interpret.PythonFileGenerator;
 
 import java.io.File;
@@ -18,31 +19,9 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws IOException {
         PythonFileGenerator PY = new PythonFileGenerator("python.py");
-        String[] filepath = new String[1];
+        FilePath filePath = new FilePath();
 
-        if(args.length == 0 )
-        {
-                Scanner myObj = new Scanner(System.in);  // Create a Scanner object
-                System.out.println("Input file not provided");
-                System.out.println("Enter filepath:");
-                filepath[0] = myObj.nextLine();
-        }else
-        {
-            File arg = new File(args[0]);
-            if(!arg.exists())
-            {
-                Scanner myObj = new Scanner(System.in);  // Create a Scanner object
-                System.out.println("Input file not provided");
-                System.out.println("Enter filepath:");
-                filepath[0] = myObj.nextLine();
-            }else
-                {
-                    filepath[0] = args[0];
-                }
-        }
-        String path = filepath[0];
-        //String path = Paths.get("").toAbsolutePath().toString() + "\\";
-        //String inputFile = "BiksCRN.sa";
+        String path = filePath.get(args);
         IntermediateCodeGeneration intermidiatCodeGeneration = new IntermediateCodeGeneration(path);
         intermidiatCodeGeneration.Generate();
         path = intermidiatCodeGeneration.GetPath();
@@ -68,7 +47,7 @@ public class Main {
                 ast.apply(generator);
 
                 PY.WriteInputfile(generator.GetPython());
-                System.out.println("Build was succesful ;)");
+                System.out.println("Build was succesful");
             }
             catch (Exception e) {
                 System.out.println (e) ;
