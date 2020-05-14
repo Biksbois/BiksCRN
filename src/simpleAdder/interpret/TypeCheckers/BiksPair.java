@@ -1,3 +1,4 @@
+package simpleAdder.interpret.TypeCheckers;
 
 public class BiksPair<First, Second> {
     private First first;
@@ -8,25 +9,25 @@ public class BiksPair<First, Second> {
         this.second = second;
     }
 
-    public void setFirst(First first) {
+    public void setKey(First first) {
         this.first = first;
     }
 
-    public void setSecond(Second second) {
+    public void setValue(Second second) {
         this.second = second;
     }
 
-    public First getFirst() {
+    public First getKey() {
         return first;
     }
 
-    public Second getSecond() {
+    public Second getValue() {
         return second;
     }
 
     public void set(First first, Second second) {
-        setFirst(first);
-        setSecond(second);
+        setKey(first);
+        setValue(second);
     }
 
     @Override

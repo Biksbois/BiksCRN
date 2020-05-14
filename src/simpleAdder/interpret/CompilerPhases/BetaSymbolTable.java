@@ -4,6 +4,7 @@ import com.company.node.*;
 import simpleAdder.interpret.GetMethods.Get;
 import simpleAdder.interpret.Objects.SymolTableOBJ.*;
 import simpleAdder.interpret.TypeCheckers.BetaStackToString;
+import simpleAdder.interpret.TypeCheckers.BiksPair;
 import simpleAdder.interpret.TypeCheckers.Check;
 import simpleAdder.interpret.TypeCheckers.Checker;
 
@@ -98,7 +99,7 @@ public class BetaSymbolTable extends Checker {
         }
     }
 
-    public void reactionToReaction(Pair<String, String> R, Boolean isFirst, Token token){
+    public void reactionToReaction(BiksPair<String, String> R, Boolean isFirst, Token token){
         if (IsTempActive()){
             if (!VerifyKeyAndTypeInBoth(R.getKey(), vv.SPECIE)){
                 terminate.WrongType(token, vv.SPECIE, TypeForMessage(R.getKey()), R.getKey(), "reactionToReaction");
