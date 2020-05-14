@@ -116,7 +116,7 @@ public class BetaSymbolTable extends Checker {
         }
     }
 
-    private Boolean isWholePositiveFloat(String fVal){
+    public Boolean isWholePositiveFloat(String fVal){
         if (fVal.contains("-")){
             return false;
         }if (fVal.contains(".")){

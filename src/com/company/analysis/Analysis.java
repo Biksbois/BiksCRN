@@ -120,8 +120,12 @@ public interface Analysis extends Switch
     void caseAMultiProtoexstend(AMultiProtoexstend node);
     void caseASingleProtoexstend(ASingleProtoexstend node);
     void caseASingleEquili(ASingleEquili node);
+    void caseATimeOption(ATimeOption node);
+    void caseACycleOption(ACycleOption node);
     void caseASemiExtendequili(ASemiExtendequili node);
     void caseAStepExtendequili(AStepExtendequili node);
+    void caseAWithTimestep(AWithTimestep node);
+    void caseANoTimestep(ANoTimestep node);
 
     void caseTTPlus(TTPlus node);
     void caseTTMinus(TTMinus node);
@@ -130,6 +134,8 @@ public interface Analysis extends Switch
     void caseTTEqual(TTEqual node);
     void caseTTPower(TTPower node);
     void caseTTLambda(TTLambda node);
+    void caseTTTime(TTTime node);
+    void caseTTCycle(TTCycle node);
     void caseTTSpace(TTSpace node);
     void caseTTInt(TTInt node);
     void caseTTString(TTString node);
@@ -177,6 +183,7 @@ public interface Analysis extends Switch
     void caseTTFordcl(TTFordcl node);
     void caseTTVoiddcl(TTVoiddcl node);
     void caseTTBydcl(TTBydcl node);
+    void caseTTEach(TTEach node);
     void caseEOF(EOF node);
     void caseInvalidToken(InvalidToken node);
 }

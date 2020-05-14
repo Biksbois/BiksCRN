@@ -723,6 +723,18 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseATimeOption(ATimeOption node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseACycleOption(ACycleOption node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseASemiExtendequili(ASemiExtendequili node)
     {
         defaultCase(node);
@@ -730,6 +742,18 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseAStepExtendequili(AStepExtendequili node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAWithTimestep(AWithTimestep node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseANoTimestep(ANoTimestep node)
     {
         defaultCase(node);
     }
@@ -772,6 +796,18 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTTLambda(TTLambda node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTTTime(TTTime node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTTCycle(TTCycle node)
     {
         defaultCase(node);
     }
@@ -1054,6 +1090,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTTBydcl(TTBydcl node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTTEach(TTEach node)
     {
         defaultCase(node);
     }

@@ -12,6 +12,7 @@ Helpers
     h_eol = h_cr | h_nl | h_cr h_nl;
     h_newline = h_sp | h_nl | 9;
 
+
     h_all = [0..0xFFFF];
     h_not_star = [h_all-'*'];
     h_not_star_slash = [h_not_star-'/'];
@@ -34,6 +35,8 @@ Helpers
     h_r = 'r' | 'R';
     h_i = 'i' | 'I';
     h_w = 'w' | 'W';
+    h_t = 't' | 'T';
+    h_c = 'c' | 'C';
 
 Tokens
 
@@ -45,6 +48,9 @@ Tokens
     t_equal = h_sp* h_equal h_sp*;
     t_power = h_sp* h_mult h_mult h_sp*;
     t_lambda = h_sp* '=''>' h_sp*;
+
+    t_time = h_sp+ h_t h_sp*;
+    t_cycle = h_sp+ h_c h_sp*;
 
     t_space = h_sp*;
 
@@ -107,6 +113,7 @@ Tokens
     t_fordcl = h_sp* 'f''o''r' h_sp*;
     t_voiddcl = 'v''o''i''d' h_sp*;
     t_bydcl = h_sp*'b''y'h_sp*;
+    t_each = h_sp*'e''a''c''h'h_sp*;
 
 
 Ignored Tokens
@@ -420,8 +427,16 @@ Productions
         {single}            t_comma t_string;
 
     equili =
-        {single}            t_equilibratedcl t_string t_fordcl factor extendequili;
+        {single}            t_equilibratedcl t_string t_fordcl factor option extendequili;
+
+    option =
+        {time}              t_time |
+        {cycle}             t_cycle ;
 
     extendequili =
-        {semi}              t_semicolon |
-        {step}              t_bydcl factor t_semicolon;
+        {semi}              timestep |
+        {step}              t_bydcl factor timestep;
+
+    timestep =
+        {with}              t_each factor t_semicolon |
+        {no}                t_semicolon ;

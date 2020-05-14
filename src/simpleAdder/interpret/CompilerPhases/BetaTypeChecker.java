@@ -417,9 +417,9 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             {
                 return st.GetValue(key);
             }else
-                {
-                    terminate.terminate_program("Should be either a integer or float, which it insidentily is not (FactorToValues)");
-                }
+            {
+                terminate.terminate_program("Should be either a integer or float, which it insidentily is not (FactorToValues)");
+            }
         }
         else if(node instanceof AFloatFactor)
         {
@@ -920,6 +920,12 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         node.getProtoexstend().apply(this);
     }
 
+    public void caseATimeOption(ATimeOption node){
+    }
+    public void caseACycleOption(ACycleOption node){
+
+    }
+
     /***
      * Creates a object of protocolObject by creating a equilibrate object from the ASingleEquili node
      * No attributes are applied, but we get the t_string and t_factor attributes.
@@ -928,62 +934,61 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     public void outASingleEquili(ASingleEquili node)
     {
         Node eNode = node.getExtendequili();
-        String stepSize = "";
+
+        String stepSize = "0.0025";
+        String interval = "100";
+        String cycles = "";
+
         if(eNode instanceof AStepExtendequili)
         {
-            Node fNode = ((AStepExtendequili) eNode).getFactor();
-            if(fNode instanceof AVariableFactor)
-            {
-                if(st.VerifyKeyAndTypeInBoth(fNode.toString().trim(),st.vv.INT) || st.VerifyKeyAndTypeInBoth(fNode.toString().trim(),st.vv.FLOAT))
-                {
-                    stepSize = st.GetValue(((AVariableFactor) fNode).getTString().toString().trim());
-                }else
-                {
-                    terminate.terminate_program("Step size should be an integer or float");
-                }
-
-
-            }else if(fNode instanceof AFloatFactor)
-            {
-                stepSize = ((AFloatFactor) fNode).getTFloat().toString().trim();
-            }
-            else if(fNode instanceof AIntegerFactor)
-            {
-                stepSize = ((AIntegerFactor) fNode).getTInt().toString().trim();
-            }
-            else
-            {
-                terminate.terminate_program("You shoundt be here wtf did you do?!!!! (outASingleEquili)");
+            stepSize = FactorToValues(((AStepExtendequili) eNode).getFactor());
+            if (stepSize.contains("-")){
+                terminate.ShouldBePositive(node.getTString(), stepSize, ((AStepExtendequili) eNode).getFactor().toString().trim(), "outASingleEquili");
             }
         }
 
         String sample = get.Sample(node);
         if(st.VerifyKeyAndTypeInBoth(sample,st.vv.SAMPLE))
         {
-            PFactor amount = node.getFactor();
-            String value = get.Value(amount);
-            if (node.getFactor() instanceof AVariableFactor){
-                if (st.VerifyKeyAndTypeInBoth(value, st.vv.INT) && !get.IsNegative(st.GetValue(value))){
-                    value = st.GetValue(value);
-                    CheckFunctionValues(Integer.valueOf(value),sample);
-                    st.protocols.push(new protocolOperation(st.vv.EQUILIBRATE,sample,value,stepSize));
-                }
-                else{
-                    terminate.ShouldBeWhole(node.getTString(), st.TypeForMessage(value),value,st.ValueForMessage(value),"outASingleEquili");
-                    //terminate.terminate_program();(get.ErrorMessage(node.getFactor(), " The protcol Equlilibrate takes a positive integer as input", "outASingleEquili"));
-                }
-            }else if(node.getFactor() instanceof AIntegerFactor){
-                CheckFunctionValues(Integer.valueOf(value),sample);
-                st.protocols.push(new protocolOperation(st.vv.EQUILIBRATE,sample,value,stepSize));
-            }else{
-                terminate.ShouldBeWhole(node.getTString(), value,"outASingleEquili");
-                //terminate.terminate_program();(get.ErrorMessage(node.getFactor(), " The protcol Equlilibrate takes an integer as input", "outASingleEquili"));
+            cycles = GetPositiveWholeFactor(node.getFactor(), node.getTString());
+
+            Node unit = node.getOption();
+            if(unit instanceof ATimeOption){
+                cycles = String.valueOf(Math.floor( Float.parseFloat(cycles) / Float.parseFloat(stepSize)));
             }
+            CheckFunctionValues((int) Float.parseFloat(cycles), sample);
+            Node step = node.getExtendequili();
+            if (step instanceof ASemiExtendequili){
+                Node Interval = ((ASemiExtendequili) step).getTimestep();
+                if (Interval instanceof AWithTimestep){
+                    interval = GetTimestep((AWithTimestep) Interval);
+                }
+            }else if (step instanceof AStepExtendequili){
+                Node Interval = ((AStepExtendequili) step).getTimestep();
+                if (Interval instanceof AWithTimestep){
+                    interval = GetTimestep((AWithTimestep) Interval);
+                }
+                stepSize = FactorToValues(((AStepExtendequili) step).getFactor());
+            }
+            st.protocols.push(new protocolOperation(st.vv.EQUILIBRATE,sample, cycles, stepSize, interval));
         }
         else
         {
-            terminate.terminate_program(sample +" not sample (outASingleEquili)");
+            terminate.WrongType(node.getTString(), st.TypeForMessage(sample), st.vv.SAMPLE, sample, "outASingleEquili");
+            terminate.terminate_program(sample + " not sample (outASingleEquili)");
         }
+    }
+
+    private String GetTimestep(AWithTimestep node){
+        return GetPositiveWholeFactor(node.getFactor(), node.getTEach());
+    }
+
+    private String GetPositiveWholeFactor(PFactor factor, Token token){
+        String value = FactorToValues(factor);
+        if (!st.isWholePositiveFloat(value)){
+            terminate.ShouldBeWholeAndPositive(token, value, "GetPositiveWholeFactor");
+        }
+        return value;
     }
 
     public void CheckFunctionValues (int endValue, String sample) {

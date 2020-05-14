@@ -11,6 +11,7 @@ public final class ASingleEquili extends PEquili
     private TTString _tString_;
     private TTFordcl _tFordcl_;
     private PFactor _factor_;
+    private POption _option_;
     private PExtendequili _extendequili_;
 
     public ASingleEquili()
@@ -23,6 +24,7 @@ public final class ASingleEquili extends PEquili
         @SuppressWarnings("hiding") TTString _tString_,
         @SuppressWarnings("hiding") TTFordcl _tFordcl_,
         @SuppressWarnings("hiding") PFactor _factor_,
+        @SuppressWarnings("hiding") POption _option_,
         @SuppressWarnings("hiding") PExtendequili _extendequili_)
     {
         // Constructor
@@ -33,6 +35,8 @@ public final class ASingleEquili extends PEquili
         setTFordcl(_tFordcl_);
 
         setFactor(_factor_);
+
+        setOption(_option_);
 
         setExtendequili(_extendequili_);
 
@@ -46,6 +50,7 @@ public final class ASingleEquili extends PEquili
             cloneNode(this._tString_),
             cloneNode(this._tFordcl_),
             cloneNode(this._factor_),
+            cloneNode(this._option_),
             cloneNode(this._extendequili_));
     }
 
@@ -155,6 +160,31 @@ public final class ASingleEquili extends PEquili
         this._factor_ = node;
     }
 
+    public POption getOption()
+    {
+        return this._option_;
+    }
+
+    public void setOption(POption node)
+    {
+        if(this._option_ != null)
+        {
+            this._option_.parent(null);
+        }
+
+        if(node != null)
+        {
+            if(node.parent() != null)
+            {
+                node.parent().removeChild(node);
+            }
+
+            node.parent(this);
+        }
+
+        this._option_ = node;
+    }
+
     public PExtendequili getExtendequili()
     {
         return this._extendequili_;
@@ -188,6 +218,7 @@ public final class ASingleEquili extends PEquili
             + toString(this._tString_)
             + toString(this._tFordcl_)
             + toString(this._factor_)
+            + toString(this._option_)
             + toString(this._extendequili_);
     }
 
@@ -216,6 +247,12 @@ public final class ASingleEquili extends PEquili
         if(this._factor_ == child)
         {
             this._factor_ = null;
+            return;
+        }
+
+        if(this._option_ == child)
+        {
+            this._option_ = null;
             return;
         }
 
@@ -253,6 +290,12 @@ public final class ASingleEquili extends PEquili
         if(this._factor_ == oldChild)
         {
             setFactor((PFactor) newChild);
+            return;
+        }
+
+        if(this._option_ == oldChild)
+        {
+            setOption((POption) newChild);
             return;
         }
 

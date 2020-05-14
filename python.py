@@ -47,11 +47,11 @@ def mix(sampleList):
     
     return rSample
 
-def equilibrate(sample, stepsize, times):
+def equilibrate(sample, stepsize, times, timeInterval):
     sample.h = stepsize
     sample.steps = times
     plt.figure(figsize=(12, 7),dpi=80, num='BiksCRN')
-    ani = FuncAnimation(plt.gcf(), sample.Animate, interval=50)
+    ani = FuncAnimation(plt.gcf(), sample.Animate, interval=timeInterval)
     plt.show()
 
 def GetPercent(i, steps):
@@ -62,14 +62,24 @@ def GetPercent(i, steps):
         return "{:.2f}".format(result)
 
 def SaveGraph(Sample, name, taken):
-    if len(next(iter(Sample.sample.values()))) != len(Sample.stepList):
-        Sample.stepList.append(Sample.stepList[-1]+Sample.h)
+    if not AdjustLists(Sample.sample, Sample.stepList, taken):
+        if len(next(iter(Sample.sample.values()))) != len(Sample.stepList):
+            Sample.stepList.append(Sample.stepList[-1]+Sample.h)
     rSpecies = Sample.sample.copy()
     rSteps = Sample.stepList
     for key in Sample.sample:
         Sample.sample[key] = [Sample.sample.get(key)[-1]]
     Sample.stepList = []
     return rSpecies, rSteps, name, taken
+
+def AdjustLists(species, stepList, taken):
+    if taken == len(stepList):
+        return False
+    for key in species.keys():
+        species[key].pop()
+        if len(species[key]) > len(stepList):
+            stepList.pop()
+    return True
 
 def DrawGraph(Species, Steps, name, i, s):
         for key, value in Species.items():
@@ -86,14 +96,14 @@ class SampleA():
         "Y":[100]
     }
 
-    def AccTitration(self, act, titra):
-        titra += self.h
-        if(act <= titra):
-            result = math.floor(titra/act)
-            titra = titra - act * result
-            return result, titra
+    def AccTitration(self, act, time):
+        time += self.h
+        if(act <= time):
+            result = math.floor(time/act)
+            time = time - act * result
+            return result, time
         else:
-            return 0, titra
+            return 0, time
 
     stepList = []
     index = count()
@@ -112,7 +122,7 @@ class SampleA():
 
     def ApplyTitration(self,i):
         if self.sample.get("X")[-1]<3:
-            Result, self.AddMol0 = self.AccTitration(self, 0.001, self.AddMol0)
+            Result, self.AddMol0 = self.AccTitration(self, 0.01, self.AddMol0)
             self.sample["X"][-1] = self.sample.get("X")[-1]+Result*1
 
 
@@ -120,15 +130,16 @@ class SampleA():
     def Animate(i) :
         plt.cla()
 
-        if(i <= SampleA.steps):
-            SampleA.stepList.append(next(SampleA.index)*SampleA.h)
+        index = next(SampleA.index)
+        
+        if(index < SampleA.steps):
+            SampleA.stepList.append(index*SampleA.h)
 
-        DrawGraph(SampleA.sample, SampleA.stepList, "A", i, SampleA.steps)
+        DrawGraph(SampleA.sample, SampleA.stepList, "A", index, SampleA.steps)
 
-        if(i <= SampleA.steps):
-            SampleA.Euler(SampleA, i)
-            SampleA.ApplyTitration(SampleA, i+1)
-
+        if(index+1 < SampleA.steps):
+            SampleA.Euler(SampleA, index+1)
+            SampleA.ApplyTitration(SampleA, index+1)
 
 class SampleB():
     sample = {
@@ -136,14 +147,14 @@ class SampleB():
         "D":[10]
     }
 
-    def AccTitration(self, act, titra):
-        titra += self.h
-        if(act <= titra):
-            result = math.floor(titra/act)
-            titra = titra - act * result
-            return result, titra
+    def AccTitration(self, act, time):
+        time += self.h
+        if(act <= time):
+            result = math.floor(time/act)
+            time = time - act * result
+            return result, time
         else:
-            return 0, titra
+            return 0, time
 
     stepList = []
     index = count()
@@ -173,28 +184,29 @@ class SampleB():
     def Animate(i) :
         plt.cla()
 
-        if(i <= SampleB.steps):
-            SampleB.stepList.append(next(SampleB.index)*SampleB.h)
+        index = next(SampleB.index)
+        
+        if(index < SampleB.steps):
+            SampleB.stepList.append(index*SampleB.h)
 
-        DrawGraph(SampleB.sample, SampleB.stepList, "A", i, SampleB.steps)
+        DrawGraph(SampleB.sample, SampleB.stepList, "A", index, SampleB.steps)
 
-        if(i <= SampleB.steps):
-            SampleB.Euler(SampleB, i)
-            SampleB.ApplyTitration(SampleB, i+1)
-
+        if(index+1 < SampleB.steps):
+            SampleB.Euler(SampleB, index+1)
+            SampleB.ApplyTitration(SampleB, index+1)
 
 class SampleC():
     sample = {
     }
 
-    def AccTitration(self, act, titra):
-        titra += self.h
-        if(act <= titra):
-            result = math.floor(titra/act)
-            titra = titra - act * result
-            return result, titra
+    def AccTitration(self, act, time):
+        time += self.h
+        if(act <= time):
+            result = math.floor(time/act)
+            time = time - act * result
+            return result, time
         else:
-            return 0, titra
+            return 0, time
 
     stepList = []
     index = count()
@@ -210,17 +222,22 @@ class SampleC():
     def Animate(i) :
         plt.cla()
 
-        if(i <= SampleC.steps):
-            SampleC.stepList.append(next(SampleC.index)*SampleC.h)
+        index = next(SampleC.index)
+        
+        if(index < SampleC.steps):
+            SampleC.stepList.append(index*SampleC.h)
 
-        DrawGraph(SampleC.sample, SampleC.stepList, "A", i, SampleC.steps)
+        DrawGraph(SampleC.sample, SampleC.stepList, "A", index, SampleC.steps)
 
-        if(i <= SampleC.steps):
-            SampleC.Euler(SampleC, i)
-            SampleC.ApplyTitration(SampleC, i+1)
+        if(index+1 < SampleC.steps):
+            SampleC.Euler(SampleC, index+1)
+            SampleC.ApplyTitration(SampleC, index+1)
 
-
-equilibrate(SampleA, 5.0E-4, 100)
+sample = {
+    "Y":[100]
+}
+equilibrate(SampleA, 5.0E-4, 18000.0, 1000)
+sample["Y"] = [SampleA.sample.get("Y")[-1]]
 Species0, Steps0, name0, taken0 = SaveGraph(SampleA, "A", SampleA.steps )
 SampleC.sample = mix([SampleA.sample, SampleB.sample])
 def Euler0(self, i) :
@@ -239,7 +256,7 @@ def Euler0(self, i) :
 SampleC.Euler = Euler0
 def ApplyTitration0(self,i):
     if self.sample.get("X")[-1]<3:
-        Result, self.AddMol0 = self.AccTitration(self, 0.001, self.AddMol0)
+        Result, self.AddMol0 = self.AccTitration(self, 0.01, self.AddMol0)
         self.sample["X"][-1] = self.sample.get("X")[-1]+Result*1
     Result, self.RemMol0 = self.AccTitration(self, 0.3, self.RemMol0)
     if Result > 0 and self.sample.get("D")[-1]-1 <= 0:
@@ -251,6 +268,6 @@ SampleC.ApplyTitration = ApplyTitration0
 split(SampleC.sample,[SampleA.sample, SampleB.sample], [0.4, 0.5])
 disposePercent(SampleA.sample,1)
 disposePercent(SampleB.sample,0.5)
-DrawGraph(Species0, Steps0, name0)
+DrawGraph(Species0, Steps0, name0, len(Steps0), taken0)
 
 plt.show()

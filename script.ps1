@@ -1,1 +1,1 @@
-.\sablecc simpleAdder.sable
+.\sablecc BiksCFG.sable

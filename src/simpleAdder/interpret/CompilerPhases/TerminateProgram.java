@@ -67,4 +67,16 @@ public class TerminateProgram {
         System.err.println(EM.Get(token, message));
         System.exit(1);
     }
+
+    public void ShouldBeWholeAndPositive(Token token, String value, String method){
+        String message = "The value " + value + " should be a whole and positive value in its current context. (" + method + ")";
+        System.err.println(EM.Get(token, message));
+        System.exit(1);
+    }
+
+    public void ShouldBePositive(Token token, String value, String varName, String method){
+        String message = "The variable \"" + varName + "\" is assigned the value " + value + ", but it should be positive. (" + method + ")";
+        System.err.println(EM.Get(token, message));
+        System.exit(1);
+    }
 }

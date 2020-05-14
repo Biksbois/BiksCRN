@@ -5,46 +5,46 @@ package com.company.node;
 import com.company.analysis.*;
 
 @SuppressWarnings("nls")
-public final class ASemiExtendequili extends PExtendequili
+public final class ATimeOption extends POption
 {
-    private PTimestep _timestep_;
+    private TTTime _tTime_;
 
-    public ASemiExtendequili()
+    public ATimeOption()
     {
         // Constructor
     }
 
-    public ASemiExtendequili(
-        @SuppressWarnings("hiding") PTimestep _timestep_)
+    public ATimeOption(
+        @SuppressWarnings("hiding") TTTime _tTime_)
     {
         // Constructor
-        setTimestep(_timestep_);
+        setTTime(_tTime_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new ASemiExtendequili(
-            cloneNode(this._timestep_));
+        return new ATimeOption(
+            cloneNode(this._tTime_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseASemiExtendequili(this);
+        ((Analysis) sw).caseATimeOption(this);
     }
 
-    public PTimestep getTimestep()
+    public TTTime getTTime()
     {
-        return this._timestep_;
+        return this._tTime_;
     }
 
-    public void setTimestep(PTimestep node)
+    public void setTTime(TTTime node)
     {
-        if(this._timestep_ != null)
+        if(this._tTime_ != null)
         {
-            this._timestep_.parent(null);
+            this._tTime_.parent(null);
         }
 
         if(node != null)
@@ -57,23 +57,23 @@ public final class ASemiExtendequili extends PExtendequili
             node.parent(this);
         }
 
-        this._timestep_ = node;
+        this._tTime_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._timestep_);
+            + toString(this._tTime_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._timestep_ == child)
+        if(this._tTime_ == child)
         {
-            this._timestep_ = null;
+            this._tTime_ = null;
             return;
         }
 
@@ -84,9 +84,9 @@ public final class ASemiExtendequili extends PExtendequili
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._timestep_ == oldChild)
+        if(this._tTime_ == oldChild)
         {
-            setTimestep((PTimestep) newChild);
+            setTTime((TTTime) newChild);
             return;
         }
 

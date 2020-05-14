@@ -9,7 +9,7 @@ public final class AStepExtendequili extends PExtendequili
 {
     private TTBydcl _tBydcl_;
     private PFactor _factor_;
-    private TTSemicolon _tSemicolon_;
+    private PTimestep _timestep_;
 
     public AStepExtendequili()
     {
@@ -19,14 +19,14 @@ public final class AStepExtendequili extends PExtendequili
     public AStepExtendequili(
         @SuppressWarnings("hiding") TTBydcl _tBydcl_,
         @SuppressWarnings("hiding") PFactor _factor_,
-        @SuppressWarnings("hiding") TTSemicolon _tSemicolon_)
+        @SuppressWarnings("hiding") PTimestep _timestep_)
     {
         // Constructor
         setTBydcl(_tBydcl_);
 
         setFactor(_factor_);
 
-        setTSemicolon(_tSemicolon_);
+        setTimestep(_timestep_);
 
     }
 
@@ -36,7 +36,7 @@ public final class AStepExtendequili extends PExtendequili
         return new AStepExtendequili(
             cloneNode(this._tBydcl_),
             cloneNode(this._factor_),
-            cloneNode(this._tSemicolon_));
+            cloneNode(this._timestep_));
     }
 
     @Override
@@ -95,16 +95,16 @@ public final class AStepExtendequili extends PExtendequili
         this._factor_ = node;
     }
 
-    public TTSemicolon getTSemicolon()
+    public PTimestep getTimestep()
     {
-        return this._tSemicolon_;
+        return this._timestep_;
     }
 
-    public void setTSemicolon(TTSemicolon node)
+    public void setTimestep(PTimestep node)
     {
-        if(this._tSemicolon_ != null)
+        if(this._timestep_ != null)
         {
-            this._tSemicolon_.parent(null);
+            this._timestep_.parent(null);
         }
 
         if(node != null)
@@ -117,7 +117,7 @@ public final class AStepExtendequili extends PExtendequili
             node.parent(this);
         }
 
-        this._tSemicolon_ = node;
+        this._timestep_ = node;
     }
 
     @Override
@@ -126,7 +126,7 @@ public final class AStepExtendequili extends PExtendequili
         return ""
             + toString(this._tBydcl_)
             + toString(this._factor_)
-            + toString(this._tSemicolon_);
+            + toString(this._timestep_);
     }
 
     @Override
@@ -145,9 +145,9 @@ public final class AStepExtendequili extends PExtendequili
             return;
         }
 
-        if(this._tSemicolon_ == child)
+        if(this._timestep_ == child)
         {
-            this._tSemicolon_ = null;
+            this._timestep_ = null;
             return;
         }
 
@@ -170,9 +170,9 @@ public final class AStepExtendequili extends PExtendequili
             return;
         }
 
-        if(this._tSemicolon_ == oldChild)
+        if(this._timestep_ == oldChild)
         {
-            setTSemicolon((TTSemicolon) newChild);
+            setTimestep((PTimestep) newChild);
             return;
         }
 

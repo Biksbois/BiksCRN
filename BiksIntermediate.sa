@@ -1,11 +1,12 @@
 Initialize {
+Specie Y = 100;
 Sample A {
-Specie X=0, Y=100;
+Specie X=0;
 CRN {
 2*Y->X, 1;
 X+X -> Y, 2;
 }
-AddMol = X:0.001:while (X<3);
+AddMol = X:0.01:while (X<3);
 }
 Sample B {
 Specie C=0, D=10;
@@ -18,9 +19,10 @@ RemMol = D:0.3;
 Sample C {
 Specie Q = 1;
 }
+int aa = (-1);
 }
 Protocol {
-Equilibrate A for 100 by 0.0005;
+Equilibrate A for 9 t by 0.0005 each 1000;
 Sample C = Mix (A,B);
 Sample A,B = C.Split (0.4,0.5);
 A.Dispose ();
