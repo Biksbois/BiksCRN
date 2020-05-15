@@ -82,9 +82,78 @@ public class IntermediateCodeGeneration {
         code = code.replaceAll("Dispose\\(", "Dispose (");
         code = code.replaceAll("Split\\(", "Split (");
         code = ReplaceCRNSpecies(code);
+        code = FixEquilibrateSyntax(code);
         WriteInputfile(code);
     }
 
+    public String FixEquilibrateSyntax(String str)
+    {
+        String[] matches = Pattern.compile("Protocol\\s*\\{(\\s|\\w|\\d|\\*|\\+|;|:|,|.)*\\}")
+                .matcher(str)
+                .results()
+                .map(MatchResult::group)
+                .toArray(String[]::new);
+        str = FixEquilibrate(matches[0]);
+
+
+        return str;
+    }
+
+    public String FixEquilibrate(String str)
+    {
+        String[] matches = Pattern.compile("Equilibrate\\s*(.)*;")
+                .matcher(str)
+                .results()
+                .map(MatchResult::group)
+                .toArray(String[]::new);
+
+        for (String s: matches) {
+            String Notation = RepaireEquilibrate(s);
+            str = str.replace(s,Notation);
+        }
+        return null;
+    }
+
+    public String RepaireEquilibrate(String str)
+    {
+        if(checkForTypeNotation(str))
+        {
+            return str;
+        }else
+            {
+                return FixToDefault(str);
+            }
+
+    }
+
+    public String FixToDefault(String str)
+    {
+        String[] matches = Pattern.compile("\\sby\\s")
+                .matcher(str)
+                .results()
+                .map(MatchResult::group)
+                .toArray(String[]::new);
+        String FixStr = " c"+matches[0];
+        str = str.replace(matches[0],FixStr);
+        return str;
+    }
+
+    public boolean checkForTypeNotation(String str)
+    {
+        String[] matches = Pattern.compile("(t|c|T|C)\\sby\\s")
+                .matcher(str)
+                .results()
+                .map(MatchResult::group)
+                .toArray(String[]::new);
+
+        if(matches.length == 0)
+        {
+            return false;
+        }else
+            {
+                return true;
+            }
+    }
     public String ReplaceCRNSpecies(String str)
     {
         String[] matches = Pattern.compile("CRN\\s*\\{(\\s|\\w|\\d|->|<->|,|\\*|\\+|;|:)*\\}")
