@@ -47,7 +47,9 @@ public class IntermediateCodeGeneration {
      */
     private void WriteInputfile(String code) throws IOException {
         try{
-            FileWriter fw = new FileWriter(Paths.get("").toAbsolutePath().toString() + OutputName);
+            //var test = Paths.get("").toAbsolutePath().toString() +"\\"+ OutputName;
+            FileWriter fw = new FileWriter(Paths.get("").toAbsolutePath().toString() +"\\"+ OutputName);
+            //C:\Users\jeppe\Documents\GitHub\BiksCRN\BiksIntermediate.sa
             fw.write(code);
             fw.close();
         }catch (IOException e)
