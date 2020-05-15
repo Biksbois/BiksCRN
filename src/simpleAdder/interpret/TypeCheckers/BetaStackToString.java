@@ -18,15 +18,15 @@ public class BetaStackToString extends Checker {
      * @return
      */
 
-    public String StackToString(Stack<String> stack){
+    public String sStackToString(Stack<String> stack){
         if (stack.size() == 1){
             return stack.pop();
         }else{
-            return Run(stack);
+            return rRun(stack);
         }
     }
 
-    public String Run(Stack<String> stack){
+    public String rRun(Stack<String> stack){
         String results = "";
         String rhs = "";
         String lhs = "";
@@ -35,7 +35,7 @@ public class BetaStackToString extends Checker {
         while (!stack.isEmpty()){
             if (stack.peek().equals(")")){
                 lhs = stack.pop();
-                rhs = Run(stack);
+                rhs = rRun(stack);
                 results += rhs + lhs;
             }else if(stack.peek().equals("(")){
                 return numbers.isEmpty() ?  stack.pop() + results : stack.pop() + numbers.pop() + results;
@@ -88,7 +88,7 @@ public class BetaStackToString extends Checker {
                 next = sym + GetNext(stack, species) + next;
             }else if(stack.peek().equals(")")){
                 next += stack.pop();
-                next = Run(stack) + next;
+                next = rRun(stack) + next;
             }else if(next.length() > 0 && next.charAt(0) == '('){
                 return next;
             }

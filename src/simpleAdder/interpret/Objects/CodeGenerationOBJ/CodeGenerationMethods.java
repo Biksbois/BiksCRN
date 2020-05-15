@@ -1,10 +1,13 @@
 package simpleAdder.interpret.Objects.CodeGenerationOBJ;
 
-import simpleAdder.interpret.TypeCheckers.BetaStackToString;
 import simpleAdder.interpret.GetMethods.ViableVariable;
+import simpleAdder.interpret.TypeCheckers.Checker;
+import simpleAdder.interpret.TypeCheckers.OptimizedStackToString;
 
 public class CodeGenerationMethods {
     ViableVariable vv = new ViableVariable();
+    OptimizedStackToString CALC = new OptimizedStackToString();
+    Checker check = new Checker();
 
     /***
      * Takes a string and adds indents to the string. Depending on the number that are

@@ -1,5 +1,6 @@
 package simpleAdder.interpret.TypeCheckers;
 
+import org.junit.platform.commons.util.StringUtils;
 import simpleAdder.interpret.CompilerPhases.TerminateProgram;
 import simpleAdder.interpret.GetMethods.ViableVariable;
 
@@ -20,12 +21,11 @@ public class OptimizedStackToString {
         while (!stack.isEmpty()){
             if (IsPlusMinus(stack.peek())){
                 temp = ApplyPlusMinus(operators, numbers, stack);
-                if (temp.contains("i")){
+                if (CanBeCalcualted(temp)){
                     lResult.add(temp);
                 }else{
                     fResult += Float.parseFloat(temp);
                 }
-                temp = "";
             }else if(IsMultDivide(stack.peek())){
                 operators.push(stack.pop());
             }else if(stack.peek().equals(ViableVariable.power)){
@@ -39,26 +39,23 @@ public class OptimizedStackToString {
             }else if(stack.peek().equals(ViableVariable.CYCLE)){
                 numbers.push("i");
                 stack.pop();
-            }
-            else{
+            }else{
                 numbers.push(stack.pop());
             }
         }
 
         if (!operators.isEmpty()){
             temp = ApplyPlusMinus(operators, numbers, stack);
-            if (temp.contains("i")){
+            if (CanBeCalcualted(temp)){
                 lResult.add(temp);
             }else {
                 fResult += Float.parseFloat(temp);
             }
-            temp = "";
         }else if (!numbers.isEmpty()){
-            if (numbers.peek().contains("i")){
-                lResult.add(numbers.pop());
-                temp = "";
-            }else {
+            if (IsNumeric(numbers.peek())){
                 fResult += Float.parseFloat(numbers.pop());
+            }else {
+                lResult.add(numbers.pop());
             }
         }
 
@@ -73,6 +70,15 @@ public class OptimizedStackToString {
             }
         }else {
             return fResult + ListToString(lResult);
+        }
+    }
+
+    public static boolean IsNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch(NumberFormatException e){
+            return false;
         }
     }
 
@@ -128,15 +134,13 @@ public class OptimizedStackToString {
         String rhs = GetNext(expr);
         String lhs = GetNext(expr);
 
-        if (IsZero(lhs)){
+        if (IsZero(lhs) || IsOne(lhs)){
             return "1";
         }else if(IsZero(rhs)){
             return "0";
-        }else if(IsOne(lhs)){
-            return "1";
         }else if(IsOne(rhs)){
             return lhs;
-        }else if (rhs.contains("i") || lhs.contains("i")){
+        }else if (CanBeCalcualted(lhs) || CanBeCalcualted(rhs)){
             return lhs + "**" + "(" + rhs + ")";
         }else {
             return String.valueOf(Math.pow(Float.valueOf(lhs), Float.valueOf(rhs)));
@@ -144,7 +148,7 @@ public class OptimizedStackToString {
     }
 
     private boolean IsOne(String val) {
-        return !val.contains("i") && Float.parseFloat(val) == 1;
+        return !CanBeCalcualted(val) && Float.parseFloat(val) == 1;
     }
 
     private String GetNext(Stack<String> expr){
@@ -187,11 +191,11 @@ public class OptimizedStackToString {
         Boolean ZeroMet = false;
         Boolean UseResult = true;
 
-        if (numbers.peek().contains("1") && operators.peek().equals(ViableVariable.mult)){
+        if (numbers.peek().equals("1") && operators.peek().equals(ViableVariable.mult)){
             operators.pop();
             numbers.pop();
         }
-        if(numbers.peek().contains("i") ){
+        if(CanBeCalcualted(numbers.peek())){
             sRes = AssignToResult(numbers, operators, result, false) + (operators.isEmpty() ? "" : operators.pop());
         }
         if (numbers.isEmpty()){
@@ -208,7 +212,7 @@ public class OptimizedStackToString {
                 }
                 ZeroMet = true;
                 EmptyStacks(numbers, operators);
-            }else if(numbers.peek().contains("i")){
+            }else if(CanBeCalcualted(numbers.peek())){
                 sRes += AssignToResult(numbers, operators, result, true) + (operators.isEmpty() ? "" : operators.pop());
                 if (!numbers.isEmpty()){
                     result = Float.valueOf(numbers.pop());
@@ -238,15 +242,6 @@ public class OptimizedStackToString {
 
     private void RemoveOneAndZero(Stack<String> operators, Stack<String> numbers) {
         while (!numbers.isEmpty()){
-            /*
-            if(IsZero(numbers.peek())){
-                if (operators.peek().equals(vv.div)){
-                    TP.terminate_program("Dividing by zero is not allowed.");
-                }
-                numbers.pop();
-                PopOperator(operators);
-            }else
-             */
             if(IsOne(numbers.peek())){
                 numbers.pop();
                 PopOperator(operators);
@@ -269,7 +264,7 @@ public class OptimizedStackToString {
         }
         while (!numbers.isEmpty()){
             RemoveOneAndZero(operators, numbers);
-            if (!numbers.isEmpty() && numbers.peek().contains("i")){
+            if (!numbers.isEmpty() && CanBeCalcualted(numbers.peek())){
                 sRes += operators.pop() + numbers.pop();
             }else{
                 break;
@@ -289,42 +284,12 @@ public class OptimizedStackToString {
         numbers.clear();
     }
 
-    private String StackToString(Stack<String> numbers, Stack<String> operators) {
-        String result = "";
-        Boolean ZeroMet = false;
-
-        while (!numbers.isEmpty() && !ZeroMet){
-            if (IsZero(numbers.peek())){
-                if (DivideByZero(operators, result)){
-                    TP.terminate_program("Dividing by zero is not allowed.");
-                }
-                EmptyStacks(numbers, operators);
-                ZeroMet = true;
-            }else{
-                result += numbers.pop() + (operators.isEmpty() ? "" : operators.pop());
-            }
-        }
-
-        if (ZeroMet){
-            return "0";
-        }else{
-            return result;
-        }
-    }
-
     private boolean IsZero(String peek) {
-        return !peek.contains("i") && Float.parseFloat(peek) == 0;
+        return !CanBeCalcualted(peek) && Float.parseFloat(peek) == 0;
     }
-
-    private boolean DivideByZero(Stack<String> operators, String result) {
-        if (!operators.isEmpty() && operators.peek().equals(ViableVariable.div)){
-            return true;
-        }else return result != "" && ViableVariable.div.equals(result.substring(result.length() - 1));
-    }
-
 
     private String ApplySymbol(String sym, String value){
-        if (value.contains("i")){
+        if (CanBeCalcualted(value)){
             return sym.equals(ViableVariable.minus) ? "(" + value + ")*(-1)" : value;
         }
         return sym.equals(ViableVariable.minus) ? "-" + value : value;
@@ -344,5 +309,9 @@ public class OptimizedStackToString {
             temp.push(entries.pop());
         }
         return temp;
+    }
+
+    public boolean CanBeCalcualted(String str){
+        return str.contains("self.sample.get") || str.contains("i");
     }
 }

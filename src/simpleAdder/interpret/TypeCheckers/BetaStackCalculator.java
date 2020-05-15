@@ -7,7 +7,7 @@ import java.util.Stack;
 public class BetaStackCalculator {
     ViableVariable vv = new ViableVariable();
 
-    public float Calculate(Stack<String> stack){
+    public float nCalculate(Stack<String> stack){
         float result = 0;
         Stack<Float> numbers = new Stack<>();
         Stack<String> operators = new Stack<>();
@@ -20,7 +20,7 @@ public class BetaStackCalculator {
                 numbers.push(ApplyPower(stack));
             }else if(stack.peek().equals(")")){
                 stack.pop();
-                numbers.push(Calculate(stack));
+                numbers.push(nCalculate(stack));
             }else if(stack.peek().equals("(")){
                 stack.pop();
                 break;
@@ -51,7 +51,7 @@ public class BetaStackCalculator {
     private float GetNext(Stack<String> expr){
         if (expr.peek().equals(")")){
             expr.pop();
-            return Calculate(expr);
+            return nCalculate(expr);
         }else{
             return Float.parseFloat(expr.pop());
         }
