@@ -93,7 +93,7 @@ public class IntermediateCodeGeneration {
                 .results()
                 .map(MatchResult::group)
                 .toArray(String[]::new);
-        str = FixEquilibrate(matches[0]);
+        str = str.replace(matches[0],FixEquilibrate(matches[0]));
 
 
         return str;
@@ -111,7 +111,7 @@ public class IntermediateCodeGeneration {
             String Notation = RepaireEquilibrate(s);
             str = str.replace(s,Notation);
         }
-        return null;
+        return str;
     }
 
     public String RepaireEquilibrate(String str)
