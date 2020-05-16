@@ -93,6 +93,7 @@ Tokens
     //t_addingmoleculesdcl = 'A''d''d''i''n''g''M''o''l''e''c''u''l''e''s'h_sp*;
 
     // reserved word declaration
+    t_bitesize = 'b''i''t''e''s''i''z''e' h_sp*;
     t_addmol = 'A''d''d''M''o''l' h_sp*;
     t_remmol = 'R''e''m''M''o''l'h_sp*;
     t_initializedcl = 'I''n''i''t''i''a''l''i''z''e' h_sp*;
@@ -438,5 +439,9 @@ Productions
         {step}              t_bydcl factor timestep;
 
     timestep =
-        {with}              t_each factor t_semicolon |
-        {no}                t_semicolon ;
+        {with}              t_each factor stempsize |
+        {no}                stempsize ;
+
+    stempsize =
+        {with}              t_bitesize factor
+        {without}           t_semicolon ;
