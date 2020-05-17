@@ -1,9 +1,12 @@
 package simpleAdder.interpret.Objects.SymolTableOBJ;
 
+import com.company.node.Switch;
 import simpleAdder.interpret.CompilerPhases.TerminateProgram;
 import simpleAdder.interpret.TypeCheckers.BiksPair;
 import simpleAdder.interpret.TypeCheckers.Check;
 import simpleAdder.interpret.GetMethods.ViableVariable;
+import simpleAdder.interpret.TypeCheckers.Checker;
+import simpleAdder.interpret.TypeCheckers.OptimizedStackToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +16,8 @@ public class Temporary {
     TerminateProgram TH = new TerminateProgram();
     ViableVariable vv = new ViableVariable();
     Check check = new Check();
+    Checker checker = new Checker();
+    OptimizedStackToString CALC = new OptimizedStackToString();
 
     public List<reaction> crn = null;
     public List<parameter> Para = null;
@@ -314,5 +319,149 @@ public class Temporary {
         }else{
             TH.terminate_program("Reac is null (" + method + ")");
         }
+    }
+
+    public void OptimizeConditionsAndAdd() {
+        if (Tit.LogicalExpr != null){
+            char[] logExpr = GetLogExpr(Tit.LogicalExpr, Tit.booleanOperator);
+            String loopBody = GetLoopBody(logExpr, Tit.booleanOperator);
+            if (LoopDependentOnSpecie(loopBody)){
+                Tit = null;
+            }else{
+                TerminateExpressions(loopBody);
+            }
+        }
+
+        if(Tit != null) {
+            ObjectToList();
+        }
+    }
+
+    private void TerminateExpressions(String loopBody) {
+        for (int i = loopBody.length()-1; i >= 0; i-=2){
+            if (loopBody.charAt(i) != 'S'){
+                RemoveLogicalExpr(i);
+                RemoveBooleanOperator(i);
+            }
+        }
+    }
+
+    private void RemoveLogicalExpr(int i) {
+        int index = i/2;
+        if (Tit.LogicalExpr != null){
+            Tit.LogicalExpr.remove(index);
+        }
+    }
+
+    private void RemoveBooleanOperator(int i) {
+        if (i==0){
+            if (Tit.booleanOperator != null && Tit.booleanOperator.size() > 0){
+                Tit.booleanOperator.remove(0);
+            }
+        }else{
+            int index = (i-2)/2;
+            if (Tit.booleanOperator != null && i != 0){
+                Tit.booleanOperator.remove(index);
+            }
+        }
+    }
+
+
+    private boolean LoopDependentOnSpecie(String loopBody){
+        String[] arr = loopBody.split("&");
+        String result = "";
+        for (String s: arr){
+            if (s.contains("1")){
+                result += "1";
+            }else if(!s.contains("1") && s.contains("S")){
+                result += "S";
+            }else{
+                result += "0";
+            }
+        }
+        return result.contains("0") ? true : false;
+    }
+
+    private boolean FindBooleanValue(boolean b, String loopBody) {
+        loopBody = loopBody.replaceAll("S", b == true ? "1" : "0");
+        String[] split = loopBody.split("&");
+        for (String s:split){
+            if (!s.contains("1")){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private String GetLoopBody(char[] logExpr, List<String> booleanOperator) {
+        String result = "";
+        for (int i = 0; i < logExpr.length; i++){
+            if (BooleanOperatorExists(i, booleanOperator)){
+                result += Character.toString(logExpr[i]) + ReplaceBool(booleanOperator.get(i));
+            }else{
+                result += Character.toString(logExpr[i]);
+            }
+        }
+        return result;
+    }
+
+    private char ReplaceBool(String s) {
+        return s.equals("&&") ? '&' : '|';
+    }
+
+    private boolean BooleanOperatorExists(int i, List<String> booleanOperator) {
+        return booleanOperator == null ? false : i < booleanOperator.size() ? true : false;
+    }
+
+    private char[] GetLogExpr(List<logicalExspression> logicalExpr, List<String> booleanOperator) {
+        String result = "";
+        for (int i = 0; i < logicalExpr.size(); i++){
+            if (ContainsSpecie(logicalExpr.get(i))){
+                result += 'S';
+            }else{
+                if (AlwaysTrue(logicalExpr.get(i))){
+                    result += '1';
+                }else{
+                    result +='0';
+                }
+            }
+        }
+        return result.toCharArray();
+    }
+
+    private boolean AlwaysTrue(logicalExspression log) {
+        String rhs = CALC.Calculate((Stack<String>) log.rhs.clone());
+        String lhs = CALC.Calculate((Stack<String>) log.lhs.clone());
+
+        float value = Float.valueOf(rhs) - Float.valueOf(lhs);
+
+        switch (log.logicalOperator){
+            case "<": return value > 0 ? true : false;
+            case ">": return value > 0 ? false : true;
+            case "<=": return value >= 0 ? true : false;
+            case ">=": return value <= 0 ? true : false;
+            case "==": return value == 0 ? true : false;
+            case "!=": return value == 0 ? false : true;
+            default:
+                System.out.println("you are not supposed to be here");
+                return true;
+        }
+    }
+
+    private boolean ContainsSpecie(logicalExspression logicalExspression) {
+        return StackContainsSpecie((Stack<String>)logicalExspression.lhs.clone()) || StackContainsSpecie((Stack<String>)logicalExspression.rhs.clone()) ? true : false;
+    }
+
+    private boolean StackContainsSpecie(Stack<String> clone) {
+        while (!clone.isEmpty()){
+            if (IsString(clone.pop())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean IsString(String pop) {
+        return !Character.isDigit(pop.charAt(0)) && !checker.IsOperator(pop);
     }
 }

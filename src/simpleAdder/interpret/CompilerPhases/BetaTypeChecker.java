@@ -559,7 +559,8 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         }
         NodeToFactor(node,"caseASingleTitrations");
         node.getTitrationEnd().apply(this);
-        st.temp.ObjectToList();
+        st.temp.OptimizeConditionsAndAdd();
+        //st.temp.ObjectToList();
     }
 
     /***
@@ -641,7 +642,8 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         }
         NodeToFactor(node,"caseAMultipleTitrations");
         node.getTitrationContinue().apply(this);
-        st.temp.ObjectToList();
+        //st.temp.ObjectToList();
+        st.temp.OptimizeConditionsAndAdd();
         node.getTitrations().apply(this);
     }
 
