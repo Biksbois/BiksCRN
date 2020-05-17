@@ -48,7 +48,10 @@ public class Titration extends CodeGenerationMethods{
     private Boolean TitratoinNullOrZero(List<titration> AddMol, List<titration> RemMol){
         if (AddMol == null && RemMol == null){
             return true;
-        }else return AddMol != null && AddMol.size() == 0 && RemMol != null && RemMol.size() == 0;
+        }
+        else{
+            return (AddMol == null || AddMol != null && AddMol.size() == 0) && (RemMol == null || RemMol != null && RemMol.size() == 0);
+        }
     }
 
     private String GenerateEmptyTitration(String name){
