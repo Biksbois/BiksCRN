@@ -37,7 +37,7 @@ public class Sample extends CodeGenerationMethods {
         PrettyResult += GenerateGlobalTitVariables(local);
         PrettyResult += euler.Generate(local,Level,"");
         PrettyResult += titration.Generate(CheckNullTitra(local, ViableVariable.ADDMOL), CheckNullTitra(local, ViableVariable.REMMOL), Level) + "\n";
-        PrettyResult += GenerateAnimation(sample, TitrationExists(CheckNullTitra(local, ViableVariable.ADDMOL), CheckNullTitra(local, ViableVariable.REMMOL))) + "\n";
+        PrettyResult += GenerateAnimation(sample) + "\n";
         Level--;
         return PrettyResult;
     }
@@ -86,22 +86,27 @@ public class Sample extends CodeGenerationMethods {
         PrettySample = "";
         Level = 0;
     }
-
-    /**
-     Checks if titaration exsists on the sample*/
-    private boolean TitrationExists(List<titration> add, List<titration> rem){
-        return add != null || rem != null;
-    }
-
-    /**Checks if the sample is empty*/
-    private boolean EmptySample(HashMap<String, SymbolTableType> sample){
-        return sample.isEmpty();
-    }
-
     /**
      Generates the code used to animate the graph*/
-    private String GenerateAnimation(String s, boolean CallTitrationMethod)
+    private String GenerateAnimation(String s)
     {
+        return  "    @staticmethod\n" +
+                "    def Animate(i) :\n" +
+                "        plt.cla()\n" +
+                "        for i in range(" + GetSampleName(s) + ".bitesize):\n" +
+                "            index = next(" + GetSampleName(s) + ".index)\n" +
+                "            if len(" + GetSampleName(s) + ".stepList) == 0:\n" +
+                "                " + GetSampleName(s) + ".stepList.append(index*" + GetSampleName(s) + ".h)\n" +
+                "            else:\n" +
+                "                " + GetSampleName(s) + ".stepList.append(index*" + GetSampleName(s) + ".h)\n" +
+                "                " + GetSampleName(s) + ".Euler(" + GetSampleName(s) + ", index)\n" +
+                "                " + GetSampleName(s) + ".ApplyTitration(" + GetSampleName(s) + ")\n" +
+                "                if(index >= " + GetSampleName(s) + ".steps):\n" +
+                "                    " + GetSampleName(s) + ".stepList.pop()\n" +
+                "                    break\n" +
+                "\n" +
+                "        DrawGraph(" + GetSampleName(s) + ".sample, " + GetSampleName(s) + ".stepList, \"" + s + "\", index, " + GetSampleName(s) + ".steps)";
+        /*
         return  "    @staticmethod\n" +
                 "    def Animate(i) :\n" +
                 "        plt.cla()\n" +
@@ -116,6 +121,8 @@ public class Sample extends CodeGenerationMethods {
                 "        if(index+1 < " + GetSampleName(s) + ".steps):\n" +
                 "            " + GetSampleName(s) + ".Euler(" + GetSampleName(s) + ", index+1)\n" +
                 "            " + GetSampleName(s) + ".ApplyTitration(" + GetSampleName(s) + ", index+1)\n";
+
+         */
     }
 
     /**
@@ -138,7 +145,8 @@ public class Sample extends CodeGenerationMethods {
         return  "\n    stepList = []\n" +
                 "    index = count()\n" +
                 "    steps = 100\n" +
-                "    h = 0.0025";
+                "    h = 0.0025\n" +
+                "    bitesize = 1\n";
     }
 
     /**

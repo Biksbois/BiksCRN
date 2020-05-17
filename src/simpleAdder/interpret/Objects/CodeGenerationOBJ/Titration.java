@@ -21,7 +21,7 @@ public class Titration extends CodeGenerationMethods{
         if (TitratoinNullOrZero(AddMol, RemMol)){
             return GenerateEmptyTitration("");
         }
-        PrettyResult += ApplyTab(Level,"def ApplyTitration(self,i):\n");
+        PrettyResult += ApplyTab(Level,"def ApplyTitration(self):\n");
 
         PrettyResult += GenerateAddMol(AddMol);
         PrettyResult += GenerateRemMol(RemMol);

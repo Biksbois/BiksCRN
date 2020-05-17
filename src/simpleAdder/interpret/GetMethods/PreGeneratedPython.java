@@ -38,7 +38,6 @@ public class PreGeneratedPython {
                 GetpEquilibrste() + "\n"+
                 GetPercent() + "\n" +
                 GetSaveGraph() + "\n" +
-                GetAdjustList() + "\n" +
                 GetPringGraph() + "\n";
     }
 
@@ -111,9 +110,10 @@ public class PreGeneratedPython {
      */
     private String GetpEquilibrste()
     {
-        return "\ndef equilibrate(sample, stepsize, times, timeInterval):\n" +
+        return "\ndef equilibrate(sample, stepsize, times, timeInterval, bitesize):\n" +
                 "    sample.h = stepsize\n" +
                 "    sample.steps = times\n"+
+                "    sample.bitesize = bitesize\n" +
                 "    plt.figure(figsize=(12, 7),dpi=80, num='BiksCRN')\n" +
                 "    ani = FuncAnimation(plt.gcf(), sample.Animate, interval=timeInterval)\n" +
                 "    plt.show()\n";
@@ -128,22 +128,8 @@ public class PreGeneratedPython {
                 "        return \"{:.2f}\".format(result)\n";
     }
 
-    private String GetAdjustList(){
-        return  "def AdjustLists(species, stepList, taken):\n" +
-                "    if taken == len(stepList):\n" +
-                "        return False\n" +
-                "    for key in species.keys():\n" +
-                "        species[key].pop()\n" +
-                "        if len(species[key]) > len(stepList):\n" +
-                "            stepList.pop()\n" +
-                "    return True\n";
-    }
-
     private String GetSaveGraph(){
         return "def SaveGraph(Sample, name, taken):\n" +
-                "    if not AdjustLists(Sample.sample, Sample.stepList, taken):\n" +
-                "        if len(next(iter(Sample.sample.values()))) != len(Sample.stepList):\n" +
-                "            Sample.stepList.append(Sample.stepList[-1]+Sample.h)\n" +
                 "    rSpecies = Sample.sample.copy()\n" +
                 "    rSteps = Sample.stepList\n" +
                 "    for key in Sample.sample:\n" +
