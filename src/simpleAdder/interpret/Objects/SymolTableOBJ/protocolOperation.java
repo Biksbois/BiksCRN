@@ -76,11 +76,11 @@ public class protocolOperation {
         }
     }
 
-    public protocolOperation(String type, String sample ,String amount, String stepSize, String interval)
+    public protocolOperation(String type, String sample ,String amount, String stepSize, String interval, String bitesize)
     {
         switch (type)
         {
-            case ViableVariable.EQUILIBRATE: equiliToStack(sample,amount,stepSize, interval); break;
+            case ViableVariable.EQUILIBRATE: equiliToStack(sample,amount,stepSize, interval, bitesize); break;
             default:
                 TH.terminate_program(type +" is an invalid type (initializeOperation)");
 
@@ -142,7 +142,7 @@ public class protocolOperation {
         }
     }
 
-    public void equiliToStack(String sample, String amount, String stepSize, String interval)
+    public void equiliToStack(String sample, String amount, String stepSize, String interval, String bitesize)
     {
         if(equili != null)
         {
@@ -150,7 +150,7 @@ public class protocolOperation {
         }
         else
         {
-            equili = new Equilibrate(sample,amount,stepSize,interval);
+            equili = new Equilibrate(sample,amount,stepSize,interval, bitesize);
         }
     }
     /**

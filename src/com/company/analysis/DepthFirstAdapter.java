@@ -3042,9 +3042,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getFactor().apply(this);
         }
-        if(node.getTSemicolon() != null)
+        if(node.getBitesize() != null)
         {
-            node.getTSemicolon().apply(this);
+            node.getBitesize().apply(this);
         }
         outAWithTimestep(node);
     }
@@ -3063,10 +3063,60 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseANoTimestep(ANoTimestep node)
     {
         inANoTimestep(node);
+        if(node.getBitesize() != null)
+        {
+            node.getBitesize().apply(this);
+        }
+        outANoTimestep(node);
+    }
+
+    public void inAWithBitesize(AWithBitesize node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAWithBitesize(AWithBitesize node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAWithBitesize(AWithBitesize node)
+    {
+        inAWithBitesize(node);
+        if(node.getTBitesize() != null)
+        {
+            node.getTBitesize().apply(this);
+        }
+        if(node.getFactor() != null)
+        {
+            node.getFactor().apply(this);
+        }
         if(node.getTSemicolon() != null)
         {
             node.getTSemicolon().apply(this);
         }
-        outANoTimestep(node);
+        outAWithBitesize(node);
+    }
+
+    public void inAWithoutBitesize(AWithoutBitesize node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAWithoutBitesize(AWithoutBitesize node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAWithoutBitesize(AWithoutBitesize node)
+    {
+        inAWithoutBitesize(node);
+        if(node.getTSemicolon() != null)
+        {
+            node.getTSemicolon().apply(this);
+        }
+        outAWithoutBitesize(node);
     }
 }

@@ -5,56 +5,56 @@ package com.company.node;
 import com.company.analysis.*;
 
 @SuppressWarnings("nls")
-public final class AWithTimestep extends PTimestep
+public final class AWithBitesize extends PBitesize
 {
-    private TTEach _tEach_;
+    private TTBitesize _tBitesize_;
     private PFactor _factor_;
-    private PBitesize _bitesize_;
+    private TTSemicolon _tSemicolon_;
 
-    public AWithTimestep()
+    public AWithBitesize()
     {
         // Constructor
     }
 
-    public AWithTimestep(
-        @SuppressWarnings("hiding") TTEach _tEach_,
+    public AWithBitesize(
+        @SuppressWarnings("hiding") TTBitesize _tBitesize_,
         @SuppressWarnings("hiding") PFactor _factor_,
-        @SuppressWarnings("hiding") PBitesize _bitesize_)
+        @SuppressWarnings("hiding") TTSemicolon _tSemicolon_)
     {
         // Constructor
-        setTEach(_tEach_);
+        setTBitesize(_tBitesize_);
 
         setFactor(_factor_);
 
-        setBitesize(_bitesize_);
+        setTSemicolon(_tSemicolon_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new AWithTimestep(
-            cloneNode(this._tEach_),
+        return new AWithBitesize(
+            cloneNode(this._tBitesize_),
             cloneNode(this._factor_),
-            cloneNode(this._bitesize_));
+            cloneNode(this._tSemicolon_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAWithTimestep(this);
+        ((Analysis) sw).caseAWithBitesize(this);
     }
 
-    public TTEach getTEach()
+    public TTBitesize getTBitesize()
     {
-        return this._tEach_;
+        return this._tBitesize_;
     }
 
-    public void setTEach(TTEach node)
+    public void setTBitesize(TTBitesize node)
     {
-        if(this._tEach_ != null)
+        if(this._tBitesize_ != null)
         {
-            this._tEach_.parent(null);
+            this._tBitesize_.parent(null);
         }
 
         if(node != null)
@@ -67,7 +67,7 @@ public final class AWithTimestep extends PTimestep
             node.parent(this);
         }
 
-        this._tEach_ = node;
+        this._tBitesize_ = node;
     }
 
     public PFactor getFactor()
@@ -95,16 +95,16 @@ public final class AWithTimestep extends PTimestep
         this._factor_ = node;
     }
 
-    public PBitesize getBitesize()
+    public TTSemicolon getTSemicolon()
     {
-        return this._bitesize_;
+        return this._tSemicolon_;
     }
 
-    public void setBitesize(PBitesize node)
+    public void setTSemicolon(TTSemicolon node)
     {
-        if(this._bitesize_ != null)
+        if(this._tSemicolon_ != null)
         {
-            this._bitesize_.parent(null);
+            this._tSemicolon_.parent(null);
         }
 
         if(node != null)
@@ -117,25 +117,25 @@ public final class AWithTimestep extends PTimestep
             node.parent(this);
         }
 
-        this._bitesize_ = node;
+        this._tSemicolon_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._tEach_)
+            + toString(this._tBitesize_)
             + toString(this._factor_)
-            + toString(this._bitesize_);
+            + toString(this._tSemicolon_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._tEach_ == child)
+        if(this._tBitesize_ == child)
         {
-            this._tEach_ = null;
+            this._tBitesize_ = null;
             return;
         }
 
@@ -145,9 +145,9 @@ public final class AWithTimestep extends PTimestep
             return;
         }
 
-        if(this._bitesize_ == child)
+        if(this._tSemicolon_ == child)
         {
-            this._bitesize_ = null;
+            this._tSemicolon_ = null;
             return;
         }
 
@@ -158,9 +158,9 @@ public final class AWithTimestep extends PTimestep
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._tEach_ == oldChild)
+        if(this._tBitesize_ == oldChild)
         {
-            setTEach((TTEach) newChild);
+            setTBitesize((TTBitesize) newChild);
             return;
         }
 
@@ -170,9 +170,9 @@ public final class AWithTimestep extends PTimestep
             return;
         }
 
-        if(this._bitesize_ == oldChild)
+        if(this._tSemicolon_ == oldChild)
         {
-            setBitesize((PBitesize) newChild);
+            setTSemicolon((TTSemicolon) newChild);
             return;
         }
 

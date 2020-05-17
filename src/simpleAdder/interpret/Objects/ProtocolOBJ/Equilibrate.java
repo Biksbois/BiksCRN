@@ -5,6 +5,7 @@ public class Equilibrate {
     public String amount;
     public float stepSize = 0.00125f;
     public String timeInterval = "";
+    public String bitesize = "";
 
     public Equilibrate(String sample, String amount)
     {
@@ -19,11 +20,12 @@ public class Equilibrate {
         this.stepSize = stepSize.equals("") ? this.stepSize: Float.parseFloat(stepSize);
     }
 
-    public Equilibrate(String sample, String amount, String stepSize, String timeInterval)
+    public Equilibrate(String sample, String amount, String stepSize, String timeInterval, String bitesize)
     {
         this.sample = sample;
         this.amount = amount;
         this.stepSize = stepSize.equals("") ? this.stepSize: Float.parseFloat(stepSize);
         this.timeInterval = timeInterval;
+        this.bitesize = bitesize;
     }
 }

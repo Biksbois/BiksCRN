@@ -759,6 +759,18 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseAWithBitesize(AWithBitesize node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAWithoutBitesize(AWithoutBitesize node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseTTPlus(TTPlus node)
     {
         defaultCase(node);
@@ -970,6 +982,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTTEol(TTEol node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTTBitesize(TTBitesize node)
     {
         defaultCase(node);
     }

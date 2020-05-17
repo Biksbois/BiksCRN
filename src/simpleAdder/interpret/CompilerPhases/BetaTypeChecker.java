@@ -933,7 +933,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     public void outASingleEquili(ASingleEquili node)
     {
         Node eNode = node.getExtendequili();
-
+        String bitesize = "1";
         String stepSize = "0.0025";
         String interval = "100";
         String cycles = "";
@@ -961,20 +961,35 @@ public class BetaTypeChecker extends DepthFirstAdapter {
                 Node Interval = ((ASemiExtendequili) step).getTimestep();
                 if (Interval instanceof AWithTimestep){
                     interval = GetTimestep((AWithTimestep) Interval);
+                    bitesize = GetBiteSize(((AWithTimestep) Interval).getBitesize());
+
+                }else if(Interval instanceof ANoTimestep){
+                    bitesize = GetBiteSize(((ANoTimestep) Interval).getBitesize());
                 }
             }else if (step instanceof AStepExtendequili){
                 Node Interval = ((AStepExtendequili) step).getTimestep();
                 if (Interval instanceof AWithTimestep){
                     interval = GetTimestep((AWithTimestep) Interval);
+                    bitesize = GetBiteSize(((AWithTimestep) Interval).getBitesize());
+                }else if(Interval instanceof ANoTimestep){
+                    bitesize = GetBiteSize(((ANoTimestep) Interval).getBitesize());
                 }
                 stepSize = FactorToValues(((AStepExtendequili) step).getFactor());
             }
-            st.protocols.push(new protocolOperation(ViableVariable.EQUILIBRATE,sample, cycles, stepSize, interval));
+            st.protocols.push(new protocolOperation(ViableVariable.EQUILIBRATE,sample, cycles, stepSize, interval, bitesize));
         }
         else
         {
             terminate.WrongType(node.getTString(), st.TypeForMessage(sample), ViableVariable.SAMPLE, sample, "outASingleEquili");
             terminate.terminate_program(sample + " not sample (outASingleEquili)");
+        }
+    }
+
+    private String GetBiteSize(PBitesize node) {
+        if (node instanceof AWithBitesize){
+            return GetPositiveWholeFactor(((AWithBitesize) node).getFactor(), ((AWithBitesize) node).getTBitesize());
+        }else{
+            return "1";
         }
     }
 
