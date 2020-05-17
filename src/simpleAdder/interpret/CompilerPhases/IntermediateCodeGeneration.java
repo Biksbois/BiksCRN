@@ -49,7 +49,7 @@ public class IntermediateCodeGeneration {
         try{
             //var test = Paths.get("").toAbsolutePath().toString() +"\\"+ OutputName;
             FileWriter fw = new FileWriter(Paths.get("").toAbsolutePath().toString() +"\\"+ OutputName);
-            //C:\Users\jeppe\Documents\GitHub\BiksCRN\BiksIntermediate.sa
+            //C:\Users\jeppe\Documents\GitHub\BiksCRNBiksIntermediate.sa
             fw.write(code);
             fw.close();
         }catch (IOException e)
@@ -63,7 +63,7 @@ public class IntermediateCodeGeneration {
 
     public String GetPath()
     {
-        return Paths.get("").toAbsolutePath().toString()+OutputName;
+        return Paths.get("").toAbsolutePath().toString()+"\\"+OutputName;
     }
 
     /***
@@ -142,7 +142,7 @@ public class IntermediateCodeGeneration {
 
     public boolean checkForTypeNotation(String str)
     {
-        String[] matches = Pattern.compile("(t|c|T|C)(\\sby\\s|\\seach\\s|\\sbitesize\\s)")
+        String[] matches = Pattern.compile("for\\s.+\\s(t|c|T|C)(\\sby\\s|\\seach\\s|\\sbitesize\\s)")
                 .matcher(str)
                 .results()
                 .map(MatchResult::group)
