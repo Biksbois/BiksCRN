@@ -130,7 +130,7 @@ public class IntermediateCodeGeneration {
 
     public String FixToDefault(String str)
     {
-        String[] matches = Pattern.compile("\\sby\\s")
+        String[] matches = Pattern.compile("(\\sby\\s|\\seach\\s|\\sbitesize\\s)")
                 .matcher(str)
                 .results()
                 .map(MatchResult::group)
@@ -142,7 +142,7 @@ public class IntermediateCodeGeneration {
 
     public boolean checkForTypeNotation(String str)
     {
-        String[] matches = Pattern.compile("(t|c|T|C)\\sby\\s")
+        String[] matches = Pattern.compile("(t|c|T|C)(\\sby\\s|\\seach\\s|\\sbitesize\\s)")
                 .matcher(str)
                 .results()
                 .map(MatchResult::group)
