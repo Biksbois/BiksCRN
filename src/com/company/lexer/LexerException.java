@@ -7,7 +7,7 @@ import com.company.node.*;
 @SuppressWarnings("serial")
 public class LexerException extends Exception
 {
-    private final InvalidToken invalidToken;
+    private InvalidToken invalidToken;
     
     public LexerException(@SuppressWarnings("hiding") InvalidToken invalidToken, String message)
     {

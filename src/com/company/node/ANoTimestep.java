@@ -7,7 +7,7 @@ import com.company.analysis.*;
 @SuppressWarnings("nls")
 public final class ANoTimestep extends PTimestep
 {
-    private TTSemicolon _tSemicolon_;
+    private PBitesize _bitesize_;
 
     public ANoTimestep()
     {
@@ -15,10 +15,10 @@ public final class ANoTimestep extends PTimestep
     }
 
     public ANoTimestep(
-        @SuppressWarnings("hiding") TTSemicolon _tSemicolon_)
+        @SuppressWarnings("hiding") PBitesize _bitesize_)
     {
         // Constructor
-        setTSemicolon(_tSemicolon_);
+        setBitesize(_bitesize_);
 
     }
 
@@ -26,7 +26,7 @@ public final class ANoTimestep extends PTimestep
     public Object clone()
     {
         return new ANoTimestep(
-            cloneNode(this._tSemicolon_));
+            cloneNode(this._bitesize_));
     }
 
     @Override
@@ -35,16 +35,16 @@ public final class ANoTimestep extends PTimestep
         ((Analysis) sw).caseANoTimestep(this);
     }
 
-    public TTSemicolon getTSemicolon()
+    public PBitesize getBitesize()
     {
-        return this._tSemicolon_;
+        return this._bitesize_;
     }
 
-    public void setTSemicolon(TTSemicolon node)
+    public void setBitesize(PBitesize node)
     {
-        if(this._tSemicolon_ != null)
+        if(this._bitesize_ != null)
         {
-            this._tSemicolon_.parent(null);
+            this._bitesize_.parent(null);
         }
 
         if(node != null)
@@ -57,23 +57,23 @@ public final class ANoTimestep extends PTimestep
             node.parent(this);
         }
 
-        this._tSemicolon_ = node;
+        this._bitesize_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._tSemicolon_);
+            + toString(this._bitesize_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._tSemicolon_ == child)
+        if(this._bitesize_ == child)
         {
-            this._tSemicolon_ = null;
+            this._bitesize_ = null;
             return;
         }
 
@@ -84,9 +84,9 @@ public final class ANoTimestep extends PTimestep
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._tSemicolon_ == oldChild)
+        if(this._bitesize_ == oldChild)
         {
-            setTSemicolon((TTSemicolon) newChild);
+            setBitesize((PBitesize) newChild);
             return;
         }
 

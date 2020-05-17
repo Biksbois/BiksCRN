@@ -63,7 +63,7 @@ public class IntermediateCodeGeneration {
 
     public String GetPath()
     {
-        return Paths.get("").toAbsolutePath().toString()+OutputName;
+        return Paths.get("").toAbsolutePath().toString()+"\\"+OutputName;
     }
 
     /***

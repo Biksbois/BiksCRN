@@ -88,12 +88,8 @@ Tokens
     t_blank = h_sp*;
     t_eol = h_cr | h_nl | h_cr h_nl;
 
-
-    //t_removingmoleculesdcl = 'R''e''m''o''v''e''M''o''l''e''c''u''l''e''s'h_sp*;
-    //t_addingmoleculesdcl = 'A''d''d''i''n''g''M''o''l''e''c''u''l''e''s'h_sp*;
-
     // reserved word declaration
-    t_bitesize = 'b''i''t''e''s''i''z''e' h_sp*;
+    t_bitesize = h_sp+'b''i''t''e''s''i''z''e' h_sp*;
     t_addmol = 'A''d''d''M''o''l' h_sp*;
     t_remmol = 'R''e''m''M''o''l'h_sp*;
     t_initializedcl = 'I''n''i''t''i''a''l''i''z''e' h_sp*;
@@ -423,6 +419,7 @@ Productions
     protocolparam =
         {multi}             t_string t_comma protocolparam|
         {single}            t_string;
+
     protoexstend =
         {multi}             t_comma t_string protoexstend |
         {single}            t_comma t_string;
@@ -439,9 +436,9 @@ Productions
         {step}              t_bydcl factor timestep;
 
     timestep =
-        {with}              t_each factor stempsize |
-        {no}                stempsize ;
+        {with}              t_each factor bitesize |
+        {no}                bitesize ;
 
-    stempsize =
-        {with}              t_bitesize factor
+    bitesize =
+        {with}              t_bitesize factor t_semicolon |
         {without}           t_semicolon ;

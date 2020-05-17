@@ -121,7 +121,7 @@ class SampleA():
             self.sample["Y"].append(self.sample.get("Y")[-1]+(r0*(-2)+r1*(1))*self.h)
 
     def ApplyTitration(self,i):
-        if self.sample.get("X")[-1]<3:
+        if self.sample.get("X")[-1]<3.00:
             Result, self.AddMol0 = self.AccTitration(self, 0.01, self.AddMol0)
             self.sample["X"][-1] = self.sample.get("X")[-1]+Result*1
 
@@ -236,7 +236,7 @@ class SampleC():
 sample = {
     "Y":[100]
 }
-equilibrate(SampleA, 5.0E-4, 18000.0, 1000)
+equilibrate(SampleA, 5.0E-4, 1999.0, 1)
 sample["Y"] = [SampleA.sample.get("Y")[-1]]
 Species0, Steps0, name0, taken0 = SaveGraph(SampleA, "A", SampleA.steps )
 SampleC.sample = mix([SampleA.sample, SampleB.sample])
@@ -255,7 +255,7 @@ def Euler0(self, i) :
 
 SampleC.Euler = Euler0
 def ApplyTitration0(self,i):
-    if self.sample.get("X")[-1]<3:
+    if self.sample.get("X")[-1]<3.00:
         Result, self.AddMol0 = self.AccTitration(self, 0.01, self.AddMol0)
         self.sample["X"][-1] = self.sample.get("X")[-1]+Result*1
     Result, self.RemMol0 = self.AccTitration(self, 0.3, self.RemMol0)

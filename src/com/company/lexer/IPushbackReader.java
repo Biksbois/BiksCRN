@@ -7,6 +7,6 @@ import java.io.*;
 @SuppressWarnings("serial")
 public interface IPushbackReader
 {
-    int read() throws IOException;
-    void unread(int c) throws IOException;
+    public int read() throws IOException;
+    public void unread(int c) throws IOException;
 }

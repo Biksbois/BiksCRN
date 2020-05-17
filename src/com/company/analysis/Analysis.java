@@ -126,6 +126,8 @@ public interface Analysis extends Switch
     void caseAStepExtendequili(AStepExtendequili node);
     void caseAWithTimestep(AWithTimestep node);
     void caseANoTimestep(ANoTimestep node);
+    void caseAWithBitesize(AWithBitesize node);
+    void caseAWithoutBitesize(AWithoutBitesize node);
 
     void caseTTPlus(TTPlus node);
     void caseTTMinus(TTMinus node);
@@ -163,6 +165,7 @@ public interface Analysis extends Switch
     void caseTTComments(TTComments node);
     void caseTTBlank(TTBlank node);
     void caseTTEol(TTEol node);
+    void caseTTBitesize(TTBitesize node);
     void caseTTAddmol(TTAddmol node);
     void caseTTRemmol(TTRemmol node);
     void caseTTInitializedcl(TTInitializedcl node);
