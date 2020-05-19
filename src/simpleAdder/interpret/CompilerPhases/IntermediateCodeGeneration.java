@@ -85,16 +85,54 @@ public class IntermediateCodeGeneration {
         code = code.replaceAll("Split\\(", "Split (");
         code = ReplaceCRNSpecies(code);
         code = FixEquilibrateSyntax(code);
+        code = LogicalExsprresionFix(code);
+        code = RewriteEquilibrate(code);
         WriteInputfile(code);
+    }
+
+    public String RewriteEquilibrate(String str)
+    {
+        String[] matches = GetMatches(str, "Equilibrate.*;");
+        for (String equili: matches) {
+            if(CheckForInstant(equili))
+            {
+                String value = GetNumeral(equili);
+                str = str.replace(equili,RemoveBloat(equili)+ " each 1 bitesize "+ value.trim() +";");
+            }
+        }
+
+        return str;
+    }
+    public String RemoveBloat(String str)
+    {
+        return GetMatches(str,"Equilibrate.*(by(\\d+.\\d+)|((t|T)|(c|C)))")[0]
+                .replaceAll("\\d+\\s+(I|i)(N|n)(S|s)(T|t)(A|a)(N|n)(T|t)",
+                        GetNumeral(GetMatches(str,"\\d+\\s+(I|i)(N|n)(S|s)(T|t)(A|a)(N|n)(T|t)")[0]));
+    }
+
+    public boolean CheckForInstant(String str)
+    {
+        return Pattern.compile("\\d+\\s+(I|i)(N|n)(S|s)(T|t)(A|a)(N|n)(T|t)").matcher(str).find();
+    }
+
+    public String LogicalExsprresionFix(String str)
+    {
+        String[] matches = GetMatches(str,"while\\s\\(.*\\)");
+        for (String _while: matches) {
+
+            str = str.replace(_while,"while "+IdentifyLogicalExp(_while));
+        }
+        return str;
+    }
+
+    public String IdentifyLogicalExp(String str)
+    {
+        return GetMatches(str,"\\(.*\\)")[0].replaceAll("\\s","");
     }
 
     public String FixEquilibrateSyntax(String str)
     {
-        String[] matches = Pattern.compile("Protocol\\s*\\{(\\s|\\w|\\d|\\*|\\+|;|:|,|.)*\\}")
-                .matcher(str)
-                .results()
-                .map(MatchResult::group)
-                .toArray(String[]::new);
+        String[] matches = GetMatches(str,"Protocol\\s*\\{(\\s|\\w|\\d|\\*|\\+|;|:|,|.)*\\}");
         str = str.replace(matches[0],FixEquilibrate(matches[0]));
 
 
@@ -103,11 +141,7 @@ public class IntermediateCodeGeneration {
 
     public String FixEquilibrate(String str)
     {
-        String[] matches = Pattern.compile("Equilibrate\\s*(.)*;")
-                .matcher(str)
-                .results()
-                .map(MatchResult::group)
-                .toArray(String[]::new);
+        String[] matches = GetMatches(str,"Equilibrate\\s*(.)*;");
 
         for (String s: matches) {
             String Notation = RepaireEquilibrate(s);
@@ -130,11 +164,7 @@ public class IntermediateCodeGeneration {
 
     public String FixToDefault(String str)
     {
-        String[] matches = Pattern.compile("(\\sby\\s|\\seach\\s|\\sbitesize\\s)")
-                .matcher(str)
-                .results()
-                .map(MatchResult::group)
-                .toArray(String[]::new);
+        String[] matches = GetMatches(str,"(\\sby\\s|\\seach\\s|\\sbitesize\\s)");
         String FixStr = " c"+matches[0];
         str = str.replace(matches[0],FixStr);
         return str;
@@ -142,11 +172,7 @@ public class IntermediateCodeGeneration {
 
     public boolean checkForTypeNotation(String str)
     {
-        String[] matches = Pattern.compile("for\\s.+\\s(t|c|T|C)(\\sby\\s|\\seach\\s|\\sbitesize\\s)")
-                .matcher(str)
-                .results()
-                .map(MatchResult::group)
-                .toArray(String[]::new);
+        String[] matches = GetMatches(str,"for\\s.+\\s(t|c|T|C)(\\sby\\s|\\seach\\s|\\sbitesize\\s)");
 
         if(matches.length == 0)
         {
@@ -158,47 +184,45 @@ public class IntermediateCodeGeneration {
     }
     public String ReplaceCRNSpecies(String str)
     {
-        String[] matches = Pattern.compile("CRN\\s*\\{(\\s|\\w|\\d|->|<->|,|\\*|\\+|;|:)*\\}")
-                .matcher(str)
-                .results()
-                .map(MatchResult::group)
-                .toArray(String[]::new);
+        String[] matches = GetMatches(str,"CRN\\s*\\{(\\s|\\w|\\d|->|<->|,|\\*|\\+|;|:)*\\}");
         for (var s: matches) {
-            String Notation = ReplaceNotation(s);
-            str = str.replace(s,Notation);
+            str = str.replace(s,ReplaceNotation(s));
         }
         return str;
     }
 
     public String ReplaceNotation(String str)
     {
-        String[] matches = Pattern.compile("\\d+([a-z]|[A-Z])+(([a-z]|[A-Z])|\\d)*")
-                .matcher(str)
-                .results()
-                .map(MatchResult::group)
-                .toArray(String[]::new);
+        String[] matches = GetMatches(str,"\\d+([a-z]|[A-Z])+(([a-z]|[A-Z])|\\d)*");
         for (var blip: matches) {
-            String test = GetNumeral(blip)+"*"+GetName(blip);
-            str = str.replaceAll(blip,test);
+            str = str.replaceAll(blip,GetNumeral(blip)+"*"+GetName(blip));
         }
         return str;
     }
 
     public String GetNumeral(String str)
     {
-            return Pattern.compile("\\d+")
-                    .matcher(str)
-                    .results()
-                    .map(MatchResult::group)
-                    .toArray(String[]::new)[0];
+        if(str.contains("Equilibrate"))
+        {
+            return GetMatches(str,"\\s\\d+\\s")[0];
+        }
+        else
+            {
+                return GetMatches(str,"\\d+")[0];
+            }
     }
 
     public String GetName(String str)
     {
-            return Pattern.compile("([a-z]|[A-Z])+(([a-z]|[A-Z])|\\d)*")
-                .matcher(str)
+            return GetMatches(str,"([a-z]|[A-Z])+(([a-z]|[A-Z])|\\d)*")[0];
+    }
+
+    private String[] GetMatches(String original, String regex)
+    {
+        return Pattern.compile(regex)
+                .matcher(original)
                 .results()
                 .map(MatchResult::group)
-                .toArray(String[]::new)[0];
+                .toArray(String[]::new);
     }
 }
