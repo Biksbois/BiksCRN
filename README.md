@@ -64,6 +64,7 @@ Here is a small example off some working code
 &nbsp;&nbsp;&nbsp;&nbsp;Protocol {  
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/\*Three possible versions of eqilibrate with a variety of optinal parameteres\*/  
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Equilibrate A for 100;  
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Equilibrate A for 100 t; 
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Equilibrate A for 100 by 0.0005 INSTANT;  
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Equilibrate A for 100 by 0.0005 each 1000 bitesize 10;  
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sample C = Mix (A,B);  
