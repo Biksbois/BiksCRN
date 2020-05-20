@@ -13,6 +13,8 @@ public class IntermediateCodeGeneration {
 
     String rawPath;
     String OutputName = "BiksIntermediate.sa";
+    String VariableOrNumeral = "(\\d+|(\\w(\\d|\\w)*))";
+    String instant = "(I|i)(N|n)(S|s)(T|t)(A|a)(N|n)(T|t)";
 
     public IntermediateCodeGeneration(String path)
     {
@@ -47,9 +49,7 @@ public class IntermediateCodeGeneration {
      */
     private void WriteInputfile(String code) throws IOException {
         try{
-            //var test = Paths.get("").toAbsolutePath().toString() +"\\"+ OutputName;
             FileWriter fw = new FileWriter(Paths.get("").toAbsolutePath().toString() +"\\"+ OutputName);
-            //C:\Users\jeppe\Documents\GitHub\BiksCRNBiksIntermediate.sa
             fw.write(code);
             fw.close();
         }catch (IOException e)
@@ -101,14 +101,24 @@ public class IntermediateCodeGeneration {
     }
     public String RemoveBloat(String str)
     {
-        return GetMatches(str,"Equilibrate.*(by(\\d+.\\d+)|((t|T)|(c|C)))")[0]
-                .replaceAll("\\d+\\s+(I|i)(N|n)(S|s)(T|t)(A|a)(N|n)(T|t)",
-                        GetNumeral(GetMatches(str,"\\d+\\s+(I|i)(N|n)(S|s)(T|t)(A|a)(N|n)(T|t)")[0]));
+        String trimmedResult = GetMatches(str,"Equilibrate.*;")[0];
+        trimmedResult = trimmedResult.replaceAll(instant+";","");
+
+        if(trimmedResult.contains("each"))
+        {
+            trimmedResult = trimmedResult.replaceAll("each\\s"+VariableOrNumeral,"");
+        }
+
+        if(trimmedResult.contains("bitesize"))
+        {
+            trimmedResult = trimmedResult.replaceAll("bitesize\\s"+VariableOrNumeral,"");
+        }
+        return trimmedResult;
     }
 
     public boolean CheckForInstant(String str)
     {
-        return Pattern.compile("\\d+\\s+(I|i)(N|n)(S|s)(T|t)(A|a)(N|n)(T|t)").matcher(str).find();
+        return Pattern.compile("\\d+\\s+"+instant).matcher(str).find();
     }
 
     public String LogicalExsprresionFix(String str)
@@ -159,10 +169,10 @@ public class IntermediateCodeGeneration {
 
     public String FixToDefault(String str)
     {
-        String[] matches = GetMatches(str,"(\\sby\\s|\\seach\\s|\\sbitesize\\s)");
+        String[] matches = GetMatches(str,"for\\s"+VariableOrNumeral);
         if(matches.length != 0)
         {
-            String FixStr = " c"+matches[0];
+            String FixStr = matches[0]+" c";
             str = str.replace(matches[0],FixStr);
         }
 
@@ -203,11 +213,11 @@ public class IntermediateCodeGeneration {
     {
         if(str.contains("Equilibrate"))
         {
-            return GetMatches(str,"\\s\\d+\\s")[0];
+            return GetMatches(GetMatches(str,"for\\s"+VariableOrNumeral+"\\s")[0],"\\s"+VariableOrNumeral)[0];
         }
         else
             {
-                return GetMatches(str,"\\d+")[0];
+                return GetMatches(str,VariableOrNumeral)[0];
             }
     }
 
