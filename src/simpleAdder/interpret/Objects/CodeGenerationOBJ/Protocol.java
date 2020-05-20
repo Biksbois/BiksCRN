@@ -2,9 +2,9 @@ package simpleAdder.interpret.Objects.CodeGenerationOBJ;
 
 import simpleAdder.interpret.GetMethods.ViableVariable;
 import simpleAdder.interpret.Objects.ProtocolOBJ.Mix;
-import simpleAdder.interpret.Objects.SymolTableOBJ.reaction;
-import simpleAdder.interpret.Objects.SymolTableOBJ.protocolOperation;
 import simpleAdder.interpret.Objects.SymolTableOBJ.SymbolTableType;
+import simpleAdder.interpret.Objects.SymolTableOBJ.protocolOperation;
+import simpleAdder.interpret.Objects.SymolTableOBJ.reaction;
 import simpleAdder.interpret.Objects.SymolTableOBJ.titration;
 import simpleAdder.interpret.TypeCheckers.BiksPair;
 import simpleAdder.interpret.TypeCheckers.Check;
@@ -152,7 +152,7 @@ public class Protocol extends CodeGenerationMethods {
         prettyResult += GetSampleName(protocol.mix.ResultingSample)+".Euler = Euler"+mixCount+"\n";
 
         prettyResult += titration.Generate(global.get(protocol.mix.ResultingSample).scope.get(ViableVariable.ADDMOL).titrations, global.get(protocol.mix.ResultingSample).scope.get(ViableVariable.REMMOL).titrations, level,Integer.toString(mixCount));
-        prettyResult += GetSampleName(protocol.mix.ResultingSample)+".ApplyTitration = ApplyTitration"+mixCount+"\n";
+        prettyResult += GetSampleName(protocol.mix.ResultingSample)+".ApplyTitration = ApplyTitration"+mixCount++ +"\n";
 
         return prettyResult;
     }
@@ -303,6 +303,76 @@ public class Protocol extends CodeGenerationMethods {
         String prettyResult = "";
 
         prettyResult += "split("+GetSampleName(protocol.split.SplitSample)+".sample,[" +prettyMixers(protocol.split.ResultingSamples)+"], ["+prettyDistribution(protocol.split.DestributionValue)+"])\n";
+
+        List<reaction> reacs = new ArrayList<>();
+        List<titration> addmol = new ArrayList<>();
+        List<titration> remmol = new ArrayList<>();
+        /*
+        for(int i = 0; i<protocol.split.ResultingSamples.size(); i++)
+        {
+            String toSample = protocol.split.ResultingSamples.get(i);
+                if(global.get(toSample).scope.containsKey(ViableVariable.CRN))
+                {
+                    reacs.addAll(global.get(toSample).scope.get(ViableVariable.CRN).crn);
+                }
+                if (global.get(toSample).scope.containsKey(ViableVariable.ADDMOL))
+                {
+                    addmol.addAll(global.get(toSample).scope.get(ViableVariable.ADDMOL).titrations);
+                }
+                if (global.get(toSample).scope.containsKey(ViableVariable.REMMOL))
+                {
+                    remmol.addAll(global.get(toSample).scope.get(ViableVariable.REMMOL).titrations);
+                }
+
+        }
+
+         */
+
+        prettyResult += AddSpecies(protocol.split.DestributionValue, protocol.split.ResultingSamples, protocol.split.SplitSample);
+
+        //if (changesMade){
+        //    prettyResult += euler.Generate(global.get(protocol.split.SplitSample).scope,level,Integer.toString(mixCount));
+        //    prettyResult += GetSampleName(protocol.split.SplitSample)+".Euler = Euler" + mixCount + "\n";
+
+        //}
+
+        //prettyResult += titration.Generate(global.get(protocol.mix.ResultingSample).scope.get(ViableVariable.ADDMOL).titrations, global.get(protocol.mix.ResultingSample).scope.get(ViableVariable.REMMOL).titrations, level,Integer.toString(mixCount));
+        //prettyResult += GetSampleName(protocol.mix.ResultingSample)+".ApplyTitration = ApplyTitration"+mixCount+"\n";
+
+        return prettyResult;
+    }
+
+    public String AddSpecies(List<String> procent , List<String> toSample, String fromSample)
+    {
+        String prettyResult = "";
+        boolean newSpecies = false;
+        if(global.get(fromSample).scope.get(vv.SPECIE).species == null)
+        {
+            return prettyResult;
+        }
+
+        for(int i = 0; i<toSample.size(); i++) {
+            if (global.get(toSample.get(i)).scope.get(vv.SPECIE).species == null){
+                global.get(toSample.get(i)).scope.get(vv.SPECIE).species = new HashMap<>();
+            }
+            for (String species: global.get(fromSample).scope.get(vv.SPECIE).species.keySet() ) {
+                float percent = Float.parseFloat(procent.get(i));
+                float newConcentration = Float.parseFloat(global.get(fromSample).scope.get(vv.SPECIE).species.get(species)) * percent;
+
+                if (global.get(toSample.get(i)).scope.get(vv.SPECIE).species.containsKey(species)){
+                    float updatedConcentration = Float.parseFloat(global.get(toSample.get(i)).scope.get(vv.SPECIE).species.get(species)) + newConcentration;
+                    global.get(toSample.get(i)).scope.get(vv.SPECIE).species.replace(species, String.valueOf(updatedConcentration));
+                }else {
+                    newSpecies = true;
+                    global.get(toSample.get(i)).scope.get(vv.SPECIE).species.put(species, String.valueOf(newConcentration));
+                }
+            }
+            if (newSpecies){
+                prettyResult += euler.Generate(global.get(toSample.get(i)).scope,level,Integer.toString(mixCount));
+                prettyResult += GetSampleName(toSample.get(i))+".Euler = Euler" + mixCount++ + "\n";
+                newSpecies = false;
+            }
+        }
         return prettyResult;
     }
 

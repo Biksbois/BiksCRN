@@ -30,7 +30,7 @@ public class IntermediateCodeGeneration {
             File myObj = new File(rawPath);
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
-                data += myReader.nextLine();
+                data += myReader.nextLine()+"\r\n";
             }
             myReader.close();
         } catch(FileNotFoundException e) {
@@ -74,10 +74,6 @@ public class IntermediateCodeGeneration {
      */
     public void Generate() throws IOException {
         String code = LoadFile();
-        code = code.replaceAll("\\{","\\{\n");
-        code = code.replaceAll("}","}\n");
-        code = code.replaceAll("\t","");
-        code = code.replaceAll(";",";\r\n");
         code = code.replaceAll("    ","");
         code = code.replaceAll("while\\(", "while (");
         code = code.replaceAll("Mix\\(", "Mix (");
@@ -135,7 +131,6 @@ public class IntermediateCodeGeneration {
         String[] matches = GetMatches(str,"Protocol\\s*\\{(\\s|\\w|\\d|\\*|\\+|;|:|,|.)*\\}");
         str = str.replace(matches[0],FixEquilibrate(matches[0]));
 
-
         return str;
     }
 
@@ -165,8 +160,12 @@ public class IntermediateCodeGeneration {
     public String FixToDefault(String str)
     {
         String[] matches = GetMatches(str,"(\\sby\\s|\\seach\\s|\\sbitesize\\s)");
-        String FixStr = " c"+matches[0];
-        str = str.replace(matches[0],FixStr);
+        if(matches.length != 0)
+        {
+            String FixStr = " c"+matches[0];
+            str = str.replace(matches[0],FixStr);
+        }
+
         return str;
     }
 
