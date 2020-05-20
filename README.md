@@ -32,12 +32,14 @@ The path can either be the absolute path or a path relative to the compiler fold
 
 Example
 -------
-Here is a small example off some working code
-/*Single line comment*/
-/*
-&nbsp;&nbsp;&nbsp;&nbsp;Multi line
-&nbsp;&nbsp;&nbsp;&nbsp;comment
-*/
+Here is a small example off some working code  
+\/\* Single line comment \*\/
+
+/\*  
+&nbsp;&nbsp;&nbsp;&nbsp;Multi line  
+&nbsp;&nbsp;&nbsp;&nbsp;comment  
+\*/  
+
 &nbsp;&nbsp;&nbsp;&nbsp;Initialize {  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sample A {  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Specie X=0, Y=100;  
