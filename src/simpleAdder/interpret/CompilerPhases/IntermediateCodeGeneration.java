@@ -118,12 +118,12 @@ public class IntermediateCodeGeneration {
 
     public boolean CheckForInstant(String str)
     {
-        return Pattern.compile("\\d+\\s+"+instant).matcher(str).find();
+        return Pattern.compile(instant+"\\s*;").matcher(str).find();
     }
 
     public String LogicalExsprresionFix(String str)
     {
-        String[] matches = GetMatches(str,"while\\s\\(.*\\)");
+        String[] matches = GetMatches(str,"while\\s+\\(.*\\)");
         for (String _while: matches) {
 
             str = str.replace(_while,"while "+IdentifyLogicalExp(_while));
@@ -169,7 +169,7 @@ public class IntermediateCodeGeneration {
 
     public String FixToDefault(String str)
     {
-        String[] matches = GetMatches(str,"for\\s"+VariableOrNumeral);
+        String[] matches = GetMatches(str,"for\\s+"+VariableOrNumeral);
         if(matches.length != 0)
         {
             String FixStr = matches[0]+" c";
@@ -181,7 +181,7 @@ public class IntermediateCodeGeneration {
 
     public boolean checkForTypeNotation(String str)
     {
-        String[] matches = GetMatches(str,"for\\s.+\\s(t|c|T|C)(\\sby\\s|\\seach\\s|\\sbitesize\\s)");
+        String[] matches = GetMatches(str,"for\\s+"+VariableOrNumeral+"\\s+(t|c|T|C)(\\s+by\\s+|\\s+each\\s+|\\s+bitesize\\s+)?");
 
         if(matches.length == 0)
         {
@@ -193,7 +193,7 @@ public class IntermediateCodeGeneration {
     }
     public String ReplaceCRNSpecies(String str)
     {
-        String[] matches = GetMatches(str,"CRN\\s*\\{(\\s|\\w|\\d|->|<->|,|\\*|\\+|;|:)*\\}");
+        String[] matches = GetMatches(str,"CRN\\s*\\{(\\s+|\\w|\\d|->|<->|,|\\*|\\+|;|:)*\\}");
         for (var s: matches) {
             str = str.replace(s,ReplaceNotation(s));
         }
@@ -213,7 +213,7 @@ public class IntermediateCodeGeneration {
     {
         if(str.contains("Equilibrate"))
         {
-            return GetMatches(GetMatches(str,"for\\s"+VariableOrNumeral+"\\s")[0],"\\s"+VariableOrNumeral)[0];
+            return GetMatches(GetMatches(str,"for\\s+"+VariableOrNumeral+"\\s+")[0],"\\s+"+VariableOrNumeral)[0];
         }
         else
             {
