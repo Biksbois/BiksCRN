@@ -1,11 +1,9 @@
 package simpleAdder.interpret.Objects.CodeGenerationOBJ;
 
-import simpleAdder.interpret.Objects.SymolTableOBJ.reaction;
-import simpleAdder.interpret.Objects.SymolTableOBJ.SymbolTableType;
-import simpleAdder.interpret.TypeCheckers.BetaStackToString;
 import simpleAdder.interpret.GetMethods.ViableVariable;
+import simpleAdder.interpret.Objects.SymolTableOBJ.SymbolTableType;
+import simpleAdder.interpret.Objects.SymolTableOBJ.reaction;
 import simpleAdder.interpret.TypeCheckers.BiksPair;
-import simpleAdder.interpret.TypeCheckers.OptimizedStackToString;
 
 import java.util.HashMap;
 import java.util.List;
@@ -133,11 +131,11 @@ public class Euler extends CodeGenerationMethods {
      */
     private int NumberOfReactions(reaction reac,int rNum, HashMap<String,String> Species)
     {
-
         reac.lhsDerivedEq = GenerateDerivedEQ(rNum,reac.rateRhs,reac.lhsPair,Species);
 
         if(!reac.isOneway)
         {
+            rNum++;
             reac.rhsDerivedEq = GenerateDerivedEQ(rNum,reac.rateLhs,reac.rhsPair,Species);
         }
         else
@@ -181,13 +179,13 @@ public class Euler extends CodeGenerationMethods {
         for (reaction r : reacList)
         {
             HashMap<String,Integer> result = CountSpecies(r);
-            PrettyResult += DerivedForOne(r.lhsPair, r.lhsDerivedEq.getKey(), specie, "-",result);
-            PrettyResult += DerivedForOne(r.rhsPair, r.lhsDerivedEq.getKey(), specie, "+",result);
+            PrettyResult += DerivedForOne(r.lhsPair, r.lhsDerivedEq.getKey(), specie,result, false);
+            PrettyResult += DerivedForOne(r.rhsPair, r.lhsDerivedEq.getKey(), specie,result, false);
 
             if(!r.isOneway)
             {
-                PrettyResult += DerivedForOne(r.lhsPair, r.rhsDerivedEq.getKey(), specie, "+",result);
-                PrettyResult += DerivedForOne(r.rhsPair, r.rhsDerivedEq.getKey(), specie, "-",result);
+                PrettyResult += DerivedForOne(r.lhsPair, r.rhsDerivedEq.getKey(), specie,result, true);
+                PrettyResult += DerivedForOne(r.rhsPair, r.rhsDerivedEq.getKey(), specie,result, true);
             }
 
         }
@@ -237,12 +235,12 @@ public class Euler extends CodeGenerationMethods {
      * @Param symbol
      * @return
      */
-    private String DerivedForOne(List<BiksPair<String, String>> pairs, String derivedEq, String specie, String symbol, HashMap<String,Integer> species){
+    private String DerivedForOne(List<BiksPair<String, String>> pairs, String derivedEq, String specie, HashMap<String,Integer> species, boolean isTwoWay){
         String PrettyResult = "";
         for (BiksPair<String, String> p: pairs) {
             if(specie.equals(p.getKey()))
             {
-                PrettyResult += "+"+ derivedEq +"*("+species.get(specie) +")";
+                PrettyResult += "+"+ derivedEq +"*("+ species.get(specie) + (isTwoWay ? "*(-1)" : "") +")";
             }
         }
         return PrettyResult;

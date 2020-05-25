@@ -56,7 +56,7 @@ public class Titration extends CodeGenerationMethods{
 
     private String GenerateEmptyTitration(String name){
         String PrettyResult = "";
-        PrettyResult += ApplyTab(Level,"def ApplyTitration" + name + "(self,i):\n");
+        PrettyResult += ApplyTab(Level,"def ApplyTitration" + name + "(self):\n");
         Level++;
         PrettyResult += ApplyTab(Level, "pass\n");
         Level--;
