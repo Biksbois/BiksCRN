@@ -33,8 +33,9 @@ public class Dict extends CodeGenerationMethods {
 
         level++;
         PrettyResult += GenerateDictFromHashmap(local, global, level);
-
-        PrettyResult = PrettyResult.substring(0, PrettyResult.lastIndexOf(",")) + "" + PrettyResult.substring(PrettyResult.lastIndexOf(",") + 1);
+        if (PrettyResult.contains(",")){
+            PrettyResult = PrettyResult.substring(0, PrettyResult.lastIndexOf(",")) + "" + PrettyResult.substring(PrettyResult.lastIndexOf(",") + 1);
+        }
 
         level--;
 

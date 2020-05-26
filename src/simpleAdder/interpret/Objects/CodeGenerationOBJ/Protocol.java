@@ -1,5 +1,6 @@
 package simpleAdder.interpret.Objects.CodeGenerationOBJ;
 
+import com.company.node.PProtocol;
 import simpleAdder.interpret.GetMethods.ViableVariable;
 import simpleAdder.interpret.Objects.ProtocolOBJ.Mix;
 import simpleAdder.interpret.Objects.SymolTableOBJ.SymbolTableType;
@@ -9,6 +10,7 @@ import simpleAdder.interpret.Objects.SymolTableOBJ.titration;
 import simpleAdder.interpret.TypeCheckers.BiksPair;
 import simpleAdder.interpret.TypeCheckers.Check;
 
+import javax.print.attribute.standard.PrinterMessageFromOperator;
 import java.util.*;
 
 
@@ -199,7 +201,13 @@ public class Protocol extends CodeGenerationMethods {
      */
     public String ApplyEquilibrat(protocolOperation protocol){
         HashMap<String, SymbolTableType> local = global.get(protocol.equili.sample).scope;
+        List<String> SpeciesToUpdate = GetUpdatedSpecies(local);
         String PrettyResult = "";
+
+        for (String specie: SpeciesToUpdate){
+            PrettyResult += GetSampleName(protocol.equili.sample) + ".sample[\"" + specie + "\"] = sample[\"" + specie + "\"]\n";
+        }
+        PrettyResult += GetSampleName(protocol.equili.sample) + ".index = count()\n";
         PrettyResult += "equilibrate("+ GetSampleName(protocol.equili.sample) +", "+ protocol.equili.stepSize +", "+ protocol.equili.amount + ", " + protocol.equili.timeInterval + ", " + protocol.equili.bitesize + " )\n";
 
         if (global.containsKey(ViableVariable.SPECIE)){
@@ -215,6 +223,30 @@ public class Protocol extends CodeGenerationMethods {
 
         return PrettyResult;
     }
+
+    private List<String> GetUpdatedSpecies(HashMap<String, SymbolTableType> local) {
+        List<String> result = new ArrayList<>();
+        if (!local.containsKey(vv.CRN)){
+            return new ArrayList<>();
+        }
+        for (reaction specie: local.get(vv.CRN).crn){
+            result = CheckOneSide(specie.lhsPair, local, result);
+            result = CheckOneSide(specie.rhsPair, local, result);
+        }
+        return result;
+    }
+
+    private List<String> CheckOneSide(List<BiksPair<String, String>> species, HashMap<String, SymbolTableType> local, List<String> list) {
+        for (BiksPair lhs : species){
+            if (local.containsKey(vv.SPECIE) && local.get(vv.SPECIE).species.containsKey(lhs.getKey())){
+                continue;
+            }else if(!list.contains(lhs.getKey())){
+                list.add((String) lhs.getKey());
+            }
+        }
+        return list;
+    }
+
 
     /***
      * This method takes a string that contains the name of a specie, and a hashmap with the local scope. 
@@ -303,42 +335,7 @@ public class Protocol extends CodeGenerationMethods {
         String prettyResult = "";
 
         prettyResult += "split("+GetSampleName(protocol.split.SplitSample)+".sample,[" +prettyMixers(protocol.split.ResultingSamples)+"], ["+prettyDistribution(protocol.split.DestributionValue)+"])\n";
-
-        List<reaction> reacs = new ArrayList<>();
-        List<titration> addmol = new ArrayList<>();
-        List<titration> remmol = new ArrayList<>();
-        /*
-        for(int i = 0; i<protocol.split.ResultingSamples.size(); i++)
-        {
-            String toSample = protocol.split.ResultingSamples.get(i);
-                if(global.get(toSample).scope.containsKey(ViableVariable.CRN))
-                {
-                    reacs.addAll(global.get(toSample).scope.get(ViableVariable.CRN).crn);
-                }
-                if (global.get(toSample).scope.containsKey(ViableVariable.ADDMOL))
-                {
-                    addmol.addAll(global.get(toSample).scope.get(ViableVariable.ADDMOL).titrations);
-                }
-                if (global.get(toSample).scope.containsKey(ViableVariable.REMMOL))
-                {
-                    remmol.addAll(global.get(toSample).scope.get(ViableVariable.REMMOL).titrations);
-                }
-
-        }
-
-         */
-
         prettyResult += AddSpecies(protocol.split.DestributionValue, protocol.split.ResultingSamples, protocol.split.SplitSample);
-
-        //if (changesMade){
-        //    prettyResult += euler.Generate(global.get(protocol.split.SplitSample).scope,level,Integer.toString(mixCount));
-        //    prettyResult += GetSampleName(protocol.split.SplitSample)+".Euler = Euler" + mixCount + "\n";
-
-        //}
-
-        //prettyResult += titration.Generate(global.get(protocol.mix.ResultingSample).scope.get(ViableVariable.ADDMOL).titrations, global.get(protocol.mix.ResultingSample).scope.get(ViableVariable.REMMOL).titrations, level,Integer.toString(mixCount));
-        //prettyResult += GetSampleName(protocol.mix.ResultingSample)+".ApplyTitration = ApplyTitration"+mixCount+"\n";
-
         return prettyResult;
     }
 
