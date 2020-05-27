@@ -13,13 +13,9 @@ Since the compiled program will be a **.py file** it is requirement to install [
 When installing python, note that it is important that the boxes for **enviorment variables** and the **pip installation**.
 
 After succesful installation some pakages that are required to run the target code these are:
-* numpy
 * matplotlib
-* scipy
 * itertools
-* threading
 * math
-* warnings
 
 To install the pakages trough pip a comman like this should in the terminal "pip install numpy"
 
