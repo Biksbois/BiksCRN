@@ -38,7 +38,8 @@ public class PreGeneratedPython {
                 GetpEquilibrste() + "\n"+
                 GetPercent() + "\n" +
                 GetSaveGraph() + "\n" +
-                GetPringGraph() + "\n";
+                GetPringGraph() + "\n" +
+                GetSetAttributes() +"\n";
     }
 
     /***
@@ -147,5 +148,12 @@ public class PreGeneratedPython {
                 "        plt.ylabel('Concentration (mol/L)')\n" +
                 "        \n" +
                 "        plt.legend()\n";
+    }
+
+    private String GetSetAttributes()
+    {
+        return "def AddAtrribute(obj, atr):\n" +
+                "    for str in atr:\n" +
+                "        setattr(obj,str,0)";
     }
 }

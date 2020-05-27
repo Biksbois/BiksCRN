@@ -84,6 +84,7 @@ public class IntermediateCodeGeneration {
         code = FixEquilibrateSyntax(code);
         code = LogicalExsprresionFix(code);
         code = RewriteEquilibrate(code);
+        code = code.replaceAll("while\\(", "while (");
         WriteInputfile(code);
     }
 
@@ -218,7 +219,7 @@ public class IntermediateCodeGeneration {
     }
     public String ReplaceCRNSpecies(String str)
     {
-        String[] matches = GetMatches(str,"CRN\\s*\\{(.|\\s)*\\}");
+        String[] matches = GetMatches(str,"CRN\\s*\\{((\\w|\\d|,|\\(|\\)|\\+|\\*|\\;|\\-|\\<|\\>|\\:)|\\s)*\\}");
         for (var s: matches) {
             str = str.replace(s,ReplaceNotation(s));
         }
@@ -227,7 +228,7 @@ public class IntermediateCodeGeneration {
 
     public String ReplaceNotation(String str)
     {
-        String[] matches = GetMatches(str,"(\\+|\\,|\\>|\\s)?\\d+(\\w(\\d|\\w)*)(\\+|\\,|\\<|\\-)");
+        String[] matches = GetMatches(str,"(\\+|\\,|\\>|\\s)?\\d+(\\w(\\d|\\w)*)(\\+|\\,|\\<|\\-|\\s)");
         for (var blip: matches) {
 
             str = str.replaceAll(GetOriginalSpecies(blip),GetNumeral(blip)+"*"+GetName(blip));

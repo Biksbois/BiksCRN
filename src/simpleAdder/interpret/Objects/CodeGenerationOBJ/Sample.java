@@ -100,7 +100,7 @@ public class Sample extends CodeGenerationMethods {
                 "            else:\n" +
                 "                " + GetSampleName(s) + ".stepList.append(index*" + GetSampleName(s) + ".h)\n" +
                 "                " + GetSampleName(s) + ".Euler(" + GetSampleName(s) + ", index)\n" +
-                "                " + GetSampleName(s) + ".ApplyTitration(" + GetSampleName(s) + ")\n" +
+                "                " + GetSampleName(s) + ".ApplyTitration(" + GetSampleName(s) + ",index)\n" +
                 "                if(index >= " + GetSampleName(s) + ".steps):\n" +
                 "                    " + GetSampleName(s) + ".stepList.pop()\n" +
                 "                    break\n" +

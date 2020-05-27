@@ -21,8 +21,8 @@ public class Titration extends CodeGenerationMethods{
         if (TitratoinNullOrZero(AddMol, RemMol)){
             return GenerateEmptyTitration("");
         }
-        PrettyResult += ApplyTab(Level,"def ApplyTitration(self):\n");
-
+        PrettyResult += ApplyTab(Level,"def ApplyTitration(self,i):\n");
+        PrettyResult += ApplyTab(++Level,"if(i < self.steps):\n");
         PrettyResult += GenerateAddMol(AddMol);
         PrettyResult += GenerateRemMol(RemMol);
 
@@ -31,7 +31,7 @@ public class Titration extends CodeGenerationMethods{
 
     /**
      Generates the python code for the titration mecanic*/
-    public String Generate(List<titration> AddMol, List<titration> RemMol, int level, String name)
+    public String Generate(List<titration> AddMol, List<titration> RemMol, int level, String name, String sample)
     {
         Level = level;
         String PrettyResult = "";
@@ -40,9 +40,20 @@ public class Titration extends CodeGenerationMethods{
             return GenerateEmptyTitration(name);
         }
         PrettyResult += ApplyTab(Level,"def ApplyTitration"+name+"(self,i):\n");
+        PrettyResult += ApplyTab(++Level,"if(i < self.steps):\n");
         PrettyResult += GenerateAddMol(AddMol);
         PrettyResult += GenerateRemMol(RemMol);
+        PrettyResult += "AddAtrribute(" + GetSampleName(sample) + ",["+GeneratePara(AddMol.size(), "AddMol")+(AddMol.size() > 0 ? "," : "")+GeneratePara(RemMol.size(), "RemMol")+"])";
         return PrettyResult + "\n";
+    }
+
+    private String GeneratePara(int size, String addMol) {
+        String str ="";
+        for (int i = 0; i < size; i++)
+        {
+            str += "\""+addMol+i+"\",";
+        }
+        return str.contains(",") ? str.substring(0, str.length()-1) : str;
     }
 
     private Boolean TitratoinNullOrZero(List<titration> AddMol, List<titration> RemMol){
@@ -56,7 +67,7 @@ public class Titration extends CodeGenerationMethods{
 
     private String GenerateEmptyTitration(String name){
         String PrettyResult = "";
-        PrettyResult += ApplyTab(Level,"def ApplyTitration" + name + "(self):\n");
+        PrettyResult += ApplyTab(Level,"def ApplyTitration" + name + "(self,i):\n");
         Level++;
         PrettyResult += ApplyTab(Level, "pass\n");
         Level--;

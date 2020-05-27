@@ -1,6 +1,5 @@
 package simpleAdder.interpret.Objects.CodeGenerationOBJ;
 
-import com.company.node.PProtocol;
 import simpleAdder.interpret.GetMethods.ViableVariable;
 import simpleAdder.interpret.Objects.ProtocolOBJ.Mix;
 import simpleAdder.interpret.Objects.SymolTableOBJ.SymbolTableType;
@@ -10,7 +9,6 @@ import simpleAdder.interpret.Objects.SymolTableOBJ.titration;
 import simpleAdder.interpret.TypeCheckers.BiksPair;
 import simpleAdder.interpret.TypeCheckers.Check;
 
-import javax.print.attribute.standard.PrinterMessageFromOperator;
 import java.util.*;
 
 
@@ -64,12 +62,12 @@ public class Protocol extends CodeGenerationMethods {
 
             for (int i = 0; i <= equilibrateCount-1; i++){
                 if (i == 0){
-                    result += ApplyTab(level, "if count % " + equilibrateCount + " == 0:\n");// TODO: 01/05/2020 fix
+                    result += ApplyTab(level, "if count == " + equilibrateCount + ":\n");// TODO: 01/05/2020 fix
 
                 }else if(i == equilibrateCount-1){
                     result += ApplyTab(level, "else:\n");
                 }else{
-                    result += ApplyTab(level, "elif count % " + (i+1) + " == 0: \n");
+                    result += ApplyTab(level, "elif count == " + (i+1) + ": \n");
                 }
                 level++;
                 result += ApplyTab(level, "DrawGraph(Species" + i + ", Steps" + i + ", name" + i + ", len(Steps" + i + "), taken" + i + ")\n");
@@ -77,7 +75,7 @@ public class Protocol extends CodeGenerationMethods {
             }
 
             result += ApplyTab(level, "count += 1\n");
-            result += ApplyTab(level, "if count % " + equilibrateCount + " == 0:\n");
+            result += ApplyTab(level, "if count == " + equilibrateCount + "+1:\n");
             level++;
             result += ApplyTab(level, "count -= " + equilibrateCount + "\n");
             level--;
@@ -143,7 +141,22 @@ public class Protocol extends CodeGenerationMethods {
             {
                 remmol.addAll(global.get(mixer).scope.get(ViableVariable.REMMOL).titrations);
             }
+            if(global.get(mixer).scope.containsKey(vv.SPECIE))
+            {
+                if(!global.get(protocol.mix.ResultingSample).scope.containsKey(vv.SPECIE))
+                {
+                    global.get(protocol.mix.ResultingSample).scope.put(vv.SPECIE,new SymbolTableType(vv.SPECIE));
+                    global.get(protocol.mix.ResultingSample).scope.get(vv.SPECIE).species = global.get(mixer).scope.get(vv.SPECIE).species;
+                }else{
+                    for (String key :global.get(mixer).scope.get(vv.SPECIE).species.keySet()) {
+                        if(!global.get(protocol.mix.ResultingSample).scope.get(vv.SPECIE).species.containsKey(key))
+                        {
+                            global.get(protocol.mix.ResultingSample).scope.get(vv.SPECIE).species.put(key,"0");
+                        }
+                    }
+                }
 
+            }
         }
 
         AddToReaction(protocol.mix, ViableVariable.CRN, reacs, new SymbolTableType(ViableVariable.CRN, ViableVariable.CRN,reacs));
@@ -153,7 +166,7 @@ public class Protocol extends CodeGenerationMethods {
         prettyResult += euler.Generate(global.get(protocol.mix.ResultingSample).scope,level,Integer.toString(mixCount));
         prettyResult += GetSampleName(protocol.mix.ResultingSample)+".Euler = Euler"+mixCount+"\n";
 
-        prettyResult += titration.Generate(global.get(protocol.mix.ResultingSample).scope.get(ViableVariable.ADDMOL).titrations, global.get(protocol.mix.ResultingSample).scope.get(ViableVariable.REMMOL).titrations, level,Integer.toString(mixCount));
+        prettyResult += titration.Generate(global.get(protocol.mix.ResultingSample).scope.get(ViableVariable.ADDMOL).titrations, global.get(protocol.mix.ResultingSample).scope.get(ViableVariable.REMMOL).titrations, level,Integer.toString(mixCount), protocol.mix.ResultingSample);
         prettyResult += GetSampleName(protocol.mix.ResultingSample)+".ApplyTitration = ApplyTitration"+mixCount++ +"\n";
 
         return prettyResult;
