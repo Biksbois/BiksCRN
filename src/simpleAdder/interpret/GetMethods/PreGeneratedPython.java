@@ -48,19 +48,15 @@ public class PreGeneratedPython {
      */
     private String GetpSplit()
     {
-        return  "\ndef combinedPercent(percentList):\n" +
-        "    result = 0\n" +
-        "    for number in percentList:\n" +
-        "        result += number\n" +
-        "    return result\n" +
-        "\n" +
-        "def split(sample, sampleList, percentList):\n" +
-        "\n" +
-        "    for key, value in sample.items():\n" +
-        "        for i in range(0, len(sampleList)):\n" +
-        "            sampleList[i][key] = [math.floor(value[-1] * percentList[i])]\n" +
-        "\n" +
-        "    return sample, sampleList";
+        return  "def split( SplitSample,ResultingSampleList, Distribution):\n" +
+                "    rSample = {} #resulting sample list\n" +
+                "\n" +
+                "    for key in SplitSample.keys():\n" +
+                "        for i in range(0,len(ResultingSampleList)):\n" +
+                "            if key in ResultingSampleList[i]:\n" +
+                "                ResultingSampleList[i][key] = [SplitSample.get(key)[-1]*Distribution[i]+ResultingSampleList[i][key][-1]]\n" +
+                "            else:\n" +
+                "                ResultingSampleList[i][key] = [SplitSample.get(key)[-1]*Distribution[i]]";
     }
 
     /***
@@ -99,8 +95,6 @@ public class PreGeneratedPython {
                 "            else :\n" +
                 "                rSample[key] = [sample.get(key)[-1]]\n" +
                 "\n" +
-                "    for sample in sampleList:\n" +
-                "        sample = dispose(sample)\n" +
                 "    \n" +
                 "    return rSample";
     }
