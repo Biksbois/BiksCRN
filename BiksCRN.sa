@@ -1,19 +1,28 @@
 Initialize {
-Specie X=100, Y=1000;
-    Sample A {
-        CRN {
-            Y->2*X, 1;
-        }
-    }
+    /* Two functions used to demonstrate a growing rate during run-time*/
+    Func RateVoid( void ) => cycle * 12 ;
+    Func RateParameter( int a, int b ) => (a + b) ** 2 + cycle;
 
-    Sample B {
+    /* Global variables */
+    int iOne = 1, iTwo = 2, iThree = 10;
+    float fOne = 10, fTwo = 8.8, fThree = 1.5;
+
+    /* Global species used in samples */
+    Specie sOne = 100 + iThree, sTwo = 100, sThree = 0;
+
+    Sample A {
+        Specie sOne = 10, sFour = 60, sFive = 90, sSix = 200;
+        int fSixLimit = 100;
         CRN {
-            X->2*Y, 1;
+            2*sOne+sTwo -> 2*sFour, RateParameter(iOne, 5);
+            sTwo <-> 2*sFour, RateVoid() : 1;
+            2*sOne+sTwo -> sSix + 2 * sFive, fTwo;
+            2*sOne+sTwo <-> 2*sFour, iTwo : 1 ;
+            5*sFour+sSix -> sOne+sFive, i;
         }
+        AddMol = sSix:0.1:while(sSix > fSixLimit);
     }
 }
 Protocol {
-    Sample A,B = A.Split (0.6, 0.1);
-    Equilibrate A for 2 t by 0.0005 each 1 bitesize 100;
-    Equilibrate B for 2 t by 0.0005 each 1 bitesize 100;
+    Equilibrate A for 1 t by 0.0005 each 1 bitesize 1;
 }
