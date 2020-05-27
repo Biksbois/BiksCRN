@@ -14,6 +14,7 @@ public class IntermediateCodeGeneration {
     String rawPath;
     String OutputName = "BiksIntermediate.sa";
     String VariableOrNumeral = "(\\d+|(\\w(\\d|\\w)*))";
+    String Variable = "(\\w(\\d|\\w)*)";
     String instant = "(I|i)(N|n)(S|s)(T|t)(A|a)(N|n)(T|t)";
 
     public IntermediateCodeGeneration(String path)
@@ -202,11 +203,17 @@ public class IntermediateCodeGeneration {
 
     public String ReplaceNotation(String str)
     {
-        String[] matches = GetMatches(str,"\\d+([a-z]|[A-Z])+(([a-z]|[A-Z])|\\d)*");
+        String[] matches = GetMatches(str,"(\\+|\\,|\\>)?\\d+(\\w(\\d|\\w)*)(\\+|\\,|\\<|\\-)");
         for (var blip: matches) {
-            str = str.replaceAll(blip,GetNumeral(blip)+"*"+GetName(blip));
+
+            str = str.replaceAll(GetOriginalSpecies(blip),GetNumeral(blip)+"*"+GetName(blip));
         }
         return str;
+    }
+
+    public String GetOriginalSpecies(String str)
+    {
+        return GetMatches(str,"\\d"+Variable)[0];
     }
 
     public String GetNumeral(String str)
