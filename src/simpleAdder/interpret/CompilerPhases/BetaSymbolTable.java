@@ -14,10 +14,8 @@ import java.util.List;
 import java.util.Stack;
 
 public class BetaSymbolTable extends Checker {
-    Check check = new Check();
     HashMap<String, SymbolTableType> st = new HashMap<String,SymbolTableType>();
     Get get = new Get();
-    BetaStackToString BSTS = new BetaStackToString();
     public HashMap<String, SymbolTableType> sample = null;
     public protocolOperation tempProtocol = null;
     public Stack<protocolOperation> protocols = new Stack<>();
@@ -71,7 +69,6 @@ public class BetaSymbolTable extends Checker {
             }
         }
         terminate.VarExistsAlready(token, type, id, "PutInCurrentScope");
-        //TH.terminate_program(token, "\""+id+ "\" of type " + type + " already exists.");
     }
 
     private void SpeciesToCurrentScope(HashMap<String, SymbolTableType> scope, String id, SymbolTableType value, Token token){
@@ -84,7 +81,6 @@ public class BetaSymbolTable extends Checker {
         }
         else {
             terminate.VarExistsAlready(token, ViableVariable.SPECIE, id, "PutInCurrentScope");
-            //TH.terminate_program("Species \"" + id + "\" already exist (SpeciesToCurrentScope)");
         }
     }
 
@@ -104,10 +100,8 @@ public class BetaSymbolTable extends Checker {
         if (IsTempActive()){
             if (!VerifyKeyAndTypeInBoth(R.getKey(), ViableVariable.SPECIE)){
                 terminate.WrongType(token, ViableVariable.SPECIE, TypeForMessage(R.getKey()), R.getKey(), "reactionToReaction");
-                //TH.terminate_program("\"" + R.getKey() + "\" should be of type specie. It either does not exists or is the wrong type.");
             }else if(!isWholePositiveFloat(R.getValue())){
                 terminate.ShouldBeWhole(token, ViableVariable.SPECIE,R.getKey(), R.getValue(),"reactionToReaction");
-                //TH.terminate_program("The float value \"" + R.getValue() + "\" is not a whole number, which is should be");
             }
             else{
                 temp.reactionToReaction(R, isFirst);
@@ -197,7 +191,7 @@ public class BetaSymbolTable extends Checker {
      * @param key
      * @return
      */
-    public String GetType(String key)
+    public String GetType(String key, Token token)
     {
         key = key.trim();
         if(sample != null)
@@ -226,7 +220,8 @@ public class BetaSymbolTable extends Checker {
                     return p.type;
                 }
             }
-            TH.terminate_program("Parameter " + key + " does not exist in function");
+            TH.FuncParameter(token, key);
+            //TH.terminate_program("Parameter " + key + " does not exist in function");
         }
         TH.terminate_program("Key " + key + " not found in symbol table, could not exist or illegal reference made inside local scope");
         return "";
@@ -476,9 +471,9 @@ public class BetaSymbolTable extends Checker {
      * @param value
      * @param type
      */
-    public void SymbolToStack(String  value, String type){
+    public void SymbolToStack(String  value, String type, Token token){
         if (type.equals(ViableVariable.Variable)){
-            type = GetType(value);
+            type = GetType(value, token);
             if (type.equals(ViableVariable.SPECIE) && loopSide != null){
                 loopSide.push(value);
                 return;
@@ -533,7 +528,7 @@ public class BetaSymbolTable extends Checker {
         }
     }
 
-    private String CheckValue(String str)
+    private String CheckValue(String str, Token token)
     {
         String value = "";
         String type = "";
@@ -544,7 +539,7 @@ public class BetaSymbolTable extends Checker {
         else
         {
             if (st.containsKey(str)){
-                type = GetType(str);
+                type = GetType(str, token);
                 value = GetValue(str);
             }else if(st.containsKey(ViableVariable.SPECIE) && st.get(ViableVariable.SPECIE).species.containsKey(str)){
                 if (VerifySpecie(str)){
@@ -555,7 +550,7 @@ public class BetaSymbolTable extends Checker {
             }
             else if (sample != null){
                 if (sample.containsKey(str)){
-                    type = GetType(str);
+                    type = GetType(str, token);
                     value = GetValue(str);
                 }else if(sample.containsKey(ViableVariable.SPECIE) && sample.get(ViableVariable.SPECIE).species.containsKey(str)){
                     if (VerifySpecie(str)){

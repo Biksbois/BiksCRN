@@ -1,6 +1,4 @@
 package simpleAdder.interpret.TypeCheckers;
-
-import org.junit.platform.commons.util.StringUtils;
 import simpleAdder.interpret.CompilerPhases.TerminateProgram;
 import simpleAdder.interpret.GetMethods.ViableVariable;
 
@@ -220,6 +218,8 @@ public class OptimizedStackToString {
                 }else{
                     UseResult = false;
                 }
+            }else if(operators.isEmpty()){
+                result += Float.valueOf(numbers.pop());
             }
             else if (operators.peek().equals(ViableVariable.mult)){
                 result *= Float.valueOf(numbers.pop());

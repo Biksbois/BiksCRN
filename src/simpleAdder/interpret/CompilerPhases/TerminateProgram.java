@@ -45,7 +45,7 @@ public class TerminateProgram {
     }
 
     public void WrongType(Token token, String typeIs, String typeShouldBe, String id, String method){
-        if (typeIs.equals("")){
+        if (typeShouldBe.equals("") || typeIs.equals("")){
             VarDontExist(token, id, method);
         }
         String message = "\"" + id + "\" of type " + typeIs + " has the wrong type. It should be replaced by a variable of type " + typeShouldBe + " (" + method + ")";
@@ -76,6 +76,18 @@ public class TerminateProgram {
 
     public void ShouldBePositive(Token token, String value, String varName, String method){
         String message = "The variable \"" + varName + "\" is assigned the value " + value + ", but it should be positive. (" + method + ")";
+        System.err.println(EM.Get(token, message));
+        System.exit(1);
+    }
+
+    public void FunctionBecomesNegative(Token token, String sample, int limit, String method){
+        String message = "The reaction in this line, in sample " + sample + " has a rate defined as a function. This function becomes negative when equilbrating for " + limit + " (" + method + ")";
+        System.err.println(EM.Get(token, message));
+        System.exit(1);
+    }
+
+    public void FuncParameter(Token token, String varNamr){
+        String message = "The parameter \"" + varNamr + "\" is not an formal parameter in the function, and can therefore not be used.";
         System.err.println(EM.Get(token, message));
         System.exit(1);
     }
