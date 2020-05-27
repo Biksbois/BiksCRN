@@ -10,14 +10,16 @@ Firstly when building the .jar file. Click on the **file**->**Project Structure*
 
 #### Python Packages
 Since the compiled program will be a **.py file** it is requirement to install [python](https://www.python.org/downloads/).
-When installing python, note that it is important that the boxes for **enviorment variables** and the **pip installation**.
+When installing python, note that it is important that the boxes for **enviorment variables** and the **pip installation** are checked.
 
-After succesful installation some pakages that are required to run the target code these are:
+After succesful installation, some libaries are need to run the target code. These are as follow:
 * matplotlib
 * itertools
 * math
 
-To install the pakages trough pip a comman like this should in the terminal "pip install numpy"
+They can be installed through pip with the following command: 
+
+pip install matplotlib
 
 #### Executing the .jar
 There is a couple diffrent ways to give arguments to the .jar file to tell it which program should be compiled. 
