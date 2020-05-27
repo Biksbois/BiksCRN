@@ -67,7 +67,7 @@ public class OptimizedStackToString {
                 return result.substring(1);
             }
         }else {
-            return fResult + ListToString(lResult);
+            return ListToString(lResult, fResult);
         }
     }
 
@@ -78,6 +78,31 @@ public class OptimizedStackToString {
         } catch(NumberFormatException e){
             return false;
         }
+    }
+
+    private String ListToString(List<String> lResult, float _float) {
+        if(lResult.size() == 0){
+            return String.valueOf(_float);
+        }
+
+        String result = "";
+        for (int i = 0; i < lResult.size(); i++){
+            for (int j = i+1; j < lResult.size(); j++){
+                if (OutWeight(lResult.get(i), lResult.get(j))){
+                    lResult.remove(j);
+                    lResult.remove(i);
+                    if (i == 0){
+                        i--;
+                        j--;
+                        break;
+                    }
+                }
+            }
+        }
+        for (String s : lResult){
+            result += "+" + s;
+        }
+        return  _float+result;
     }
 
     private String ListToString(List<String> lResult) {
@@ -102,7 +127,7 @@ public class OptimizedStackToString {
         for (String s : lResult){
             result += "+" + s;
         }
-        return result;
+        return  result;
     }
 
     private boolean OutWeight(String s1, String s2) {

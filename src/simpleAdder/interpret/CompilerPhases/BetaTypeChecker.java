@@ -12,6 +12,7 @@ import simpleAdder.interpret.TypeCheckers.BiksPair;
 import simpleAdder.interpret.TypeCheckers.OptimizedStackToString;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class BetaTypeChecker extends DepthFirstAdapter {
     public BetaSymbolTable st;
@@ -19,6 +20,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     private final Get get = new Get();
     TerminateProgram terminate = new TerminateProgram();
     OptimizedStackToString CALC = new OptimizedStackToString();
+    String instant = "(I|i)(N|n)(S|s)(T|t)(A|a)(N|n)(T|t)";
 
     public BetaTypeChecker() {
         st = new BetaSymbolTable();
@@ -958,7 +960,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         if(eNode instanceof AStepExtendequili)
         {
             stepSize = FactorToValues(((AStepExtendequili) eNode).getFactor());
-            if (stepSize.contains("-")){
+            if (stepSize.charAt(0) == '-'){
                 terminate.ShouldBePositive(node.getTString(), stepSize, ((AStepExtendequili) eNode).getFactor().toString().trim(), "outASingleEquili");
             }
         }
@@ -971,6 +973,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             Node unit = node.getOption();
             if(unit instanceof ATimeOption){
                 cycles = String.valueOf(Math.floor( Float.parseFloat(cycles) / Float.parseFloat(stepSize)));
+                //if(){}
             }
             CheckFunctionValues((int) Float.parseFloat(cycles), sample, node.getTString());
             Node step = node.getExtendequili();
@@ -978,21 +981,22 @@ public class BetaTypeChecker extends DepthFirstAdapter {
                 Node Interval = ((ASemiExtendequili) step).getTimestep();
                 if (Interval instanceof AWithTimestep){
                     interval = GetTimestep((AWithTimestep) Interval);
-                    bitesize = GetBiteSize(((AWithTimestep) Interval).getBitesize());
+                    bitesize = GetBiteSize(((AWithTimestep) Interval).getBitesize(), cycles);
 
                 }else if(Interval instanceof ANoTimestep){
-                    bitesize = GetBiteSize(((ANoTimestep) Interval).getBitesize());
+                    bitesize = GetBiteSize(((ANoTimestep) Interval).getBitesize(),cycles);
                 }
             }else if (step instanceof AStepExtendequili){
                 Node Interval = ((AStepExtendequili) step).getTimestep();
                 if (Interval instanceof AWithTimestep){
                     interval = GetTimestep((AWithTimestep) Interval);
-                    bitesize = GetBiteSize(((AWithTimestep) Interval).getBitesize());
+                    bitesize = GetBiteSize(((AWithTimestep) Interval).getBitesize(),cycles);
                 }else if(Interval instanceof ANoTimestep){
-                    bitesize = GetBiteSize(((ANoTimestep) Interval).getBitesize());
+                    bitesize = GetBiteSize(((ANoTimestep) Interval).getBitesize(),cycles);
                 }
                 stepSize = FactorToValues(((AStepExtendequili) step).getFactor());
             }
+
             st.protocols.push(new protocolOperation(ViableVariable.EQUILIBRATE,sample, cycles, stepSize, interval, bitesize));
         }
         else
@@ -1001,12 +1005,33 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         }
     }
 
-    private String GetBiteSize(PBitesize node) {
+    private String GetBiteSize(PBitesize node, String cycle) {
         if (node instanceof AWithBitesize){
+            if(Instant(((AWithBitesize) node).getFactor()))
+            {
+                String str = String.valueOf(Float.valueOf(cycle));
+                return str.contains(".") ? str.split("\\.")[0]:str;
+            }
             return GetPositiveWholeFactor(((AWithBitesize) node).getFactor(), ((AWithBitesize) node).getTBitesize());
         }else{
             return "1";
         }
+    }
+
+    private boolean Instant(PFactor factor) {
+
+        if(CheckForInstant(factor.toString().trim()) && !st.st.containsKey(factor.toString().trim()))
+        {
+            return true;
+        }
+        else
+            {
+                return false;
+            }
+    }
+    public boolean CheckForInstant(String str)
+    {
+        return Pattern.compile(instant+"0+"+"\\s*").matcher(str).find();
     }
 
     private String GetTimestep(AWithTimestep node){

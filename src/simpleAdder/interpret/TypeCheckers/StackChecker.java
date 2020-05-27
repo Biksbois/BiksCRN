@@ -1,5 +1,6 @@
 package simpleAdder.interpret.TypeCheckers;
 
+import java.math.BigDecimal;
 import java.util.Stack;
 
 public class StackChecker extends Checker {
@@ -11,7 +12,26 @@ public class StackChecker extends Checker {
      * @return
      */
     public String Calculate(Stack<String> Stack){ //TODO obselete
+        Stack = copystack(Stack);
         return String.valueOf(CALC.Calculate(Stack));
+    }
+
+    private Stack<String> copystack(Stack<String> stack) {
+        Stack<String> returnStack = new Stack<>();
+        while (!stack.isEmpty())
+        {
+            if(stack.peek().contains("-") && !(stack.peek().charAt(0) == '-'))
+            {
+                BigDecimal d = new BigDecimal(stack.pop());
+
+                returnStack.push(d.toPlainString());
+            }
+            else
+                {
+                    returnStack.push(stack.pop());
+                }
+        }
+        return ReverseStack(returnStack);
     }
 
     public <E> Stack<E> ReverseStack(Stack<E> entries) {

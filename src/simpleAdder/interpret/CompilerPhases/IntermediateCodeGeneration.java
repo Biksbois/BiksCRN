@@ -94,12 +94,36 @@ public class IntermediateCodeGeneration {
             if(CheckForInstant(equili))
             {
                 String value = GetNumeral(equili);
-                str = str.replace(equili,RemoveBloat(equili)+ " each 1 bitesize "+ value.trim() +";");
+                if(CheckIfTime(equili))
+                {
+                    str = str.replace(equili,RemoveBloat(equili)+ " each 1 bitesize "+GenerateUniqeName(str)+";");
+                }
+                else
+                    {
+                        str = str.replace(equili,RemoveBloat(equili)+ " each 1 bitesize "+ value.trim() +";");
+                    }
+
             }
         }
 
         return str;
     }
+
+    private String GenerateUniqeName(String str) {
+        String BaseName = "instant";
+        int id = 0;
+        while (str.contains(BaseName))
+        {
+            BaseName = BaseName+String.valueOf(id);
+        }
+        return BaseName;
+    }
+
+    public Boolean CheckIfTime(String str)
+    {
+        return GetMatches(str,"\\s(t|T)\\s").length == 1 ? true:false;
+    }
+
     public String RemoveBloat(String str)
     {
         String trimmedResult = GetMatches(str,"Equilibrate.*;")[0];
