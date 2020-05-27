@@ -16,14 +16,10 @@ public class PreGeneratedPython {
      */
     private String GetPackages()
     {
-        return  "import numpy as np \n" +
-                "from scipy.integrate import odeint\n" +
-                "import matplotlib.pyplot as plt\n" +
+        return  "import matplotlib.pyplot as plt\n" +
                 "from matplotlib.animation import FuncAnimation\n" +
                 "from itertools import count\n" +
-                "from threading import Timer\n" +
-                "import math\n"+
-                "import warnings";
+                "import math";
     }
 
     /***
