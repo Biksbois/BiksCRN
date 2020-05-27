@@ -42,8 +42,8 @@ float AAAA = 111.1, BBBB = 222.2;
 a = AAAA;
 }
 Protocol {
-Equilibrate Q for 1 by 0.0025;
-Equilibrate L for 1 by 0.0025;
+Equilibrate Q for 1 c by 0.0025;
+Equilibrate L for 1 c by 0.0025;
 Sample Q = Mix (Q,Q);
 Sample Q,L = Q.Split (0.5,0.5);
 Q.Dispose (1);
