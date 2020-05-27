@@ -343,7 +343,7 @@ public class Protocol extends CodeGenerationMethods {
     {
         String prettyResult = "";
         boolean newSpecies = false;
-        if(global.get(fromSample).scope.get(vv.SPECIE).species == null)
+        if(!global.get(fromSample).scope.containsKey(vv.SPECIE))
         {
             return prettyResult;
         }
