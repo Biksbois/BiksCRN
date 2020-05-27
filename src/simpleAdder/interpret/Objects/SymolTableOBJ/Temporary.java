@@ -14,7 +14,6 @@ import java.util.Stack;
 
 public class Temporary {
     TerminateProgram TH = new TerminateProgram();
-    ViableVariable vv = new ViableVariable();
     Check check = new Check();
     Checker checker = new Checker();
     OptimizedStackToString CALC = new OptimizedStackToString();

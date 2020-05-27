@@ -170,7 +170,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(node.getTFloat() != null && st.StackinstanceExists())
         {
-            st.SymbolToStack(node.getTFloat().toString().trim(), ViableVariable.FLOAT);
+            st.SymbolToStack(node.getTFloat().toString().trim(), ViableVariable.FLOAT, node.getTFloat());
         }
     }
 
@@ -182,7 +182,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(node.getTString() != null && st.StackinstanceExists())
         {
-            st.SymbolToStack(node.getTString().toString().trim(), ViableVariable.Variable);
+            st.SymbolToStack(node.getTString().toString().trim(), ViableVariable.Variable, node.getTString());
         }
     }
 
@@ -194,7 +194,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
     {
         if(node.getTInt() != null && st.StackinstanceExists())
         {
-            st.SymbolToStack(node.getTInt().toString().trim(), ViableVariable.INT);
+            st.SymbolToStack(node.getTInt().toString().trim(), ViableVariable.INT, node.getTInt());
         }
     }
 
@@ -416,12 +416,10 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         if(node instanceof AVariableFactor)
         {
             String key = ((AVariableFactor) node).getTString().toString().trim();
-            if(st.VerifyKeyAndTypeInBoth(key, ViableVariable.INT) || st.VerifyKeyAndTypeInBoth(key, ViableVariable.FLOAT))
-            {
+            if(st.VerifyKeyAndTypeInBoth(key, ViableVariable.INT) || st.VerifyKeyAndTypeInBoth(key, ViableVariable.FLOAT)) {
                 return st.GetValue(key);
-            }else
-            {
-                terminate.terminate_program("Should be either a integer or float, which it insidentily is not (FactorToValues)");
+            }else {
+                terminate.WrongType(((AVariableFactor) node).getTString(), st.TypeForMessage(key), "integer or float", key, "FactorToValues");
             }
         }
         else if(node instanceof AFloatFactor)
@@ -578,7 +576,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             terminate.terminate_program("Specie " + get.Specie(node) + " cannot be used in titration since it is not included in any reactions.");
         }
 
-        CreateTitNodeObject(node.getFactor(), get.Specie(node), method);
+        CreateTitNodeObject(node.getFactor(), get.Specie(node), method, node.getTString());
     }
 
 
@@ -594,7 +592,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         if (!st.VerifyKeyAndTypeInBoth(specie, ViableVariable.SPECIE)){
             terminate.terminate_program("It should be of the species type");
         }
-        CreateTitNodeObject(node.getFactor(), specie, method);
+        CreateTitNodeObject(node.getFactor(), specie, method, node.getTString());
     }
 
     /***
@@ -604,7 +602,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
      * @param species
      * @param method
      */
-    public void CreateTitNodeObject(PFactor node, String species, String method)
+    public void CreateTitNodeObject(PFactor node, String species, String method, Token token)
     {
         String value ="";
         if(node instanceof AIntegerFactor)
@@ -615,7 +613,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             value = get.Key(node);
         }else{
             String key = get.Key(node);
-            String type = st.GetType(key);
+            String type = st.GetType(key, token);
             value = st.GetValue(key);
             if(!get.IsValidType(type))
             {
@@ -957,7 +955,7 @@ public class BetaTypeChecker extends DepthFirstAdapter {
             if(unit instanceof ATimeOption){
                 cycles = String.valueOf(Math.floor( Float.parseFloat(cycles) / Float.parseFloat(stepSize)));
             }
-            CheckFunctionValues((int) Float.parseFloat(cycles), sample);
+            CheckFunctionValues((int) Float.parseFloat(cycles), sample, node.getTString());
             Node step = node.getExtendequili();
             if (step instanceof ASemiExtendequili){
                 Node Interval = ((ASemiExtendequili) step).getTimestep();
@@ -983,7 +981,6 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         else
         {
             terminate.WrongType(node.getTString(), st.TypeForMessage(sample), ViableVariable.SAMPLE, sample, "outASingleEquili");
-            terminate.terminate_program(sample + " not sample (outASingleEquili)");
         }
     }
 
@@ -1007,19 +1004,19 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         return value;
     }
 
-    public void CheckFunctionValues (int endValue, String sample) {
+    public void CheckFunctionValues (int endValue, String sample, Token token) {
         if (st.st.get(sample).scope.containsKey(ViableVariable.CRN)) {
             for (reaction reac : st.st.get(sample).scope.get(ViableVariable.CRN).crn) {
-                CheckStacksOneValues(reac.lhs, reac.rhs, 0, sample);
-                CheckStacksOneValues(reac.lhs, reac.rhs, 1, sample);
-                CheckStacksOneValues(reac.lhs, reac.rhs, endValue, sample);
+                CheckStacksOneValues(reac.lhs, reac.rhs, 0, sample, token);
+                CheckStacksOneValues(reac.lhs, reac.rhs, 1, sample, token);
+                CheckStacksOneValues(reac.lhs, reac.rhs, endValue, sample, token);
             }
         }
     }
 
-    public void CheckStacksOneValues(Stack<String> rhs, Stack<String> lhs, int limit, String sample){
+    public void CheckStacksOneValues(Stack<String> rhs, Stack<String> lhs, int limit, String sample, Token token){
         if (!CalcOneStack(lhs, limit) || !CalcOneStack(rhs, limit)) {
-            terminate.terminate_program("When equlibarating sample " + sample + " for " + 0 + " a function becomes negative(CheckFunctionValues)");
+            terminate.FunctionBecomesNegative(token, sample, limit, "outASingleEquili");
         }
     }
 

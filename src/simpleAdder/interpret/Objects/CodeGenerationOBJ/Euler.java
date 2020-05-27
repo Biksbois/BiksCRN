@@ -22,11 +22,11 @@ public class Euler extends CodeGenerationMethods {
      */
     public String Generate(HashMap<String, SymbolTableType> scope, int level, String str)
     {
-        if (scope.get(ViableVariable.CRN) == null){
+        if (scope.get(ViableVariable.CRN) == null || scope.get(ViableVariable.CRN).crn.size() == 0){
             String PrettyResult = ApplyTab(level, GenerateEulerDcl(str));
 
             level++;
-            PrettyResult += ApplyTab(level, "pass\n");
+            PrettyResult += ApplyTab(level, "pass\n\n");
             level--;
 
             return PrettyResult;
