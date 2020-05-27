@@ -453,6 +453,12 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         if(rNode instanceof AUnitReactionRateI)
         {
             String rate = get.Rate((AUnitReactionRateI) rNode);
+            Node fNode = ((AUnitReactionRateI) rNode).getFactor();
+
+            if (fNode instanceof AVariableFactor){
+                rate = st.GetValue(rate);
+            }
+
             st.AddStringToField(rate,"caseAOneWayArrows");
         }
         else
@@ -479,6 +485,11 @@ public class BetaTypeChecker extends DepthFirstAdapter {
 
         if (rNode instanceof AUnitReactionRateI){
             String rate = get.Rate((AUnitReactionRateI) rNode);
+            Node fNode = ((AUnitReactionRateI) rNode).getFactor();
+
+            if (fNode instanceof AVariableFactor){
+                rate = st.GetValue(rate);
+            }
             st.AddStringToField(rate, "caseATwoWayArrows");
         }
         else
@@ -503,6 +514,12 @@ public class BetaTypeChecker extends DepthFirstAdapter {
 
         if (rNode instanceof AUnitReactionRateI){
             String rate = get.Rate((AUnitReactionRateI) rNode);
+            Node fNode = ((AUnitReactionRateI) rNode).getFactor();
+
+            if (fNode instanceof AVariableFactor){
+                rate = st.GetValue(rate);
+            }
+
             st.AddStringToField(rate, "caseAReactionRateReactionRateIi");
         }else {
             node.getReactionRateI().apply(this);
