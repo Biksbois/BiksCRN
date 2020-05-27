@@ -17,7 +17,7 @@ After succesful installation, some libaries are need to run the target code. The
 * itertools
 * math
 
-They can be installed through pip with the following command: 
+They can be installed with pip, by writting the following command into CMD: 
 
 pip install matplotlib
 
