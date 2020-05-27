@@ -1,28 +1,51 @@
 Initialize {
-    /* Two functions used to demonstrate a growing rate during run-time*/
-    Func RateVoid( void ) => cycle * 12 ;
-    Func RateParameter( int a, int b ) => (a + b) ** 2 + cycle;
-
-    /* Global variables */
-    int iOne = 1, iTwo = 2, iThree = 10;
-    float fOne = 10, fTwo = 8.8, fThree = 1.5;
-
-    /* Global species used in samples */
-    Specie sOne = 100 + iThree, sTwo = 100, sThree = 0;
-
+    int TimeStamp = 9;
+    int ProductTreshhold = 7;
+    float size = 0.0005;
+    Rate k1 = 1.0, k2 = 0.1, k3 = 1.0, k4 = 0.005, k5 = 1.0;
+    Specie bd = 0 , gd = 10;
     Sample A {
-        Specie sOne = 10, sFour = 60, sFive = 90, sSix = 200;
-        int fSixLimit = 100;
+        Specie a = 10, b = 10, ab = 0, c = 10, ac = 0, cd = 10, bd = 0;
+
         CRN {
-            2*sOne+sTwo -> 2*sFour, RateParameter(iOne, 5);
-            sTwo <-> 2*sFour, RateVoid() : 1;
-            2*sOne+sTwo -> sSix + 2 * sFive, fTwo;
-            2*sOne+sTwo <-> 2*sFour, iTwo : 1 ;
-            5*sFour+sSix -> sOne+sFive, i;
+            a+b -> ab , 1;
+            ab -> a+b , 1;
+            ab+c -> ac+b , 1;
+            ab+ac -> ac+bd , 1;
         }
-        AddMol = sSix:0.1:while(sSix > fSixLimit);
+        AddMol = a:0.1:while(a<1), c:0.5:while (b-ab<0.1), ab:0.2:while(c>3);
+        RemMol = bd:0.2:while(bd>=ProductTreshhold && ac>bd-1);
+    }
+
+    Sample B {
+        Specie H = 10, Br = 10;
+        Rate k1 = 0.1;
+        Rate k3 = 0.3;
+
+        CRN {
+            Br <-> 2Br , k1:k5;
+            Br + H -> bd + H, k2;
+            H + Br -> bd + Br, k3;
+            2H + gd -> 3*H + Br, k4;
+        }
+        RemMol = H:0.1:while(H>15),H:0.08:while(H>20),H:0.1:while(H>25);
+    }
+    Func F( void ) => cycle*0.001;
+    Sample C {
+        Specie H = 100000000;
+        Specie a = 0;
+        CRN {
+            bd -> a, F();
+        }
     }
 }
 Protocol {
-    Equilibrate A for 1 t by 0.0005 each 1 bitesize 1;
+    Equilibrate A for TimeStamp t by 0.005 each 1 bitesize 1 instant;
+    Equilibrate B for 11000 c by 0.0005 each 1 bitesize 50 instant;
+    Equilibrate C for 1600 each 1 bitesize 25 instant;
+    Sample C = Mix(A,B);
+    Equilibrate C for 7000 by 0.0005 each 1 bitesize 50 instant;
+    Sample C,B = C.Split(0.9,0.1);
+    Equilibrate B for 10 t by 0.0005 each 1 bitesize 1 instant;
+    C.Dispose(0.5);
 }
