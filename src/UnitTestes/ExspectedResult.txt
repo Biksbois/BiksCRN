@@ -47,10 +47,37 @@ def mix(sampleList):
     
     return rSample
 
-def equilibrate(sample, stepsize, times):
+def equilibrate(sample, stepsize, times, timeInterval, bitesize):
     sample.h = stepsize
-    ani = FuncAnimation(plt.gcf(), sample.Animate, interval=1000)
+    sample.steps = times
+    sample.bitesize = bitesize
+    plt.figure(figsize=(12, 7),dpi=80, num='BiksCRN')
+    ani = FuncAnimation(plt.gcf(), sample.Animate, interval=timeInterval)
     plt.show()
+
+def GetPercent(i, steps):
+    result = (i/steps)*100
+    if result > 100:
+        return "100"
+    else:
+        return "{:.2f}".format(result)
+
+def SaveGraph(Sample, name, taken):
+    rSpecies = Sample.sample.copy()
+    rSteps = Sample.stepList
+    for key in Sample.sample:
+        Sample.sample[key] = [Sample.sample.get(key)[-1]]
+    Sample.stepList = []
+    return rSpecies, rSteps, name, taken
+
+def DrawGraph(Species, Steps, name, i, s):
+        for key, value in Species.items():
+            plt.plot(Steps, value, label=key + " = {:.2f} mol/L".format(Species.get(key)[-1]))
+        plt.xlabel('Time (t)')
+        plt.suptitle("Equilibrating sample " + name + " for " + str(len(Steps)) + " cycles (" + GetPercent(i, s) + "%)", fontsize=12)
+        plt.ylabel('Concentration (mol/L)')
+        
+        plt.legend()
 
 class SampleQ():
     sample = {
@@ -61,42 +88,57 @@ class SampleQ():
         "E":[60]
     }
 
+    def AccTitration(self, act, time):
+        time += self.h
+        if(act <= time):
+            result = math.floor(time/act)
+            time = time - act * result
+            return result, time
+        else:
+            return 0, time
+
     stepList = []
     index = count()
-    ft = 100
-    t = np.arange(0,ft + 0.5,1)
-    n = len(t)
+    steps = 100
     h = 0.0025
+    bitesize = 1
+
+
     def Euler(self, i) :
-        r1=2*i**(1)+1/2*self.sample.get("A")[-1]
-        r2=1*self.sample.get("B")[-1]
-        r3=1*self.sample.get("A")[-1]*self.sample.get("C")[-1]
-        r4=1*self.sample.get("D")[-1]
-        r5=1*self.sample.get("B")[-1]*self.sample.get("E")[-1]
-        r6=1*self.sample.get("B")[-1]*self.sample.get("E")[-1]
-        r7=1*self.sample.get("E")[-1]
+        if(i < self.steps):
+            r0=0.5+2.0*i*(self.sample.get("A")[-1]**1)
+            r1=1*(self.sample.get("B")[-1]**1)
+            r2=1*(self.sample.get("A")[-1]**1)*(self.sample.get("C")[-1]**1)
+            r3=1*(self.sample.get("D")[-1]**1)
+            r4=1*(self.sample.get("B")[-1]**1)*(self.sample.get("E")[-1]**1)
+            r5=1*(self.sample.get("B")[-1]**1)*(self.sample.get("E")[-1]**1)
+            r6=1*(self.sample.get("E")[-1]**1)
 
-        self.sample["A"].append((-r1+r2-r3+r6)*self.h+self.sample.get("A")[-1])
-        self.sample["B"].append((r1-r2+r4-r5-r6)*self.h+self.sample.get("B")[-1])
-        self.sample["C"].append((-r3+r6+r7)*self.h+self.sample.get("C")[-1])
-        self.sample["D"].append((r3-r4+r5)*self.h+self.sample.get("D")[-1])
-        self.sample["E"].append((r4-r5-r6-r7)*self.h+self.sample.get("E")[-1])
+            self.sample["A"].append(self.sample.get("A")[-1]+(r0*(-1)+r1*(-1*(-1))+r2*(-1)+r5*(1))*self.h)
+            self.sample["B"].append(self.sample.get("B")[-1]+(r0*(1)+r1*(1*(-1))+r3*(1)+r4*(1*(-1))+r5*(-1))*self.h)
+            self.sample["C"].append(self.sample.get("C")[-1]+(r2*(-1)+r5*(1)+r6*(1))*self.h)
+            self.sample["D"].append(self.sample.get("D")[-1]+(r2*(1)+r3*(-1)+r4*(-1*(-1)))*self.h)
+            self.sample["E"].append(self.sample.get("E")[-1]+(r3*(1)+r4*(1*(-1))+r5*(-1)+r6*(-1))*self.h)
 
+    def ApplyTitration(self):
+        pass
 
     @staticmethod
     def Animate(i) :
         plt.cla()
+        for i in range(SampleQ.bitesize):
+            index = next(SampleQ.index)
+            if len(SampleQ.stepList) == 0:
+                SampleQ.stepList.append(index*SampleQ.h)
+            else:
+                SampleQ.stepList.append(index*SampleQ.h)
+                SampleQ.Euler(SampleQ, index)
+                SampleQ.ApplyTitration(SampleQ)
+                if(index >= SampleQ.steps):
+                    SampleQ.stepList.pop()
+                    break
 
-        SampleQ.stepList.append(next(SampleQ.index))
-
-        for key, value in SampleQ.sample.items():
-            plt.plot(SampleQ.stepList, value, label=key)
-            plt.legend()
-
-        SampleQ.Euler(SampleQ, i)
-
-
-
+        DrawGraph(SampleQ.sample, SampleQ.stepList, "Q", index, SampleQ.steps)
 class SampleL():
     sample = {
         "A":[100],
@@ -106,93 +148,139 @@ class SampleL():
         "E":[60]
     }
 
+    def AccTitration(self, act, time):
+        time += self.h
+        if(act <= time):
+            result = math.floor(time/act)
+            time = time - act * result
+            return result, time
+        else:
+            return 0, time
+
     stepList = []
     index = count()
-    ft = 100
-    t = np.arange(0,ft + 0.5,1)
-    n = len(t)
+    steps = 100
     h = 0.0025
+    bitesize = 1
+
+
+    AddMol0=0
+    AddMol1=0
+
+    RemMol0=0
+    RemMol1=0
+    RemMol2=0
+
     def Euler(self, i) :
-        r1=1*self.sample.get("A")[-1]
-        r2=1*self.sample.get("A")[-1]*self.sample.get("C")[-1]
-        r3=2*self.sample.get("D")[-1]
-        r4=2*self.sample.get("D")[-1]
-        r5=1*self.sample.get("U")[-1]*self.sample.get("E")[-1]
-        r6=1*self.sample.get("U")[-1]*self.sample.get("E")[-1]
-        r7=3*self.sample.get("A")[-1]*self.sample.get("C")[-1]
-        r8=3*self.sample.get("E")[-1]
+        if(i < self.steps):
+            r0=1*(self.sample.get("A")[-1]**1)
+            r1=1*(self.sample.get("A")[-1]**1)*(self.sample.get("C")[-1]**1)
+            r2=2*(self.sample.get("D")[-1]**1)
+            r3=2*(self.sample.get("D")[-1]**1)
+            r4=1*(self.sample.get("U")[-1]**1)*(self.sample.get("E")[-1]**1)
+            r5=1*(self.sample.get("U")[-1]**1)*(self.sample.get("E")[-1]**1)
+            r6=3*(self.sample.get("A")[-1]**1)*(self.sample.get("C")[-1]**1)
+            r7=3*(self.sample.get("E")[-1]**1)
 
-        self.sample["A"].append((-r1-r2+r3+r6-r7)*self.h+self.sample.get("A")[-1])
-        self.sample["C"].append((-r2+r3+r6-r7+r8)*self.h+self.sample.get("C")[-1])
-        self.sample["D"].append((r2-r3-r4+r5)*self.h+self.sample.get("D")[-1])
-        self.sample["U"].append((r1+r4-r5-r6+r7)*self.h+self.sample.get("U")[-1])
-        self.sample["E"].append((r4-r5-r6+r7-r8)*self.h+self.sample.get("E")[-1])
+            self.sample["A"].append(self.sample.get("A")[-1]+(r0*(-1)+r1*(-1)+r2*(-1*(-1))+r5*(1)+r6*(1*(-1)))*self.h)
+            self.sample["C"].append(self.sample.get("C")[-1]+(r1*(-1)+r2*(-1*(-1))+r5*(1)+r6*(1*(-1))+r7*(1))*self.h)
+            self.sample["D"].append(self.sample.get("D")[-1]+(r1*(1)+r2*(1*(-1))+r3*(-1)+r4*(-1*(-1)))*self.h)
+            self.sample["U"].append(self.sample.get("U")[-1]+(r0*(1)+r3*(1)+r4*(1*(-1))+r5*(-1)+r6*(-1*(-1)))*self.h)
+            self.sample["E"].append(self.sample.get("E")[-1]+(r3*(1)+r4*(1*(-1))+r5*(-1)+r6*(-1*(-1))+r7*(-1))*self.h)
 
-    def ApplyTitration(self,i):
-        if i % 20 == 0 :
-            self.sample["U"][-1] = self.sample.get("U")[-1]+1
-        if i % 45 == 0  and self.sample.get("U")[-1]<5 and 6<7 or 1==1:
-            self.sample["U"][-1] = self.sample.get("U")[-1]+1
-        if i % 1 == 0 :
-            if self.sample.get("U")[-1]-1 <= 0:
+    def ApplyTitration(self):
+        Result, self.AddMol0 = self.AccTitration(self, 20, self.AddMol0)
+        self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
+        if self.sample.get("U")[-1]<5.00:
+            Result, self.AddMol1 = self.AccTitration(self, 45, self.AddMol1)
+            self.sample["U"][-1] = self.sample.get("U")[-1]+Result*1
+        Result, self.RemMol0 = self.AccTitration(self, 1, self.RemMol0)
+        if Result > 0 and self.sample.get("U")[-1]-1 <= 0:
+            self.sample.get("U")[-1] = 0
+        elif Result > 0:
+            self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
+        Result, self.RemMol1 = self.AccTitration(self, 2, self.RemMol1)
+        if Result > 0 and self.sample.get("U")[-1]-1 <= 0:
+            self.sample.get("U")[-1] = 0
+        elif Result > 0:
+            self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
+        if self.sample.get("U")[-1]<5.00:
+            Result, self.RemMol2 = self.AccTitration(self, 3, self.RemMol2)
+            if Result > 0 and self.sample.get("U")[-1]-1 <= 0:
                 self.sample.get("U")[-1] = 0
-            else:
-                self.sample["U"][-1] = self.sample.get("U")[-1]-1
-        if i % 2 == 0 :
-            if self.sample.get("U")[-1]-1 <= 0:
-                self.sample.get("U")[-1] = 0
-            else:
-                self.sample["U"][-1] = self.sample.get("U")[-1]-1
-        if i % 3 == 0  and self.sample.get("U")[-1]<5 and 6<7 or 1==1:
-            if self.sample.get("U")[-1]-1 <= 0:
-                self.sample.get("U")[-1] = 0
-            else:
-                self.sample["U"][-1] = self.sample.get("U")[-1]-1
+            elif Result > 0:
+                self.sample["U"][-1] = self.sample.get("U")[-1]-Result*1
+
 
     @staticmethod
     def Animate(i) :
         plt.cla()
+        for i in range(SampleL.bitesize):
+            index = next(SampleL.index)
+            if len(SampleL.stepList) == 0:
+                SampleL.stepList.append(index*SampleL.h)
+            else:
+                SampleL.stepList.append(index*SampleL.h)
+                SampleL.Euler(SampleL, index)
+                SampleL.ApplyTitration(SampleL)
+                if(index >= SampleL.steps):
+                    SampleL.stepList.pop()
+                    break
 
-        SampleL.stepList.append(next(SampleL.index))
-
-        for key, value in SampleL.sample.items():
-            plt.plot(SampleL.stepList, value, label=key)
-            plt.legend()
-
-        SampleL.Euler(SampleL, i)
-        SampleL.ApplyTitration(SampleL, i+1)
-
-
+        DrawGraph(SampleL.sample, SampleL.stepList, "L", index, SampleL.steps)
 sample = {
     "II":[1],
     "A":[100],
     "B":[12]
 }
-equilibrate(SampleQ, 0.0025, 1)
+SampleQ.sample["A"] = sample["A"]
+SampleQ.index = count()
+equilibrate(SampleQ, 0.0025, 1, 100, 1 )
 sample["A"] = [SampleQ.sample.get("A")[-1]]
-equilibrate(SampleL, 0.0025, 1)
+Species0, Steps0, name0, taken0 = SaveGraph(SampleQ, "Q", SampleQ.steps )
+SampleL.index = count()
+equilibrate(SampleL, 0.0025, 1, 100, 1 )
+Species1, Steps1, name1, taken1 = SaveGraph(SampleL, "L", SampleL.steps )
 SampleQ.sample = mix([SampleQ.sample])
 def Euler0(self, i) :
-    r1=2*i**(1)+1/2*self.sample.get("A")[-1]
-    r2=1*self.sample.get("B")[-1]
-    r3=1*self.sample.get("A")[-1]*self.sample.get("C")[-1]
-    r4=1*self.sample.get("D")[-1]
-    r5=1*self.sample.get("B")[-1]*self.sample.get("E")[-1]
-    r6=1*self.sample.get("B")[-1]*self.sample.get("E")[-1]
-    r7=1*self.sample.get("E")[-1]
-    r8=2*i**(1)+1/2*self.sample.get("A")[-1]
-    r9=1*self.sample.get("B")[-1]
-    r10=1*self.sample.get("A")[-1]*self.sample.get("C")[-1]
-    r11=1*self.sample.get("D")[-1]
-    r12=1*self.sample.get("B")[-1]*self.sample.get("E")[-1]
-    r13=1*self.sample.get("B")[-1]*self.sample.get("E")[-1]
-    r14=1*self.sample.get("E")[-1]
+    if(i < self.steps):
+        r0=0.5+2.0*i*(self.sample.get("A")[-1]**1)
+        r1=1*(self.sample.get("B")[-1]**1)
+        r2=1*(self.sample.get("A")[-1]**1)*(self.sample.get("C")[-1]**1)
+        r3=1*(self.sample.get("D")[-1]**1)
+        r4=1*(self.sample.get("B")[-1]**1)*(self.sample.get("E")[-1]**1)
+        r5=1*(self.sample.get("B")[-1]**1)*(self.sample.get("E")[-1]**1)
+        r6=1*(self.sample.get("E")[-1]**1)
 
-    self.sample["A"].append((-r8+r9-r10+r13-r8+r9-r10+r13)*self.h+self.sample.get("A")[-1])
-    self.sample["B"].append((r8-r9+r11-r12-r13+r8-r9+r11-r12-r13)*self.h+self.sample.get("B")[-1])
-    self.sample["C"].append((-r10+r13+r14-r10+r13+r14)*self.h+self.sample.get("C")[-1])
-    self.sample["D"].append((r10-r11+r12+r10-r11+r12)*self.h+self.sample.get("D")[-1])
-    self.sample["E"].append((r11-r12-r13-r14+r11-r12-r13-r14)*self.h+self.sample.get("E")[-1])
+        self.sample["A"].append(self.sample.get("A")[-1]+(r0*(-1)+r1*(-1*(-1))+r2*(-1)+r5*(1))*self.h)
+        self.sample["B"].append(self.sample.get("B")[-1]+(r0*(1)+r1*(1*(-1))+r3*(1)+r4*(1*(-1))+r5*(-1))*self.h)
+        self.sample["C"].append(self.sample.get("C")[-1]+(r2*(-1)+r5*(1)+r6*(1))*self.h)
+        self.sample["D"].append(self.sample.get("D")[-1]+(r2*(1)+r3*(-1)+r4*(-1*(-1)))*self.h)
+        self.sample["E"].append(self.sample.get("E")[-1]+(r3*(1)+r4*(1*(-1))+r5*(-1)+r6*(-1))*self.h)
+
 SampleQ.Euler = Euler0
+def ApplyTitration0(self):
+    pass
+SampleQ.ApplyTitration = ApplyTitration0
 split(SampleQ.sample,[SampleQ.sample, SampleL.sample], [0.5, 0.5])
 disposePercent(SampleQ.sample,1)
+count = 1
+def onclick(event):
+    global count
+    event.canvas.figure.clear()
+    plt.clf()
+    if count % 2 == 0:
+        DrawGraph(Species0, Steps0, name0, len(Steps0), taken0)
+    else:
+        DrawGraph(Species1, Steps1, name1, len(Steps1), taken1)
+    count += 1
+    if count % 2 == 0:
+        count -= 2
+    event.canvas.draw()
+
+fig = plt.figure()
+fig.canvas.mpl_connect('button_press_event', onclick)
+
+DrawGraph(Species0, Steps0, name0, len(Steps0), taken0)
+
+plt.show()
