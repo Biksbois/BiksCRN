@@ -194,7 +194,7 @@ public class IntermediateCodeGeneration {
     }
     public String ReplaceCRNSpecies(String str)
     {
-        String[] matches = GetMatches(str,"CRN\\s*\\{(\\s+|\\w|\\d|->|<->|,|\\*|\\+|;|:)*\\}");
+        String[] matches = GetMatches(str,"CRN\\s*\\{(.|\\s)*\\}");
         for (var s: matches) {
             str = str.replace(s,ReplaceNotation(s));
         }
@@ -203,7 +203,7 @@ public class IntermediateCodeGeneration {
 
     public String ReplaceNotation(String str)
     {
-        String[] matches = GetMatches(str,"(\\+|\\,|\\>)?\\d+(\\w(\\d|\\w)*)(\\+|\\,|\\<|\\-)");
+        String[] matches = GetMatches(str,"(\\+|\\,|\\>|\\s)?\\d+(\\w(\\d|\\w)*)(\\+|\\,|\\<|\\-)");
         for (var blip: matches) {
 
             str = str.replaceAll(GetOriginalSpecies(blip),GetNumeral(blip)+"*"+GetName(blip));
