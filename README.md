@@ -27,7 +27,7 @@ There is a couple diffrent ways to give arguments to the .jar file to tell it wh
 1. Dont give it an argument, and follow the intruction given by the compiler.
 
 The path can either be the absolute path or a path relative to the compiler folder.
-
+A precompiled version can be found in the BiksZip.zip.
 Example
 -------
 Here is a small example off some working code  
