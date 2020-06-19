@@ -11,7 +11,9 @@ import simpleAdder.interpret.TypeCheckers.BetaStackCalculator;
 import simpleAdder.interpret.TypeCheckers.BiksPair;
 import simpleAdder.interpret.TypeCheckers.OptimizedStackToString;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 import java.util.regex.Pattern;
 
 public class BetaTypeChecker extends DepthFirstAdapter {
@@ -968,13 +970,17 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         String sample = get.Sample(node);
         if(st.VerifyKeyAndTypeInBoth(sample, ViableVariable.SAMPLE))
         {
-            cycles = GetPositiveWholeFactor(node.getFactor(), node.getTString());
 
             Node unit = node.getOption();
             if(unit instanceof ATimeOption){
-                cycles = String.valueOf(Math.floor( Float.parseFloat(cycles) / Float.parseFloat(stepSize)));
+
+                cycles = String.valueOf(Math.floor( Float.parseFloat(GetPositiveFactor(node.getFactor(), node.getTString())) / Float.parseFloat(stepSize)));
                 //if(){}
-            }
+            }else
+                {
+                    cycles = GetPositiveWholeFactor(node.getFactor(), node.getTString());
+
+                }
             CheckFunctionValues((int) Float.parseFloat(cycles), sample, node.getTString());
             Node step = node.getExtendequili();
             if (step instanceof ASemiExtendequili){
@@ -1016,6 +1022,15 @@ public class BetaTypeChecker extends DepthFirstAdapter {
         }else{
             return "1";
         }
+    }
+
+    private String GetPositiveFactor(PFactor factor, Token token)
+    {
+        String value = FactorToValues(factor);
+        if (value.charAt(0) == '-'){
+            terminate.ShouldBePositive(token, value,"GetPositiveWholeFactor");
+        }
+        return value;
     }
 
     private boolean Instant(PFactor factor) {

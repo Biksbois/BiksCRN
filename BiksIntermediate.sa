@@ -40,13 +40,12 @@ bd -> a, F();
 }
 }
 Protocol {
-Equilibrate A for TimeStamp t by 0.005    each 1 bitesize instant0;
+Equilibrate A for 4 c by 0.005    each 1 bitesize 4;
 Equilibrate B for 11000 c by 0.0005    each 1 bitesize 11000;
 Equilibrate C for 1600 c    each 1 bitesize 1600;
 Sample C = Mix (A,B);
 Equilibrate C for 7000 c by 0.0005    each 1 bitesize 7000;
 Sample C,B = C.Split (0.9,0.1);
-Equilibrate B for 10 t by 0.0005    each 1 bitesize instant00;
+Equilibrate B for 10 t by 0.0005    each 1 bitesize instant0;
 C.Dispose (0.5);
-
 }
