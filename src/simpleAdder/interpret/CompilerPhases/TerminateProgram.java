@@ -80,6 +80,12 @@ public class TerminateProgram {
         System.exit(1);
     }
 
+    public void ShouldBePositive(Token token, String value, String method){
+        String message = "A variable in eqilibrate is assigned the value " + value + ", but it should be positive. (" + method + ")";
+        System.err.println(EM.Get(token, message));
+        System.exit(1);
+    }
+
     public void FunctionBecomesNegative(Token token, String sample, int limit, String method){
         String message = "The reaction in this line, in sample " + sample + " has a rate defined as a function. This function becomes negative when equilbrating for " + limit + " (" + method + ")";
         System.err.println(EM.Get(token, message));

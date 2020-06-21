@@ -13,7 +13,7 @@ public class IntermediateCodeGeneration {
 
     String rawPath;
     String OutputName = "BiksIntermediate.sa";
-    String VariableOrNumeral = "(\\d+|(\\w(\\d|\\w)*))";
+    String VariableOrNumeral = "(\\d+|\\d+\\.\\d+|(\\w(\\d|\\w)*))";
     String Variable = "(\\w(\\d|\\w)*)";
     String instant = "(I|i)(N|n)(S|s)(T|t)(A|a)(N|n)(T|t)";
 

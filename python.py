@@ -1,11 +1,7 @@
-import numpy as np 
-from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from itertools import count
-from threading import Timer
 import math
-import warnings
 def split( SplitSample,ResultingSampleList, Distribution):
     rSample = {} #resulting sample list
 
@@ -288,7 +284,7 @@ sample = {
     "gd":[10]
 }
 SampleA.index = count()
-equilibrate(SampleA, 0.005, 1800.0, 1, 1800 )
+equilibrate(SampleA, 0.005, 4, 1, 4 )
 Species0, Steps0, name0, taken0 = SaveGraph(SampleA, "A", SampleA.steps )
 SampleB.sample["bd"] = sample["bd"]
 SampleB.sample["gd"] = sample["gd"]
