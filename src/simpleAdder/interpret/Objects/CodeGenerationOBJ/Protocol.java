@@ -478,7 +478,9 @@ public class Protocol extends CodeGenerationMethods {
         }
 
         for(int i = 0; i<toSample.size(); i++) {
-            if (global.get(toSample.get(i)).scope.get(vv.SPECIE).species == null){
+            if (!global.get(toSample.get(i)).scope.containsKey(vv.SPECIE)){
+                global.get(toSample.get(i)).scope.put(vv.SPECIE, new SymbolTableType(vv.SPECIE));
+            } else if (global.get(toSample.get(i)).scope.get(vv.SPECIE).species == null){
                 global.get(toSample.get(i)).scope.get(vv.SPECIE).species = new HashMap<>();
             }
             for (String species: global.get(fromSample).scope.get(vv.SPECIE).species.keySet() ) {

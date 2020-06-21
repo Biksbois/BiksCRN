@@ -349,6 +349,7 @@ public class BetaSymbolTable extends Checker {
     public void NodeToCurrentScope(ADclTitration node){
         BiksPair<String, SymbolTableType> pair = temp.GetInstanece(node.getTitrationdcl().toString().trim());
         PairToCurrentScope(pair);
+        temp = null;
     }
 
     /***
